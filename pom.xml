@@ -141,7 +141,7 @@
 		<dependency>
 			<groupId>org.atemsource</groupId>
 			<artifactId>atem-api</artifactId>
-			<version>0.0.21-SNAPSHOT</version>
+			<version>0.0.21</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-resources</groupId>
