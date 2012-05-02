@@ -2,6 +2,6 @@ target/
 .settings
 .classpath
 .project
-pom.xml.releaseBackup
+pom.xml.*
 release.properties
 
