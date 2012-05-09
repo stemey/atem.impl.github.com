@@ -1,20 +1,11 @@
 /*******************************************************************************
- * Stefan Meyer, 2012
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Stefan Meyer, 2012 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  ******************************************************************************/
 package org.atemsource.atem.impl.common;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +22,10 @@ import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.resources.impl.BasicMessage;
 import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.service.EntityProblem;
-import org.atemsource.atem.api.service.EntityValidationService;
 import org.atemsource.atem.api.service.EntityProblem.Type;
+import org.atemsource.atem.api.service.EntityValidationService;
 import org.atemsource.atem.api.type.EntityType;
 
 
@@ -69,7 +59,7 @@ public class BeanValidationService implements EntityValidationService
 
 			EntityProblem entityProblem = new EntityProblem();
 			entityProblem.setEntity(entity);
-			entityProblem.setMessage(new BasicMessage(constraintViolation.getMessageTemplate()));
+			entityProblem.setMessage(constraintViolation.getMessageTemplate());
 			entityProblem.setType(Type.INVALID);
 			entityProblems.add(entityProblem);
 

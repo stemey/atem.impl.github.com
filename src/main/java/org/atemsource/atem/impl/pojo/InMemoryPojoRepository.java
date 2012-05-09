@@ -1,20 +1,11 @@
 /*******************************************************************************
- * Stefan Meyer, 2012
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Stefan Meyer, 2012 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  ******************************************************************************/
 package org.atemsource.atem.impl.pojo;
-
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -35,7 +26,6 @@ import org.atemsource.atem.api.service.IdentityService;
 import org.atemsource.atem.api.service.PersistenceService;
 import org.atemsource.atem.api.service.SingleAttributeQuery;
 import org.atemsource.atem.api.type.EntityType;
-import org.atemsource.atem.api.type.TypedId;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -58,9 +48,10 @@ public class InMemoryPojoRepository implements FindByAttributeService, Persisten
 		throw new UnsupportedOperationException("readonly");
 	}
 
-	public Object findByTypedId(TypedId typedId)
+	@Override
+	public Object findByTypedId(EntityType<?> entityType, Serializable id)
 	{
-		return typedIds.get(typedId);
+		return typedIds.get(new TypedId(entityType.getCode(), id));
 	}
 
 	public Object findSingleByAttribute(Object targetEntity, Attribute<?, ?> attribute)
@@ -126,11 +117,12 @@ public class InMemoryPojoRepository implements FindByAttributeService, Persisten
 		return supportedClasses;
 	}
 
+	@Override
 	public void insert(Object entity)
 	{
 		EntityType<?> entityType = entityTypeRepository.getEntityType(entity);
 		Serializable id = entityType.getService(IdentityService.class).getId(entityType, entity);
-		typedIds.put(new SerializableTypeId(id, entityType.getJavaType()), entity);
+		typedIds.put(new TypedId(entityType.getCode(), id), entity);
 	}
 
 	public boolean isCreateIndex()
@@ -143,11 +135,12 @@ public class InMemoryPojoRepository implements FindByAttributeService, Persisten
 		throw new UnsupportedOperationException("not implmeneted yet");
 	}
 
+	@Override
 	public boolean isPersistent(Object entity)
 	{
 		EntityType<?> entityType = entityTypeRepository.getEntityType(entity);
 		Serializable id = entityType.getService(IdentityService.class).getId(entityType, entity);
-		return typedIds.get(new SerializableTypeId(id, entityType.getJavaType())) != null;
+		return typedIds.get(new TypedId(entityType.getCode(), id)) != null;
 	}
 
 	@Override
@@ -170,5 +163,29 @@ public class InMemoryPojoRepository implements FindByAttributeService, Persisten
 	public void setSupportedClasses(List<Class> supportedClasses)
 	{
 		this.supportedClasses = supportedClasses;
+	}
+
+	private static class TypedId implements Serializable
+	{
+		private String typeCode;
+
+		private Serializable id;
+
+		public TypedId(String typeCode, Serializable id)
+		{
+			super();
+			this.typeCode = typeCode;
+			this.id = id;
+		}
+
+		public Serializable getId()
+		{
+			return id;
+		}
+
+		public String getTypeCode()
+		{
+			return typeCode;
+		}
 	}
 }
