@@ -13,11 +13,11 @@ import java.lang.annotation.Annotation;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.JavaMetaData;
 import org.atemsource.atem.api.extension.EntityTypePostProcessor;
+import org.atemsource.atem.api.extension.MetaAttributeService;
 import org.atemsource.atem.api.service.FindByTypedIdService;
 import org.atemsource.atem.api.service.IdentityService;
 import org.atemsource.atem.api.service.PersistenceService;
 import org.atemsource.atem.api.type.EntityType;
-import org.atemsource.atem.impl.meta.MS;
 import org.atemsource.atem.impl.meta.ViewData;
 import org.atemsource.atem.spi.EntityTypeCreationContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class ViewDataEntityTypePostProcessor implements EntityTypePostProcessor
 	private EntityType<?> viewEntityType;
 
 	@Autowired
-	private MS metaAttributeService;
+	private MetaAttributeService metaAttributeService;
 
 	@Override
 	public void postProcessEntityType(EntityTypeCreationContext context, EntityType<?> entityType)
