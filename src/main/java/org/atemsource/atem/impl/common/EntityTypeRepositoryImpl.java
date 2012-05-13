@@ -20,19 +20,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.atemsource.atem.api.EntityTypeCreationContext;
 import org.atemsource.atem.api.EntityTypeRepository;
-import org.atemsource.atem.api.EntityTypeRepositoryListener;
-import org.atemsource.atem.api.EntityTypeSubrepository;
-import org.atemsource.atem.api.Phase;
-import org.atemsource.atem.api.PhaseEvent;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.primitive.PrimitiveType;
-import org.atemsource.atem.api.meta.EntityTypePostProcessor;
+import org.atemsource.atem.api.extension.EntityTypePostProcessor;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.attribute.primitive.PrimitiveTypeFactory;
 import org.atemsource.atem.impl.infrastructure.BeanCreator;
+import org.atemsource.atem.spi.EntityTypeCreationContext;
+import org.atemsource.atem.spi.EntityTypeRepositoryListener;
+import org.atemsource.atem.spi.EntityTypeSubrepository;
+import org.atemsource.atem.spi.Phase;
+import org.atemsource.atem.spi.PhaseEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 
 

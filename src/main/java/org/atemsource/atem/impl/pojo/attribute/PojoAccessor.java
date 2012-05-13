@@ -25,8 +25,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.atemsource.atem.api.TechnicalException;
 import org.atemsource.atem.api.attribute.Accessor;
+import org.atemsource.atem.api.infrastructure.exception.TechnicalException;
 
 
 public class PojoAccessor implements Accessor

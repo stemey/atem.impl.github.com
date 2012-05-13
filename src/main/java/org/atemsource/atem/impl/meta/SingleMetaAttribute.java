@@ -1,20 +1,11 @@
 /*******************************************************************************
- * Stefan Meyer, 2012
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Stefan Meyer, 2012 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  ******************************************************************************/
 package org.atemsource.atem.impl.meta;
-
 
 import org.atemsource.atem.api.attribute.annotation.Cardinality;
 import org.atemsource.atem.api.attribute.relation.SingleAttribute;
@@ -44,36 +35,43 @@ public class SingleMetaAttribute<J> implements SingleAttribute<J>
 		this.metaAttributeService = metaAttributeService;
 	}
 
+	@Override
 	public Class<J> getAssociationType()
 	{
 		return metaDataAttribute.getAssociationType();
 	}
 
+	@Override
 	public String getCode()
 	{
 		return metaDataAttribute.getCode();
 	}
 
+	@Override
 	public EntityType getEntityType()
 	{
 		return metaDataAttribute.getEntityType();
 	}
 
+	@Override
 	public Class<J> getReturnType()
 	{
 		return metaDataAttribute.getReturnType();
 	}
 
+	@Override
 	public Cardinality getTargetCardinality()
 	{
 		return metaDataAttribute.getTargetCardinality();
 	}
 
+	@Override
 	public Type<J> getTargetType()
 	{
 		return metaDataAttribute.getTargetType();
 	}
 
+	@Override
 	public Type<J> getTargetType(J value)
 	{
 		return metaDataAttribute.getTargetType(value);
@@ -86,6 +84,7 @@ public class SingleMetaAttribute<J> implements SingleAttribute<J>
 		return metaDataAttribute.getValue(intermediate);
 	}
 
+	@Override
 	public boolean isComposition()
 	{
 		return metaDataAttribute.isComposition();
@@ -99,11 +98,13 @@ public class SingleMetaAttribute<J> implements SingleAttribute<J>
 		return metaDataAttribute.isEqual(intermediateA, intermediateB);
 	}
 
+	@Override
 	public boolean isRequired()
 	{
 		return metaDataAttribute.isRequired();
 	}
 
+	@Override
 	public boolean isWriteable()
 	{
 		return metaDataAttribute.isWriteable();

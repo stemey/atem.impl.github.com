@@ -13,36 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.atemsource.atem.impl.meta;
+package org.atemsource.atem.impl.common.meta;
+
+import java.lang.annotation.Annotation;
 
 
-import org.atemsource.atem.api.attribute.Attribute;
-import org.atemsource.atem.api.type.EntityType;
-import org.atemsource.atem.impl.common.AbstractEntityType;
-import org.atemsource.atem.api.infrastructure.util.ReflectionUtils;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
-
-@Component
-@Scope("prototype")
-public class AttributeEntityType<J, R> extends AbstractEntityType<Attribute<J, R>>
+public interface InitialzableByAnnotationBean<A extends Annotation>
 {
 
-	public AttributeEntityType()
-	{
-	}
-
-	@Override
-	public Class getJavaType()
-	{
-		return ReflectionUtils.getActualTypeParameter(getClass(), EntityType.class);
-	}
-
-	@Override
-	public boolean isAssignableFrom(Object entity)
-	{
-		return entity instanceof Attribute;
-	}
+	public void initialize(A a);
 
 }

@@ -19,7 +19,6 @@ package org.atemsource.atem.impl.pojo.attribute;
 import java.lang.reflect.Array;
 import java.util.Collection;
 
-import org.atemsource.atem.api.EntityTypeCreationContext;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.annotation.Association;
 import org.atemsource.atem.api.type.Type;
@@ -27,6 +26,7 @@ import org.atemsource.atem.impl.common.AbstractEntityType;
 import org.atemsource.atem.impl.common.attribute.AbstractAttribute;
 import org.atemsource.atem.impl.common.attribute.collection.ArrayAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.primitive.PrimitiveTypeFactory;
+import org.atemsource.atem.spi.EntityTypeCreationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

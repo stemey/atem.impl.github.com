@@ -20,11 +20,11 @@ import java.util.Collection;
 
 import javax.annotation.Resource;
 
-import org.atemsource.atem.api.EntityTypeCreationContext;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.impl.common.AbstractEntityType;
 import org.atemsource.atem.impl.common.attribute.PrimitiveAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.primitive.PrimitiveTypeFactory;
+import org.atemsource.atem.spi.EntityTypeCreationContext;
 import org.springframework.stereotype.Component;
 
 

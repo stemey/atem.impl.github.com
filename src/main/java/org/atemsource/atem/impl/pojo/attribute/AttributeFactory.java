@@ -20,11 +20,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.atemsource.atem.api.EntityTypeCreationContext;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.impl.common.AbstractEntityType;
 import org.atemsource.atem.impl.common.attribute.AbstractAttribute;
 import org.atemsource.atem.impl.infrastructure.BeanCreator;
+import org.atemsource.atem.spi.EntityTypeCreationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 

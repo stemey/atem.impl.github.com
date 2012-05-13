@@ -19,7 +19,7 @@ package org.atemsource.atem.impl.json.attribute;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.attribute.PrimitiveAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.primitive.PrimitiveTypeFactory;
-import org.atemsource.atem.impl.infrastructure.ReflectionUtils;
+import org.atemsource.atem.api.infrastructure.util.ReflectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

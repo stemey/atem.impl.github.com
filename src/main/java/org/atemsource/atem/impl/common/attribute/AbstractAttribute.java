@@ -20,12 +20,12 @@ import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.atemsource.atem.api.TechnicalException;
 import org.atemsource.atem.api.attribute.Accessor;
 import org.atemsource.atem.api.attribute.AssociationAttribute;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.JavaMetaData;
 import org.atemsource.atem.api.attribute.annotation.Cardinality;
+import org.atemsource.atem.api.infrastructure.exception.TechnicalException;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.Type;
 

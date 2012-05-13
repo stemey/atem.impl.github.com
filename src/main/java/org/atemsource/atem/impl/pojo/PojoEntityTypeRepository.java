@@ -22,15 +22,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.atemsource.atem.api.EntityTypeCreationContext;
 import org.atemsource.atem.api.EntityTypeRepository;
-import org.atemsource.atem.api.EntityTypeSubrepository;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.impl.common.AbstractEntityType;
 import org.atemsource.atem.impl.common.AbstractMetaDataRepository;
 import org.atemsource.atem.impl.infrastructure.BeanCreator;
 import org.atemsource.atem.impl.pojo.attribute.AttributeFactory;
+import org.atemsource.atem.spi.EntityTypeCreationContext;
+import org.atemsource.atem.spi.EntityTypeSubrepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 

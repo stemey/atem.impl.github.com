@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
-import org.atemsource.atem.api.EntityTypeCreationContext;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.CollectionSortType;
 import org.atemsource.atem.api.attribute.annotation.Association;
@@ -32,6 +31,7 @@ import org.atemsource.atem.impl.common.attribute.collection.AbstractCollectionAt
 import org.atemsource.atem.impl.common.attribute.collection.CollectionAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.collection.ListAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.collection.SetAttributeImpl;
+import org.atemsource.atem.spi.EntityTypeCreationContext;
 import org.springframework.stereotype.Component;
 
 

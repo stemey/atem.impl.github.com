@@ -17,13 +17,13 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<pom.siteAddress>ftp://ftp.atemsource.org:21</pom.siteAddress>
-		<pom.siteDirectory>maven/site/api</pom.siteDirectory>
+		<pom.siteDirectory>maven/site/impl</pom.siteDirectory>
 	</properties>
 
 	<scm>
 		<connection>scm:git://github.com/stemey/atem.impl.github.com.git</connection>
 		<developerConnection>scm:git:git@github.com:stemey/atem.impl.github.com.git</developerConnection>
-		<url>https://stemey@github.com/stemey/atem.impl.github.com.git</url>
+		<url>https://github.com/stemey/atem.impl.github.com.git</url>
 	</scm>
 
 	<distributionManagement>
@@ -55,6 +55,19 @@
 		</extensions>
 		<defaultGoal>install</defaultGoal>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -162,7 +175,7 @@
 		<dependency>
 			<groupId>org.atemsource</groupId>
 			<artifactId>atem-api</artifactId>
-			<version>0.0.29</version>
+			<version>0.0.30-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-resources</groupId>

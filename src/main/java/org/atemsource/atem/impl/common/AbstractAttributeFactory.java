@@ -19,8 +19,8 @@ package org.atemsource.atem.impl.common;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.atemsource.atem.api.EntityTypeCreationContext;
 import org.atemsource.atem.api.type.EntityType;
+import org.atemsource.atem.spi.EntityTypeCreationContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 

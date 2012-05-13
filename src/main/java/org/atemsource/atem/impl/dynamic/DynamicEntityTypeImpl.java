@@ -17,7 +17,7 @@ package org.atemsource.atem.impl.dynamic;
 
 
 import org.atemsource.atem.api.EntityTypeRepository;
-import org.atemsource.atem.api.TechnicalException;
+import org.atemsource.atem.api.infrastructure.exception.TechnicalException;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.impl.common.AbstractEntityType;
 import org.springframework.beans.factory.annotation.Autowired;

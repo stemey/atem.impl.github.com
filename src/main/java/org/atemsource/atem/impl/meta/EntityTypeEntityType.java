@@ -18,7 +18,7 @@ package org.atemsource.atem.impl.meta;
 
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.impl.common.AbstractEntityType;
-import org.atemsource.atem.impl.infrastructure.ReflectionUtils;
+import org.atemsource.atem.api.infrastructure.util.ReflectionUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
