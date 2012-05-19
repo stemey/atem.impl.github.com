@@ -16,13 +16,13 @@
 package org.atemsource.atem.impl.json;
 
 
+import org.atemsource.atem.api.BeanLocator;
 import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.EntityTypeBuilder;
 import org.atemsource.atem.impl.common.AbstractEntityType;
-import org.atemsource.atem.impl.common.AbstractMetaDataRepository;
 import org.atemsource.atem.impl.common.AbstractEntityTypeBuilder.EntityTypeBuilderCallback;
-import org.atemsource.atem.impl.infrastructure.BeanLocator;
+import org.atemsource.atem.impl.common.AbstractMetaDataRepository;
 import org.atemsource.atem.spi.DynamicEntityTypeSubrepository;
 import org.atemsource.atem.spi.EntityTypeCreationContext;
 import org.codehaus.jackson.JsonNode;

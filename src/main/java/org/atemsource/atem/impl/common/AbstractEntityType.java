@@ -33,9 +33,7 @@ import org.atemsource.atem.impl.infrastructure.BeanCreator;
 import org.atemsource.atem.spi.EntityTypeCreationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
-public abstract class AbstractEntityType<J> implements EntityType<J>
-{
+public abstract class AbstractEntityType<J> implements EntityType<J> {
 
 	private boolean abstractType;
 
@@ -63,147 +61,124 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 
 	private EntityType superEntityType;
 
-	protected AbstractEntityType()
-	{
+	protected AbstractEntityType() {
 		super();
 		selfAndSubTypes.add(this);
 	}
 
-	public void addAttribute(Attribute attribute)
-	{
-		if (getAttribute(attribute.getCode()) == null)
-		{
+	public void addAttribute(Attribute attribute) {
+		if (getDeclaredAttribute(attribute.getCode()) == null) {
 			attributes.add(attribute);
 			attributeCodes.put(attribute.getCode(), attribute);
-		}
-		else
-		{
-			throw new IllegalStateException("attribute " + attribute.getEntityType().getCode() + "." + attribute.getCode()
-				+ " already exists");
+		} else {
+			throw new IllegalStateException("attribute "
+					+ attribute.getEntityType().getCode() + "."
+					+ attribute.getCode() + " already exists");
 		}
 	}
 
-	public void addIncomingAssociation(Attribute<?, ?> attribute)
-	{
+	public void addIncomingAssociation(Attribute<?, ?> attribute) {
 		incomingAssociations.add(attribute);
 	}
 
-	public void addService(final Class key, final Object service)
-	{
+	public void addService(final Class key, final Object service) {
 		serviceMap.put(key, service);
 	}
 
-	public void addSubEntityType(final EntityType entityType)
-	{
+	public void addSubEntityType(final EntityType entityType) {
 		subEntityTypes.add(entityType);
 		selfAndSubTypes.add(entityType);
 	}
 
 	@Override
-	public Object[] createArray(final int length)
-	{
+	public Object[] createArray(final int length) {
 		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Override
-	public J createEntity() throws TechnicalException
-	{
-		try
-		{
-			final Constructor constructor = entityClass.getDeclaredConstructor(new Class[0]);
+	public J createEntity() throws TechnicalException {
+		try {
+			final Constructor constructor = entityClass
+					.getDeclaredConstructor(new Class[0]);
 			constructor.setAccessible(true);
 			return (J) constructor.newInstance(new Object[0]);
-		}
-		catch (InstantiationException e)
-		{
+		} catch (InstantiationException e) {
 			throw new TechnicalException("cannot create entity", e);
-		}
-		catch (IllegalAccessException e)
-		{
+		} catch (IllegalAccessException e) {
 			throw new TechnicalException("cannot create entity", e);
-		}
-		catch (SecurityException e)
-		{
+		} catch (SecurityException e) {
 			throw new TechnicalException("cannot create entity", e);
-		}
-		catch (NoSuchMethodException e)
-		{
+		} catch (NoSuchMethodException e) {
 			throw new TechnicalException("cannot create entity", e);
-		}
-		catch (IllegalArgumentException e)
-		{
+		} catch (IllegalArgumentException e) {
 			throw new TechnicalException("cannot create entity", e);
-		}
-		catch (InvocationTargetException e)
-		{
+		} catch (InvocationTargetException e) {
 			throw new TechnicalException("cannot create entity", e);
 		}
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (obj instanceof EntityType<?>)
-		{
+	public boolean equals(Object obj) {
+		if (obj instanceof EntityType<?>) {
 			return getCode().equals(((EntityType<?>) obj).getCode());
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
 
-	public Set<Attribute> getAllAttributes()
-	{
-		Set<Attribute> attributes = new HashSet<Attribute>();
-		attributes.addAll(getAttributes());
-		EntityType parent = getSuperEntityType();
-		while (parent != null)
-		{
-			attributes.addAll(parent.getAttributes());
-			parent = parent.getSuperEntityType();
-		}
-		return attributes;
-	}
+
 
 	@Override
-	public Set<EntityType> getAllSubEntityTypes()
-	{
+	public Set<EntityType> getAllSubEntityTypes() {
 		return subEntityTypes;
 	}
 
 	@Override
-	public Attribute getAttribute(final String code)
-	{
+	public Attribute getDeclaredAttribute(final String code) {
 		return attributeCodes.get(code);
 	}
 
 	@Override
-	public List<Attribute> getAttributes()
-	{
+	public List<Attribute> getDeclaredAttributes() {
 		return attributes;
 	}
 
 	@Override
-	public String getCode()
-	{
+	public Attribute getAttribute(final String code) {
+		Attribute attribute = attributeCodes.get(code);
+		if (attribute == null && getSuperEntityType() != null) {
+			return getSuperEntityType().getAttribute(code);
+		} else {
+			return attribute;
+		}
+	}
+
+	@Override
+	public List<Attribute> getAttributes() {
+		List<Attribute> attributes = new ArrayList<Attribute>();
+		attributes.addAll(attributes);
+		if (getSuperEntityType() != null) {
+			attributes.addAll(getSuperEntityType().getAttributes());
+		}
+		return attributes;
+	}
+
+	@Override
+	public String getCode() {
 		return code;
 	}
 
 	@Override
-	public Class getEntityClass()
-	{
+	public Class getEntityClass() {
 		return entityClass;
 	}
 
 	@Override
-	public Attribute getIncomingAssociation(String sourceTypeCode)
-	{
-		EntityType<?> source = entityTypeRepository.getEntityType(sourceTypeCode);
-		for (Attribute<?, ?> relationAttribute : incomingAssociations)
-		{
-			if (relationAttribute.getTargetType().isAssignableFrom(source))
-			{
+	public Attribute getIncomingAssociation(String sourceTypeCode) {
+		EntityType<?> source = entityTypeRepository
+				.getEntityType(sourceTypeCode);
+		for (Attribute<?, ?> relationAttribute : incomingAssociations) {
+			if (relationAttribute.getTargetType().isAssignableFrom(source)) {
 				return relationAttribute;
 			}
 		}
@@ -211,14 +186,14 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 	}
 
 	@Override
-	public Attribute getIncomingAssociation(String sourceTypeCode, String attributeCode)
-	{
-		EntityType<?> source = entityTypeRepository.getEntityType(sourceTypeCode);
-		for (Attribute<?, ?> relationAttribute : incomingAssociations)
-		{
+	public Attribute getIncomingAssociation(String sourceTypeCode,
+			String attributeCode) {
+		EntityType<?> source = entityTypeRepository
+				.getEntityType(sourceTypeCode);
+		for (Attribute<?, ?> relationAttribute : incomingAssociations) {
 			if (relationAttribute.getCode().equals(attributeCode)
-				&& relationAttribute.getTargetType().isAssignableFrom(source))
-			{
+					&& relationAttribute.getTargetType().isAssignableFrom(
+							source)) {
 				return relationAttribute;
 			}
 		}
@@ -226,96 +201,95 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 	}
 
 	@Override
-	public Set<EntityType<?>> getSelfAndAllSubEntityTypes()
-	{
+	public Set<EntityType<?>> getSelfAndAllSubEntityTypes() {
 		return selfAndSubTypes;
 	}
 
 	@Override
-	public <T> T getService(final Class<T> serviceInterface)
-	{
+	public <T> T getService(final Class<T> serviceInterface) {
 		return (T) serviceMap.get(serviceInterface);
 	}
 
-	public Map<Class, Object> getServiceMap()
-	{
+	public Map<Class, Object> getServiceMap() {
 		return serviceMap;
 	}
 
 	@Override
-	public Set<EntityType> getSubEntityTypes(final boolean includeAbstract)
-	{
+	public Set<EntityType> getSubEntityTypes(final boolean includeAbstract) {
 		return subEntityTypes;
 	}
 
 	@Override
-	public EntityType getSuperEntityType()
-	{
+	public EntityType getSuperEntityType() {
 		return superEntityType;
 	}
 
 	@Override
-	public boolean hasAttribute(final String code)
-	{
+	public boolean hasAttribute(final String code) {
 		return attributeCodes.containsKey(code);
 	}
 
 	@Override
-	public int hashCode()
-	{
-		if (getCode() == null)
-		{
+	public int hashCode() {
+		if (getCode() == null) {
 			return super.hashCode();
-		}
-		else
-		{
+		} else {
 			return getCode().hashCode();
 		}
 	}
 
-	public void initializeIncomingAssociations(EntityTypeCreationContext context)
-	{
+	public void initializeIncomingAssociations(EntityTypeCreationContext context) {
 		FindByAttributeService findByAttributeService = getService(FindByAttributeService.class);
-		for (Attribute<?, ?> attribute : attributes)
-		{
-			// TODO add more relation attributes for reverse incoming associations
-			if (attribute.getTargetType() instanceof EntityType<?> && attribute.getTargetCardinality() != null)
-			{
-				EntityType<?> entityType = (EntityType<?>) ((Attribute) attribute).getTargetType();
-				String incomingCode = attribute.getEntityType().getCode() + ":" + attribute.getCode();
-				switch (attribute.getTargetCardinality())
-				{
-					case MANY:
-					case ZERO_TO_MANY:
-						IncomingManyRelation incomingManyRelation = beanCreator.create(IncomingManyRelation.class);
-						AttributeQuery query = null;
-						if (findByAttributeService != null)
-						{
-							query = findByAttributeService.prepareQuery(this, attribute);
-						}
-						incomingManyRelation.setAttributeQuery(query);
-						incomingManyRelation.setCode(incomingCode);
-						incomingManyRelation.setComposition(false);
-						incomingManyRelation.setEntityType((EntityType) attribute.getTargetType());
-						incomingManyRelation.setRequired(attribute.isRequired());
-						incomingManyRelation.setTargetCardinality(Cardinality.ZERO_TO_MANY);
-						incomingManyRelation.setTargetType(attribute.getEntityType());
-						((AbstractAttribute) attribute).setIncomingRelation(incomingManyRelation);
-						context.addIncomingAssociation(entityType, incomingManyRelation);
+		for (Attribute<?, ?> attribute : attributes) {
+			// TODO add more relation attributes for reverse incoming
+			// associations
+			if (attribute.getTargetType() instanceof EntityType<?>
+					&& attribute.getTargetCardinality() != null) {
+				EntityType<?> entityType = (EntityType<?>) ((Attribute) attribute)
+						.getTargetType();
+				String incomingCode = attribute.getEntityType().getCode() + ":"
+						+ attribute.getCode();
+				switch (attribute.getTargetCardinality()) {
+				case MANY:
+				case ZERO_TO_MANY:
+					IncomingManyRelation incomingManyRelation = beanCreator
+							.create(IncomingManyRelation.class);
+					AttributeQuery query = null;
+					if (findByAttributeService != null) {
+						query = findByAttributeService.prepareQuery(this,
+								attribute);
+					}
+					incomingManyRelation.setAttributeQuery(query);
+					incomingManyRelation.setCode(incomingCode);
+					incomingManyRelation.setComposition(false);
+					incomingManyRelation.setEntityType((EntityType) attribute
+							.getTargetType());
+					incomingManyRelation.setRequired(attribute.isRequired());
+					incomingManyRelation
+							.setTargetCardinality(Cardinality.ZERO_TO_MANY);
+					incomingManyRelation.setTargetType(attribute
+							.getEntityType());
+					((AbstractAttribute) attribute)
+							.setIncomingRelation(incomingManyRelation);
+					context.addIncomingAssociation(entityType,
+							incomingManyRelation);
 					break;
-					case ONE:
-					case ZERO_TO_ONE:
-						IncomingOneRelation incomingOneRelation = beanCreator.create(IncomingOneRelation.class);
-						SingleAttributeQuery singleQuery = null;
-						if (findByAttributeService != null)
-						{
-							singleQuery = findByAttributeService.prepareSingleQuery(this, attribute);
-						}
-						incomingOneRelation.setAttributeQuery(singleQuery);
-						incomingOneRelation.setCode(incomingCode);
-						incomingOneRelation.setAttribute(attribute);
-						((AbstractAttribute) attribute).setIncomingRelation(incomingOneRelation);
-						context.addIncomingAssociation(entityType, incomingOneRelation);
+				case ONE:
+				case ZERO_TO_ONE:
+					IncomingOneRelation incomingOneRelation = beanCreator
+							.create(IncomingOneRelation.class);
+					SingleAttributeQuery singleQuery = null;
+					if (findByAttributeService != null) {
+						singleQuery = findByAttributeService
+								.prepareSingleQuery(this, attribute);
+					}
+					incomingOneRelation.setAttributeQuery(singleQuery);
+					incomingOneRelation.setCode(incomingCode);
+					incomingOneRelation.setAttribute(attribute);
+					((AbstractAttribute) attribute)
+							.setIncomingRelation(incomingOneRelation);
+					context.addIncomingAssociation(entityType,
+							incomingOneRelation);
 				}
 
 			}
@@ -323,94 +297,76 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 	}
 
 	@Override
-	public boolean isAbstractType()
-	{
+	public boolean isAbstractType() {
 		return abstractType;
 	}
 
 	@Override
-	public boolean isAssignableFrom(final Type<?> type)
-	{
+	public boolean isAssignableFrom(final Type<?> type) {
 		return this.equals(type) || getSubEntityTypes(true).contains(type);
 	}
 
 	@Override
-	public boolean isEqual(Object entity, Object other)
-	{
-		if (entity == null && other == null)
-		{
+	public boolean isEqual(Object entity, Object other) {
+		if (entity == null && other == null) {
 			return true;
-		}
-		else if (entity == null && other != null || entity != null && other == null)
-		{
+		} else if (entity == null && other != null || entity != null
+				&& other == null) {
 			return false;
 		}
-		EntityType<Object> entityType = entityTypeRepository.getEntityType(entity);
-		EntityType<Object> otherType = entityTypeRepository.getEntityType(other);
-		if (!entityType.equals(otherType))
-		{
+		EntityType<Object> entityType = entityTypeRepository
+				.getEntityType(entity);
+		EntityType<Object> otherType = entityTypeRepository
+				.getEntityType(other);
+		if (!entityType.equals(otherType)) {
 			return false;
 		}
 
-		for (Attribute attribute : getAttributes())
-		{
-			if (!attribute.isEqual(entity, other))
-			{
+		for (Attribute attribute : getDeclaredAttributes()) {
+			if (!attribute.isEqual(entity, other)) {
 				return false;
 			}
 		}
-		if (getSuperEntityType() != null)
-		{
+		if (getSuperEntityType() != null) {
 			return getSuperEntityType().isEqual(entity, other);
-		}
-		else
-		{
+		} else {
 
 			return true;
 		}
 	}
 
-	public void setAbstractType(final boolean abstractType)
-	{
+	public void setAbstractType(final boolean abstractType) {
 		this.abstractType = abstractType;
 	}
 
-	public void setAttributeCodes(final Map<String, Attribute> attributeCodes)
-	{
+	public void setAttributeCodes(final Map<String, Attribute> attributeCodes) {
 		this.attributeCodes = attributeCodes;
 	}
 
-	public void setAttributes(final List<Attribute> attributes)
-	{
+	public void setAttributes(final List<Attribute> attributes) {
 		this.attributes = attributes;
-		for (Attribute attribute : attributes)
-		{
+		for (Attribute attribute : attributes) {
 			attributeCodes.put(attribute.getCode(), attribute);
 		}
 	}
 
-	public void setCode(final String code)
-	{
+	public void setCode(final String code) {
 		this.code = code;
 	}
 
-	public void setEntityClass(final Class entityClass)
-	{
+	public void setEntityClass(final Class entityClass) {
 		this.entityClass = entityClass;
 	}
 
-	public void setSelfAndSubTypes(final Set<EntityType<?>> selfAndSubTypes)
-	{
+	public void setSelfAndSubTypes(final Set<EntityType<?>> selfAndSubTypes) {
 		this.selfAndSubTypes = selfAndSubTypes;
 	}
 
-	public void setSubEntityTypes(final Set<EntityType> subEntityTypes)
-	{
+	public void setSubEntityTypes(final Set<EntityType> subEntityTypes) {
 		this.subEntityTypes = subEntityTypes;
 	}
 
-	public void setSuperEntityType(final EntityType superEntityType)
-	{
+	public void setSuperEntityType(final EntityType superEntityType) {
 		this.superEntityType = superEntityType;
 	}
 

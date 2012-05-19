@@ -15,9 +15,10 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.atemsource.atem.api.BeanLocator;
+import org.atemsource.atem.api.infrastructure.bean.Bean;
 import org.atemsource.atem.api.infrastructure.util.ReflectionUtils;
 import org.atemsource.atem.impl.MetaLogs;
-import org.atemsource.atem.impl.infrastructure.BeanLocator.Bean;
 import org.springframework.beans.factory.annotation.Autowired;
 
 

@@ -18,7 +18,7 @@ package org.atemsource.atem.impl.common.attribute.primitive;
 
 import java.io.Serializable;
 
-import org.atemsource.atem.api.attribute.primitive.PrimitiveType;
+import org.atemsource.atem.api.type.PrimitiveType;
 
 
 public class SimplePrimitiveType extends PrimitiveTypeImpl implements PrimitiveType

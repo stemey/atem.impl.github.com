@@ -17,11 +17,11 @@ import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.AssociationAttribute;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.annotation.Cardinality;
-import org.atemsource.atem.api.attribute.primitive.PrimitiveType;
 import org.atemsource.atem.api.service.IdentityService;
 import org.atemsource.atem.api.service.PersistenceService;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.EntityTypeBuilder;
+import org.atemsource.atem.api.type.PrimitiveType;
 import org.atemsource.atem.impl.common.attribute.SingleAssociationAttribute;
 import org.atemsource.atem.spi.DynamicEntityTypeSubrepository;
 

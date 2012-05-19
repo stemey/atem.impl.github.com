@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.annotation.MapAssociation;
-import org.atemsource.atem.api.attribute.primitive.PrimitiveType;
+import org.atemsource.atem.api.type.PrimitiveType;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.AbstractEntityType;
 import org.atemsource.atem.impl.common.attribute.MapAttributeImpl;

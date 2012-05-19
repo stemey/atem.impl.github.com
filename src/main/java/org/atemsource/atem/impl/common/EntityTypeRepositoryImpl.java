@@ -22,9 +22,9 @@ import java.util.List;
 
 import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.Attribute;
-import org.atemsource.atem.api.attribute.primitive.PrimitiveType;
 import org.atemsource.atem.api.extension.EntityTypePostProcessor;
 import org.atemsource.atem.api.type.EntityType;
+import org.atemsource.atem.api.type.PrimitiveType;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.attribute.primitive.PrimitiveTypeFactory;
 import org.atemsource.atem.impl.infrastructure.BeanCreator;
@@ -277,6 +277,13 @@ public class EntityTypeRepositoryImpl implements EntityTypeRepository, EntityTyp
 	public void setRepositories(List<EntityTypeSubrepository> entityTypeSubrepositories)
 	{
 		this.entityTypeSubrepositories = entityTypeSubrepositories;
+	}
+
+	
+
+	@Override
+	public void registerType(Class<?> clazz, PrimitiveType primitiveType) {
+		primitiveTypeFactory.registerType(clazz, primitiveType);
 	}
 
 }

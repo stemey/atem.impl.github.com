@@ -18,14 +18,15 @@ package org.atemsource.atem.impl.common;
 
 import javax.inject.Inject;
 
+import org.atemsource.atem.api.BeanLocator;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.CollectionAttribute;
 import org.atemsource.atem.api.attribute.CollectionSortType;
 import org.atemsource.atem.api.attribute.MapAttribute;
-import org.atemsource.atem.api.attribute.primitive.PrimitiveType;
 import org.atemsource.atem.api.attribute.relation.SingleAttribute;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.EntityTypeBuilder;
+import org.atemsource.atem.api.type.PrimitiveType;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.attribute.MapAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.PrimitiveAttributeImpl;
@@ -35,7 +36,6 @@ import org.atemsource.atem.impl.common.attribute.collection.AbstractCollectionAt
 import org.atemsource.atem.impl.common.attribute.collection.ListAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.collection.SetAttributeImpl;
 import org.atemsource.atem.impl.dynamic.attribute.DynamicAccessor;
-import org.atemsource.atem.impl.infrastructure.BeanLocator;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 

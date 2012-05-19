@@ -18,8 +18,8 @@ package org.atemsource.atem.impl.dynamic.attribute;
 
 import java.io.Serializable;
 
-import org.atemsource.atem.api.attribute.primitive.PrimitiveType;
 import org.atemsource.atem.api.attribute.relation.SingleAttribute;
+import org.atemsource.atem.api.type.PrimitiveType;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.attribute.SingleAttributeImpl;
 import org.springframework.context.annotation.Scope;

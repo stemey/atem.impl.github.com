@@ -16,8 +16,8 @@
 package org.atemsource.atem.impl.dynamic;
 
 
-import org.atemsource.atem.api.attribute.primitive.PrimitiveType;
 import org.atemsource.atem.api.attribute.relation.SingleAttribute;
+import org.atemsource.atem.api.type.PrimitiveType;
 import org.atemsource.atem.impl.common.AbstractEntityTypeBuilder;
 import org.atemsource.atem.impl.common.attribute.PrimitiveAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.SingleAttributeImpl;

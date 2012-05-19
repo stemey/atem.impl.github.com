@@ -15,6 +15,7 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
+import org.atemsource.atem.api.BeanLocator;
 import org.atemsource.atem.api.infrastructure.util.ReflectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 

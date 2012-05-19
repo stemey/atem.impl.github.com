@@ -25,8 +25,9 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
-import org.atemsource.atem.api.attribute.primitive.PrimitiveType;
-import org.atemsource.atem.impl.infrastructure.BeanLocator;
+import org.atemsource.atem.api.BeanLocator;
+import org.atemsource.atem.api.type.PrimitiveType;
+import org.atemsource.atem.api.type.PrimitiveTypeRegistrar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -192,9 +193,11 @@ public class PrimitiveTypeFactory
 		Collection<PrimitiveTypeRegistrar> registrars = beanLocator.getInstances(PrimitiveTypeRegistrar.class);
 		for (PrimitiveTypeRegistrar registrar : registrars)
 		{
-			PrimitiveType type = registrar.getType();
-			classToType.put(type.getJavaType(), type);
-			classes.add(type.getJavaType());
+			PrimitiveType<?>[] types = registrar.getTypes();
+			for(PrimitiveType<?> primitiveType:types) {
+			classToType.put(primitiveType.getJavaType(), primitiveType);
+			classes.add(primitiveType.getJavaType());
+			}
 		}
 	}
 
