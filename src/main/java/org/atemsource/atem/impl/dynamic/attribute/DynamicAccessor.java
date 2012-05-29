@@ -36,26 +36,7 @@ public class DynamicAccessor implements Accessor
 		this.code = code;
 	}
 
-	@Override
-	public <A extends Annotation> A getAnnotation(Class<A> annotationClass)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Annotation getAnnotationAnnotatedBy(Class<? extends Annotation> annotationClass)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Collection<? extends Annotation> getAnnotations()
-	{
-		// TODO Auto-generated method stub
-		return Collections.emptyList();
-	}
+	
 
 	public Method getReadMethod()
 	{

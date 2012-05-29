@@ -87,9 +87,9 @@ public abstract class AbstractAttribute<J, R> implements org.atemsource.atem.api
 	@Override
 	public <A extends Annotation> A getAnnotation(final Class<A> annotationClass)
 	{
-		if (accessor != null)
+		if (accessor != null && accessor instanceof JavaMetaData)
 		{
-			return accessor.getAnnotation(annotationClass);
+			return ((JavaMetaData)accessor).getAnnotation(annotationClass);
 		}
 		else
 		{
@@ -100,9 +100,9 @@ public abstract class AbstractAttribute<J, R> implements org.atemsource.atem.api
 	@Override
 	public Annotation getAnnotationAnnotatedBy(Class<? extends Annotation> annotationClass)
 	{
-		if (accessor != null)
+		if (accessor != null && accessor instanceof JavaMetaData)
 		{
-			return accessor.getAnnotationAnnotatedBy(annotationClass);
+			return ((JavaMetaData)accessor).getAnnotationAnnotatedBy(annotationClass);
 		}
 		else
 		{
@@ -113,9 +113,9 @@ public abstract class AbstractAttribute<J, R> implements org.atemsource.atem.api
 	@Override
 	public Collection<? extends Annotation> getAnnotations()
 	{
-		if (accessor != null)
+		if (accessor != null && accessor instanceof JavaMetaData)
 		{
-			return accessor.getAnnotations();
+			return ((JavaMetaData)accessor).getAnnotations();
 		}
 		else
 		{
