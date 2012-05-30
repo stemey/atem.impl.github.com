@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.atemsource.atem.api.attribute.Attribute;
+import org.atemsource.atem.api.extension.EntityTypeServiceFactory;
 import org.atemsource.atem.api.type.EntityType;
-import org.atemsource.atem.impl.common.service.EntityTypeServiceFactory;
 import org.atemsource.atem.spi.EntityTypeCreationContext;
 import org.atemsource.atem.spi.EntityTypeSubrepository;
 import org.springframework.context.ApplicationContext;
