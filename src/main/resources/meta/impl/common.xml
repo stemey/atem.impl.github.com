@@ -76,6 +76,7 @@
 	<bean id="metaIdentityService"
 		class="org.atemsource.atem.impl.meta.MetaIdentityService">
 	</bean>
+	
 
 </beans>
 		
