@@ -27,7 +27,7 @@ import javax.annotation.PostConstruct;
 
 import org.atemsource.atem.api.BeanLocator;
 import org.atemsource.atem.api.type.PrimitiveType;
-import org.atemsource.atem.api.type.PrimitiveTypeRegistrar;
+import org.atemsource.atem.spi.PrimitiveTypeRegistrar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
