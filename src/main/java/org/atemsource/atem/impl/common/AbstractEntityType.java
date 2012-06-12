@@ -155,12 +155,12 @@ public abstract class AbstractEntityType<J> implements EntityType<J> {
 
 	@Override
 	public List<Attribute> getAttributes() {
-		List<Attribute> attributes = new ArrayList<Attribute>();
-		attributes.addAll(attributes);
+		List<Attribute> allAttributes = new ArrayList<Attribute>();
+		allAttributes.addAll(this.attributes);
 		if (getSuperEntityType() != null) {
-			attributes.addAll(getSuperEntityType().getAttributes());
+			allAttributes.addAll(getSuperEntityType().getAttributes());
 		}
-		return attributes;
+		return allAttributes;
 	}
 
 	@Override
