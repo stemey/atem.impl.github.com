@@ -1,20 +1,11 @@
 /*******************************************************************************
- * Stefan Meyer, 2012
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Stefan Meyer, 2012 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  ******************************************************************************/
 package org.atemsource.atem.impl.pojo;
-
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -46,15 +37,15 @@ public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object>
 
 	private Class<? extends AbstractEntityType> entityTypeClass;
 
+	private boolean fieldAccess = false;
+
 	private String includedPackage;
+
+	protected Set<String> nonAvailableEntityNames = new HashSet<String>();
 
 	private int order;
 
 	private List<AbstractEntityType> uninitializedEntityTypes = new ArrayList<AbstractEntityType>();
-
-	protected Set<String> nonAvailableEntityNames = new HashSet<String>();
-
-	private boolean fieldAccess = false;
 
 	protected Attribute addAttribute(AbstractEntityType entityType,
 		org.atemsource.atem.impl.pojo.attribute.PropertyDescriptor propertyDescriptor)
@@ -115,7 +106,7 @@ public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object>
 		}
 	}
 
-	protected EntityType createEntityType(final Class clazz)
+	protected synchronized EntityType createEntityType(final Class clazz)
 	{
 		AbstractEntityType entityType;
 		entityType = beanCreator.create(entityTypeClass);
