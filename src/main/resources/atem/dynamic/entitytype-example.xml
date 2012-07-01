@@ -27,31 +27,11 @@
 
 	<!-- Scans for application @Components to deploy -->
 
-	<import resource="classpath:/meta/impl/common.xml" />
+	<import resource="entitytype.xml" />
 
-	<context:component-scan base-package="org.atemsource.atem.impl.pojo">
-	</context:component-scan>
-	
-	<bean id="pojo-entityType-repository"
-		class="org.atemsource.atem.impl.pojo.PojoEntityTypeRepository">
-		<property name="entityTypeClass"
-			value="org.atemsource.atem.impl.pojo.PlainPojoEntityType" />
-		<property name="entityClass" value="java.lang.Object" />
-		<property name="includedPackage" value="org.atemsource" />
-		<property name="attributeFactories">
-			<list>
-				<bean
-					class="org.atemsource.atem.impl.pojo.attribute.ArrayAttributeFactory"></bean>
-				<bean
-					class="org.atemsource.atem.impl.pojo.attribute.CollectionAttributeFactory"></bean>
-				<bean
-					class="org.atemsource.atem.impl.pojo.attribute.MapAssociationAttributeFactory"></bean>
-				<bean
-					class="org.atemsource.atem.impl.pojo.attribute.SingleAssociationAttributeFactory"></bean>
-				<bean
-					class="org.atemsource.atem.impl.pojo.attribute.PrimitiveAttributeFactory"></bean>
-			</list>
-		</property>
+	<bean id="atem-dynamicEntity-repository"
+		class="org.atemsource.atem.impl.dynamic.DynamicEntityTypeRepository">
+		<property name="serializingPrimitiveValues" value="false"/>
 	</bean>
 
 

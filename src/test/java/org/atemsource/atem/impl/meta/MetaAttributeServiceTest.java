@@ -33,7 +33,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
-@ContextConfiguration(locations = {"classpath:/test/meta/pojo/metaAttributeService.xml"})
+@ContextConfiguration(locations = {"classpath:/test/atem/pojo/metaAttributeService.xml"})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class MetaAttributeServiceTest
 {

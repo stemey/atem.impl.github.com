@@ -24,13 +24,42 @@
            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
 
-	<context:component-scan base-package="org.atemsource.atem.impl.common">
-	</context:component-scan>
-	<context:component-scan base-package="org.atemsource.atem.impl.meta">
-	</context:component-scan>
-	<context:component-scan
-		base-package="org.atemsource.atem.impl.infrastructure">
-	</context:component-scan>
+
+	<!-- Scans for application @Components to deploy -->
+
+	<import resource="classpath:/atem/pojo/entitytype-example.xml" />
+	<import resource="classpath:/atem/dynamic/entitytype.xml" />
+
+	<bean id="dynamicMetaAttributeService"
+		class="org.atemsource.atem.impl.meta.MetaAttributeService">
+		<property name="dynamicEntityTypeSubrepository" ref="atem-dynamicEntity-repository" />
+	</bean>
+
+	<bean id="atem-dynamicEntity-repository"
+		class="org.atemsource.atem.impl.dynamic.DynamicEntityTypeRepository">
+		<property name="entityTypeServices">
+			<map>
+				<entry key="org.atemsource.atem.api.service.PersistenceService"
+					value-ref="inMemoryPojoRepository" />
+				<entry
+					key="org.atemsource.atem.api.service.FindByAttributeService"
+					value-ref="inMemoryPojoRepository" />
+				<entry key="org.atemsource.atem.api.service.FindByTypedIdService"
+					value-ref="inMemoryPojoRepository" />
+				<entry key="org.atemsource.atem.api.service.IdentityService"
+					value-ref="dynamicIdentityService" />
+			</map>
+		</property>
+	</bean>
+
+
+
+	<bean id="dynamicIdentityService"
+		class="org.atemsource.atem.impl.common.service.AttributeIdentityService">
+		<property name="attributeCode" value="id" />
+	</bean>
+	<bean id="inMemoryPojoRepository"
+		class="org.atemsource.atem.impl.pojo.InMemoryPojoRepository"></bean>
 
 
 	<bean id="entityTypeRepository"
@@ -38,46 +67,19 @@
 		init-method="init">
 		<property name="repositories">
 			<list>
-				<ref local="entityType-repository" />
-				<ref local="attribute-repository" />
+				<ref bean="atem-entityType-repository" />
+				<ref bean="atem-attribute-repository" />
+				<ref bean="atem-dynamicEntity-repository" />
+				<ref bean="atem-pojo-repository" />
 			</list>
 		</property>
 	</bean>
-	<bean id="entityType-repository"
-		class="org.atemsource.atem.impl.pojo.PojoEntityTypeRepository">
-		<property name="entityTypeClass"
-			value="org.atemsource.atem.impl.meta.EntityTypeEntityType" />
-		<property name="entityClass"
-			value="org.atemsource.atem.api.type.EntityType" />
-		<property name="entityTypeServices">
-			<map>
-
-				<entry key="org.atemsource.atem.api.service.IdentityService"
-					value-ref="metaIdentityService" />
-			</map>
-		</property>
-	</bean>
-
-	<bean id="attribute-repository"
-		class="org.atemsource.atem.impl.pojo.PojoEntityTypeRepository">
-		<property name="entityTypeClass"
-			value="org.atemsource.atem.impl.meta.AttributeEntityType" />
-		<property name="entityClass"
-			value="org.atemsource.atem.api.attribute.Attribute" />
-		<property name="entityTypeServices">
-			<map>
-
-				<entry key="org.atemsource.atem.api.service.IdentityService"
-					value-ref="metaIdentityService" />
-			</map>
-		</property>
-	</bean>
-
-	<bean id="metaIdentityService"
-		class="org.atemsource.atem.impl.meta.MetaIdentityService">
-	</bean>
+	
 	
 
-</beans>
-		
 
+
+
+
+
+</beans>

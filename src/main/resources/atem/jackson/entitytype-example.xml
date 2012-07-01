@@ -27,11 +27,14 @@
 
 	<!-- Scans for application @Components to deploy -->
 
-	<import resource="classpath:/meta/impl/common.xml" />
+	<import resource="entitytype.xml" />
 
-	<context:component-scan base-package="org.atemsource.atem.impl.dynamic">
-	</context:component-scan>
-	
+	<bean id="atem-dynamicEntity-repository"
+		class="org.atemsource.atem.impl.dynamic.DynamicEntityTypeRepository">
+		<property name="serializingPrimitiveValues" value="false"/>
+	</bean>
+
+
 
 
 

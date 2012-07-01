@@ -32,7 +32,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
-@ContextConfiguration(locations = {"classpath:/test/meta/pojo/entitytype.xml"})
+@ContextConfiguration(locations = {"classpath:/test/atem/pojo/entitytype.xml"})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class PrimitiveCollectionAssociationAttributeTest extends TestCase
 {

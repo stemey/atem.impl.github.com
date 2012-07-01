@@ -19,16 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-
 @Component
 @Scope("prototype")
-public class JsonEntityTypeImpl extends AbstractEntityType<ObjectNode>
-{
+public class JsonEntityTypeImpl extends AbstractEntityType<ObjectNode> {
 
 	@Autowired
 	private EntityTypeRepository entityTypeRepository;
 
-	@Autowired
 	private ObjectMapper objectMapper;
 
 	@Autowired
@@ -36,60 +33,56 @@ public class JsonEntityTypeImpl extends AbstractEntityType<ObjectNode>
 
 	private String typeProperty;
 
-	public JsonEntityTypeImpl()
-	{
+	public JsonEntityTypeImpl() {
 		super();
 		setEntityClass(ObjectNode.class);
 	}
 
 	@Override
-	public ObjectNode createEntity() throws TechnicalException
-	{
+	public ObjectNode createEntity() throws TechnicalException {
 		ObjectNode objectNode = objectMapper.createObjectNode();
-		if (typeProperty != null)
-		{
+		if (typeProperty != null) {
 			objectNode.put(typeProperty, getCode());
 		}
 		return objectNode;
 	}
 
 	@Override
-	public Class<ObjectNode> getJavaType()
-	{
+	public Class<ObjectNode> getJavaType() {
 		return ObjectNode.class;
 	}
 
-	public String getTypeProperty()
-	{
+	public String getTypeProperty() {
 		return typeProperty;
 	}
 
 	@Override
-	public boolean isAssignableFrom(Object entity)
-	{
-		if (entity == null)
-		{
+	public boolean isAssignableFrom(Object entity) {
+		if (entity == null) {
 			return false;
-		}
-		else if (entity instanceof DynamicEntity)
-		{
+		} else if (entity instanceof DynamicEntity) {
 			String typeCode = ((DynamicEntity) entity).getTypeCode();
-			EntityType<Object> entityType = entityTypeRepository.getEntityType(typeCode);
+			EntityType<Object> entityType = entityTypeRepository
+					.getEntityType(typeCode);
 			return isAssignableFrom(entityType);
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
 
-	public boolean isPersistable()
-	{
+	public boolean isPersistable() {
 		return true;
 	}
 
-	public void setTypeProperty(String typeProperty)
-	{
+	public void setTypeProperty(String typeProperty) {
 		this.typeProperty = typeProperty;
+	}
+
+	public ObjectMapper getObjectMapper() {
+		return objectMapper;
+	}
+
+	public void setObjectMapper(ObjectMapper objectMapper) {
+		this.objectMapper = objectMapper;
 	}
 }
