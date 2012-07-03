@@ -44,9 +44,9 @@ public class MetaAttributeServiceTest
 			dynamicMetaAttributeService.addSingleMetaAttribute("test", holderType, metaDataType);
 		MetaDataExample ex = new MetaDataExample();
 		ex.setData("hallo");
-		addMetaAttribute.setValue(attribute, ex);
-
 		Attribute metaAttribute = holderType.getMetaAttribute("test");
+		metaAttribute.setValue(attribute, ex);
+
 		Assert.assertNotNull(metaAttribute);
 		Assert.assertEquals(holderType, holderType);
 		Object value = metaAttribute.getValue(attribute);
