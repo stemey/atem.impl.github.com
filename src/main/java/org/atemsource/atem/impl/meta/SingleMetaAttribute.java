@@ -16,16 +16,19 @@ import org.atemsource.atem.impl.common.attribute.SingleAssociationAttribute;
 
 public class SingleMetaAttribute<J> implements SingleAttribute<J>
 {
-	private SingleAttribute<J> metaDataAttribute;
+	private String code;
 
 	private SingleAttribute<?> incomingHolderAttribute;
 
 	private MetaAttributeService metaAttributeService;
 
+	private SingleAttribute<J> metaDataAttribute;
+
 	public SingleMetaAttribute(SingleAttribute<J> metaDataAttribute, SingleAssociationAttribute<?> holderAttribute,
-		MetaAttributeService metaAttributeService)
+		MetaAttributeService metaAttributeService, String code)
 	{
 		super();
+		this.code = code;
 		this.metaDataAttribute = metaDataAttribute;
 		this.incomingHolderAttribute = (SingleAttribute<?>) holderAttribute.getIncomingRelation();
 		if (incomingHolderAttribute == null)
@@ -44,13 +47,13 @@ public class SingleMetaAttribute<J> implements SingleAttribute<J>
 	@Override
 	public String getCode()
 	{
-		return metaDataAttribute.getCode();
+		return code;
 	}
 
 	@Override
 	public EntityType getEntityType()
 	{
-		return metaDataAttribute.getEntityType();
+		return (EntityType) incomingHolderAttribute.getTargetType();
 	}
 
 	@Override

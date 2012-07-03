@@ -1,20 +1,11 @@
 /*******************************************************************************
- * Stefan Meyer, 2012
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Stefan Meyer, 2012 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  ******************************************************************************/
 package org.atemsource.atem.impl.common;
-
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,6 +14,7 @@ import java.util.List;
 import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.extension.EntityTypePostProcessor;
+import org.atemsource.atem.api.extension.MetaAttributeService;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.PrimitiveType;
 import org.atemsource.atem.api.type.Type;
@@ -46,12 +38,14 @@ public class EntityTypeRepositoryImpl implements EntityTypeRepository, EntityTyp
 
 	List<EntityTypeSubrepository> entityTypeSubrepositories;
 
-	private boolean secondPhase;
+	private List<EntityTypeRepositoryListener> listeners = new ArrayList<EntityTypeRepositoryListener>();
+
+	private Collection<MetaAttributeService> metaAttributeServices;
 
 	@Autowired
 	private PrimitiveTypeFactory primitiveTypeFactory;
 
-	private List<EntityTypeRepositoryListener> listeners = new ArrayList<EntityTypeRepositoryListener>();
+	private boolean secondPhase;
 
 	public void addIncomingAssociation(EntityType entityType, Attribute<?, ?> incomingRelation)
 	{
@@ -68,6 +62,18 @@ public class EntityTypeRepositoryImpl implements EntityTypeRepository, EntityTyp
 	public void addListener(EntityTypeRepositoryListener entityTypeRepositoryListener)
 	{
 		this.listeners.add(entityTypeRepositoryListener);
+	}
+
+	@Override
+	public void addMetaAttribute(EntityType entityType, Attribute<?, ?> metaAttribute)
+	{
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
+		{
+			if (entityTypeSubrepository.contains(entityType))
+			{
+				entityTypeSubrepository.addMetaAttribute(entityType, metaAttribute);
+			}
+		}
 	}
 
 	public EntityType getEntityType(Class clazz)
@@ -222,9 +228,14 @@ public class EntityTypeRepositoryImpl implements EntityTypeRepository, EntityTyp
 	public void init()
 	{
 		entityTypePostProcessors = beanCreator.getBeans(EntityTypePostProcessor.class);
+		metaAttributeServices = beanCreator.getBeans(MetaAttributeService.class);
 		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
 		{
 			entityTypeSubrepository.initialize(this);
+		}
+		for (MetaAttributeService metaAttributeService : metaAttributeServices)
+		{
+			metaAttributeService.initialize(this);
 		}
 		onPhase(Phase.ENTITY_TYPES_INITIALIZED);
 		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
@@ -274,16 +285,15 @@ public class EntityTypeRepositoryImpl implements EntityTypeRepository, EntityTyp
 		}
 	}
 
+	@Override
+	public void registerType(Class<?> clazz, PrimitiveType primitiveType)
+	{
+		primitiveTypeFactory.registerType(clazz, primitiveType);
+	}
+
 	public void setRepositories(List<EntityTypeSubrepository> entityTypeSubrepositories)
 	{
 		this.entityTypeSubrepositories = entityTypeSubrepositories;
-	}
-
-	
-
-	@Override
-	public void registerType(Class<?> clazz, PrimitiveType primitiveType) {
-		primitiveTypeFactory.registerType(clazz, primitiveType);
 	}
 
 }

@@ -24,23 +24,26 @@ import org.atemsource.atem.api.type.EntityTypeBuilder;
 import org.atemsource.atem.api.type.PrimitiveType;
 import org.atemsource.atem.impl.common.attribute.SingleAssociationAttribute;
 import org.atemsource.atem.spi.DynamicEntityTypeSubrepository;
+import org.atemsource.atem.spi.EntityTypeCreationContext;
 
 
 public class MetaAttributeService implements org.atemsource.atem.api.extension.MetaAttributeService
 {
 
-	private static final String ID_ATTRIBUTE = "id";
-
 	private static final String HOLDER_ATTRIBUTE = "holder";
+
+	private static final String ID_ATTRIBUTE = "id";
 
 	private static final String META_DATA_ATTRIBUTE = "metaData";
 
 	private DynamicEntityTypeSubrepository<?> dynamicEntityTypeSubrepository;
 
-	private Map<String, Attribute<?, ?>> metaAttributes = new HashMap<String, Attribute<?, ?>>();
+	private EntityTypeCreationContext entityTypeCreationContext;
 
 	@Inject
 	private EntityTypeRepository entityTypeRepository;
+
+	private Map<String, Attribute<?, ?>> metaAttributes = new HashMap<String, Attribute<?, ?>>();
 
 	/*
 	 * (non-Javadoc)
@@ -71,8 +74,10 @@ public class MetaAttributeService implements org.atemsource.atem.api.extension.M
 		{
 			throw new IllegalArgumentException("holder type " + holderType.getCode() + " must provide IdentityService");
 		}
-		SingleMetaAttribute singleMetaAttribute = new SingleMetaAttribute(metaDataAttribute, holderAttribute, this);
+		SingleMetaAttribute singleMetaAttribute = new SingleMetaAttribute(metaDataAttribute, holderAttribute, this, name);
 		metaAttributes.put(name, singleMetaAttribute);
+		entityTypeCreationContext.addMetaAttribute(holderType, singleMetaAttribute);
+
 		return singleMetaAttribute;
 	}
 
@@ -117,6 +122,12 @@ public class MetaAttributeService implements org.atemsource.atem.api.extension.M
 			persistenceService.insert(intermediate);
 		}
 		return intermediate;
+	}
+
+	@Override
+	public void initialize(EntityTypeCreationContext ctx)
+	{
+		this.entityTypeCreationContext = ctx;
 	}
 
 	public void setDynamicEntityTypeSubrepository(DynamicEntityTypeSubrepository<?> dynamicEntityTypeSubrepository)

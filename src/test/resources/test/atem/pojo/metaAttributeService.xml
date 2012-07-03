@@ -62,7 +62,7 @@
 		class="org.atemsource.atem.impl.pojo.InMemoryPojoRepository"></bean>
 
 
-	<bean id="entityTypeRepository"
+	<bean id="atem-repository"
 		class="org.atemsource.atem.impl.common.EntityTypeRepositoryImpl"
 		init-method="init">
 		<property name="repositories">
