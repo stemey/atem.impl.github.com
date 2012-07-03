@@ -27,7 +27,7 @@
 
 	<!-- Scans for application @Components to deploy -->
 
-	<import resource="classpath:/meta/impl/common.xml" />
+	<import resource="classpath:/atem/impl/common.xml" />
 
 	<context:component-scan base-package="org.atemsource.atem.impl.json">
 	</context:component-scan>
