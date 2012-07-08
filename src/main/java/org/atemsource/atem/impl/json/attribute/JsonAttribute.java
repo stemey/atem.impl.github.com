@@ -25,9 +25,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 
-@Component
-@Scope("prototype")
-public class JsonAttribute<J> extends PrimitiveAttributeImpl<J>
+public abstract class JsonAttribute<J> extends PrimitiveAttributeImpl<J>
 {
 	@Autowired
 	private PrimitiveTypeFactory primitiveTypeFactory;
