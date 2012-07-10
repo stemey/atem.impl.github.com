@@ -7,14 +7,11 @@
  ******************************************************************************/
 package org.atemsource.atem.impl.pojo;
 
-import java.util.ArrayList;
-
-import javax.annotation.Resource;
+import javax.inject.Inject;
 
 import junit.framework.Assert;
 
 import org.atemsource.atem.api.EntityTypeRepository;
-import org.atemsource.atem.api.attribute.CollectionAttribute;
 import org.atemsource.atem.api.type.EntityType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,24 +19,24 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
-@ContextConfiguration(locations = {"classpath:/test/atem/pojo/entitytype.xml"})
+@ContextConfiguration(locations = {"classpath:/test/atem/pojo/scanned-entitytype.xml"})
 @RunWith(SpringJUnit4ClassRunner.class)
-public class PrimitiveCollectionAssociationAttributeTest
+public class ScannedPojoRepositoryTest
 {
 
-	@Resource
-	private EntityTypeRepository entityTypeRepository;
+	@Inject
+	protected EntityTypeRepository entityTypeRepository;
 
 	@Test
-	public void testGetCount()
+	public void testTypes()
 	{
-		EntityType entityType = entityTypeRepository.getEntityType(EntityA.class);
-		CollectionAttribute attribute = (CollectionAttribute) entityType.getAttribute("objectList");
-		Assert.assertNotNull(attribute);
-		EntityA a = new EntityA();
-		a.setObjectList(new ArrayList());
-		a.getObjectList().add(new Object());
-		a.getObjectList().add(new Object());
-		Assert.assertEquals(attribute.getSize(a), 2);
+		EntityType<EntityA> entityType = entityTypeRepository.getEntityType(EntityA.class);
+		Assert.assertNotNull(entityType);
+		Assert.assertNotNull(entityType.getSubEntityTypes(true));
+		Assert.assertEquals(1, entityType.getSubEntityTypes(true).size());
+		Assert.assertEquals(4, entityType.getDeclaredAttributes().size());
+		Assert.assertNotNull(entityType.getAttribute("list").getTargetType());
+
 	}
+
 }

@@ -27,7 +27,11 @@ import org.atemsource.atem.api.service.AttributeQuery;
 import org.atemsource.atem.api.service.FindByAttributeService;
 import org.atemsource.atem.api.service.SingleAttributeQuery;
 import org.atemsource.atem.api.type.EntityType;
+import org.atemsource.atem.api.type.PrimitiveType;
 import org.atemsource.atem.api.type.Type;
+import org.atemsource.atem.api.view.AttributeVisitor;
+import org.atemsource.atem.api.view.View;
+import org.atemsource.atem.api.view.ViewVisitor;
 import org.atemsource.atem.impl.common.attribute.AbstractAttribute;
 import org.atemsource.atem.impl.infrastructure.BeanCreator;
 import org.atemsource.atem.spi.EntityTypeCreationContext;
@@ -445,6 +449,31 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 	public void setSuperEntityType(final EntityType superEntityType)
 	{
 		this.superEntityType = superEntityType;
+	}
+
+	@Override
+	public <C> void visit(ViewVisitor<C> visitor, C context)
+	{
+		for (Attribute<?, ?> attribute : getAttributes())
+		{
+			if (attribute.getTargetType() instanceof PrimitiveType)
+			{
+				visitor.visit(context, attribute);
+			}
+			else
+			{
+				Type<?> targetType = attribute.getTargetType();
+				if (targetType == null)
+				{
+					throw new IllegalStateException("target type of " + attribute.getCode() + " is null");
+				}
+				visitor.visit(context, attribute, new AttributeVisitor<C>(visitor, (View) targetType));
+			}
+		}
+		if (superEntityType != null)
+		{
+			superEntityType.visit(visitor, context);
+		}
 	}
 
 }

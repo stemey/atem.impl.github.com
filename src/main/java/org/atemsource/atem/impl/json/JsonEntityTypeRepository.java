@@ -106,7 +106,7 @@ public class JsonEntityTypeRepository extends AbstractMetaDataRepository<ObjectN
 
 	public void initialize(EntityTypeCreationContext entityTypeCreationContext)
 	{
-
+		this.entityTypeCreationContext = entityTypeCreationContext;
 	}
 
 	@Override

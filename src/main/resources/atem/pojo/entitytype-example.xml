@@ -38,6 +38,8 @@
 		<property name="attributeFactories">
 			<list>
 				<bean
+					class="org.atemsource.atem.impl.pojo.attribute.PrimitiveAttributeFactory"></bean>
+				<bean
 					class="org.atemsource.atem.impl.pojo.attribute.ArrayAttributeFactory"></bean>
 				<bean
 					class="org.atemsource.atem.impl.pojo.attribute.CollectionAttributeFactory"></bean>
@@ -45,11 +47,31 @@
 					class="org.atemsource.atem.impl.pojo.attribute.MapAssociationAttributeFactory"></bean>
 				<bean
 					class="org.atemsource.atem.impl.pojo.attribute.SingleAssociationAttributeFactory"></bean>
-				<bean
-					class="org.atemsource.atem.impl.pojo.attribute.PrimitiveAttributeFactory"></bean>
 			</list>
 		</property>
 	</bean>
+	
+	<bean id="atem-scanned-pojo-repository"
+		class="org.atemsource.atem.impl.pojo.ScannedPojoEntityTypeRepository">
+		<property name="entityTypeClass"
+			value="org.atemsource.atem.impl.pojo.PlainPojoEntityType" />
+		<property name="entityClass" value="java.lang.Object" />
+		<property name="includedPackage" value="org.atemsource" />
+		<property name="attributeFactories">
+			<list>
+				<bean
+					class="org.atemsource.atem.impl.pojo.attribute.PrimitiveAttributeFactory"></bean>
+				<bean
+					class="org.atemsource.atem.impl.pojo.attribute.ArrayAttributeFactory"></bean>
+				<bean
+					class="org.atemsource.atem.impl.pojo.attribute.CollectionAttributeFactory"></bean>
+				<bean
+					class="org.atemsource.atem.impl.pojo.attribute.MapAssociationAttributeFactory"></bean>
+				<bean
+					class="org.atemsource.atem.impl.pojo.attribute.SingleAssociationAttributeFactory"></bean>
+			</list>
+		</property>
+	</bean>	
 
 
 
