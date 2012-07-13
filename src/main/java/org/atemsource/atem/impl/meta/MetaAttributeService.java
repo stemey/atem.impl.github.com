@@ -22,7 +22,7 @@ import org.atemsource.atem.api.service.PersistenceService;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.EntityTypeBuilder;
 import org.atemsource.atem.api.type.PrimitiveType;
-import org.atemsource.atem.impl.common.attribute.SingleAssociationAttribute;
+import org.atemsource.atem.impl.common.attribute.AbstractSingleAssociationAttribute;
 import org.atemsource.atem.spi.DynamicEntityTypeSubrepository;
 import org.atemsource.atem.spi.EntityTypeCreationContext;
 
@@ -54,12 +54,14 @@ public class MetaAttributeService implements org.atemsource.atem.api.extension.M
 	public <J> SingleMetaAttribute<J> addSingleMetaAttribute(String name, EntityType<?> holderType,
 		EntityType<J> metaDataType)
 	{
-		EntityTypeBuilder builder = dynamicEntityTypeSubrepository.createBuilder(name);
-		SingleAssociationAttribute<?> metaDataAttribute =
-			(SingleAssociationAttribute<?>) builder.addSingleAssociationAttribute(META_DATA_ATTRIBUTE, metaDataType);
+		EntityTypeBuilder builder =
+			dynamicEntityTypeSubrepository.createBuilder(holderType.getCode() + "-" + metaDataType.getCode() + ":" + name);
+		AbstractSingleAssociationAttribute<J> metaDataAttribute =
+			(AbstractSingleAssociationAttribute<J>) builder.addSingleAssociationAttribute(META_DATA_ATTRIBUTE,
+				metaDataType);
 		metaDataAttribute.setTargetCardinality(Cardinality.ONE);
-		SingleAssociationAttribute<?> holderAttribute =
-			(SingleAssociationAttribute<?>) builder.addSingleAssociationAttribute(HOLDER_ATTRIBUTE, holderType);
+		AbstractSingleAssociationAttribute<J> holderAttribute =
+			(AbstractSingleAssociationAttribute<J>) builder.addSingleAssociationAttribute(HOLDER_ATTRIBUTE, holderType);
 		holderAttribute.setTargetCardinality(Cardinality.ONE);
 		builder.addPrimitiveAttribute(ID_ATTRIBUTE, (PrimitiveType<J>) entityTypeRepository.getType(String.class));
 		EntityType<?> entityType = builder.createEntityType();

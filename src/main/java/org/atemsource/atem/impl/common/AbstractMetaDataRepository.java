@@ -93,17 +93,6 @@ public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepo
 		// TODO commerce entittype code is not the same as hibernate entity name
 		// that is why we try both here
 		EntityType entityType = nameToEntityTypes.get(entityName);
-		if (entityType == null)
-		{
-			try
-			{
-				entityType = classToEntityTypes.get(Class.forName(entityName));
-			}
-			catch (ClassNotFoundException e)
-			{
-				// not found
-			}
-		}
 		return entityType;
 	}
 

@@ -32,16 +32,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class InMemoryPojoRepository implements FindByAttributeService, PersistenceService, FindByTypedIdService
 {
 
+	private static class TypedId implements Serializable
+	{
+		private Serializable id;
+
+		private String typeCode;
+
+		public TypedId(String typeCode, Serializable id)
+		{
+			super();
+			this.typeCode = typeCode;
+			this.id = id;
+		}
+
+		public Serializable getId()
+		{
+			return id;
+		}
+
+		public String getTypeCode()
+		{
+			return typeCode;
+		}
+	}
+
+	private boolean createIndex;
+
 	@Autowired
 	private EntityTypeRepository entityTypeRepository;
+
+	private Map<Attribute, Map<Object, Object>> singleIndexes = new HashMap<Attribute, Map<Object, Object>>();
 
 	private List<Class> supportedClasses;
 
 	private Map<TypedId, Object> typedIds = new HashMap<TypedId, Object>();
-
-	private Map<Attribute, Map<Object, Object>> singleIndexes = new HashMap<Attribute, Map<Object, Object>>();
-
-	private boolean createIndex;
 
 	public void clearAssociatedEntities(Object entity, CollectionAttribute collectionAssociationAttribute)
 	{
@@ -78,7 +102,7 @@ public class InMemoryPojoRepository implements FindByAttributeService, Persisten
 					if (attribute instanceof SingleAttribute<?>)
 					{
 						Object aTargetEntity = attribute.getValue(entity);
-						if (targetEntity.equals(aTargetEntity))
+						if (targetEntity != null && targetEntity.equals(aTargetEntity))
 						{
 							if (createIndex)
 							{
@@ -163,29 +187,5 @@ public class InMemoryPojoRepository implements FindByAttributeService, Persisten
 	public void setSupportedClasses(List<Class> supportedClasses)
 	{
 		this.supportedClasses = supportedClasses;
-	}
-
-	private static class TypedId implements Serializable
-	{
-		private String typeCode;
-
-		private Serializable id;
-
-		public TypedId(String typeCode, Serializable id)
-		{
-			super();
-			this.typeCode = typeCode;
-			this.id = id;
-		}
-
-		public Serializable getId()
-		{
-			return id;
-		}
-
-		public String getTypeCode()
-		{
-			return typeCode;
-		}
 	}
 }

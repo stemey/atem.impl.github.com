@@ -11,7 +11,7 @@ import org.atemsource.atem.api.attribute.annotation.Cardinality;
 import org.atemsource.atem.api.attribute.relation.SingleAttribute;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.Type;
-import org.atemsource.atem.impl.common.attribute.SingleAssociationAttribute;
+import org.atemsource.atem.impl.common.attribute.AbstractSingleAssociationAttribute;
 
 
 public class SingleMetaAttribute<J> implements SingleAttribute<J>
@@ -24,7 +24,7 @@ public class SingleMetaAttribute<J> implements SingleAttribute<J>
 
 	private SingleAttribute<J> metaDataAttribute;
 
-	public SingleMetaAttribute(SingleAttribute<J> metaDataAttribute, SingleAssociationAttribute<?> holderAttribute,
+	public SingleMetaAttribute(SingleAttribute<J> metaDataAttribute, AbstractSingleAssociationAttribute<J> holderAttribute,
 		MetaAttributeService metaAttributeService, String code)
 	{
 		super();

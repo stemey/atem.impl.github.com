@@ -12,77 +12,100 @@ import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.infrastructure.exception.TechnicalException;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.impl.common.AbstractEntityType;
-import org.atemsource.atem.impl.dynamic.DynamicEntity;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+
 @Component
 @Scope("prototype")
-public class JsonEntityTypeImpl extends AbstractEntityType<ObjectNode> {
+public class JsonEntityTypeImpl extends AbstractEntityType<ObjectNode>
+{
+
+	@Autowired
+	private BeanLocator beanLocator;
 
 	@Autowired
 	private EntityTypeRepository entityTypeRepository;
 
 	private ObjectMapper objectMapper;
 
-	@Autowired
-	private BeanLocator beanLocator;
+	private TypeCodeConverter typeCodeConverter;
 
 	private String typeProperty;
 
-	public JsonEntityTypeImpl() {
+	public JsonEntityTypeImpl()
+	{
 		super();
 		setEntityClass(ObjectNode.class);
 	}
 
 	@Override
-	public ObjectNode createEntity() throws TechnicalException {
+	public ObjectNode createEntity() throws TechnicalException
+	{
 		ObjectNode objectNode = objectMapper.createObjectNode();
-		if (typeProperty != null) {
-			objectNode.put(typeProperty, getCode());
+		if (typeProperty != null)
+		{
+			objectNode.put(typeProperty, typeCodeConverter.toExternalCode(this));
 		}
 		return objectNode;
 	}
 
 	@Override
-	public Class<ObjectNode> getJavaType() {
+	public Class<ObjectNode> getJavaType()
+	{
 		return ObjectNode.class;
 	}
 
-	public String getTypeProperty() {
+	public ObjectMapper getObjectMapper()
+	{
+		return objectMapper;
+	}
+
+	public String getTypeProperty()
+	{
 		return typeProperty;
 	}
 
 	@Override
-	public boolean isAssignableFrom(Object entity) {
-		if (entity == null) {
+	public boolean isAssignableFrom(Object entity)
+	{
+		if (entity == null)
+		{
 			return false;
-		} else if (entity instanceof DynamicEntity) {
-			String typeCode = ((DynamicEntity) entity).getTypeCode();
-			EntityType<Object> entityType = entityTypeRepository
-					.getEntityType(typeCode);
+		}
+		else if (entity instanceof ObjectNode)
+		{
+			String typeCode = ((ObjectNode) entity).get(typeProperty).getTextValue();
+			EntityType<Object> entityType =
+				entityTypeRepository.getEntityType(typeCodeConverter.fromExternalCode(this, typeCode));
 			return isAssignableFrom(entityType);
-		} else {
+		}
+		else
+		{
 			return false;
 		}
 	}
 
-	public boolean isPersistable() {
+	public boolean isPersistable()
+	{
 		return true;
 	}
 
-	public void setTypeProperty(String typeProperty) {
-		this.typeProperty = typeProperty;
-	}
-
-	public ObjectMapper getObjectMapper() {
-		return objectMapper;
-	}
-
-	public void setObjectMapper(ObjectMapper objectMapper) {
+	public void setObjectMapper(ObjectMapper objectMapper)
+	{
 		this.objectMapper = objectMapper;
+	}
+
+	public void setTypeCodeConverter(TypeCodeConverter typeCodeConverter)
+	{
+		this.typeCodeConverter = typeCodeConverter;
+	}
+
+	public void setTypeProperty(String typeProperty)
+	{
+		this.typeProperty = typeProperty;
 	}
 }

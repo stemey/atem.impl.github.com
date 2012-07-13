@@ -7,7 +7,10 @@
  ******************************************************************************/
 package org.atemsource.atem.impl.json.attribute;
 
-import org.atemsource.atem.impl.common.attribute.AbstractSingleAssociationAttribute;
+import java.util.Iterator;
+
+import org.atemsource.atem.api.type.Type;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -15,39 +18,38 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class ObjectNodeAttribute extends AbstractSingleAssociationAttribute<ObjectNode>
+public class ChildrenAttribute extends AbstractMapNodeAttribute<JsonNode>
 {
+
 	@Override
-	public ObjectNode getValue(Object entity)
+	public Type<JsonNode> getTargetType(JsonNode value)
 	{
-		ObjectNode node = (ObjectNode) entity;
-		if (node.isNull())
+		if (value instanceof ObjectNode)
 		{
-			throw new NullPointerException("entity is null");
+			return getEntityType();
 		}
 		else
 		{
-			return (ObjectNode) node.get(getCode());
+			return entityTypeRepository.getType(value);
 		}
 	}
 
 	@Override
-	public boolean isWriteable()
+	public ObjectNode getValue(Object entity)
 	{
-		return true;
+		return (ObjectNode) entity;
 	}
 
 	@Override
 	public void setValue(Object entity, ObjectNode value)
 	{
-		ObjectNode node = (ObjectNode) entity;
-		if (node.isNull())
+		ObjectNode oldNode = (ObjectNode) entity;
+		oldNode.removeAll();
+		Iterator<String> fieldNames = value.getFieldNames();
+		while (fieldNames.hasNext())
 		{
-			throw new NullPointerException("entity is null");
-		}
-		else
-		{
-			node.put(getCode(), value);
+			String fieldName = fieldNames.next();
+			oldNode.put(fieldName, value.get(fieldName));
 		}
 	}
 

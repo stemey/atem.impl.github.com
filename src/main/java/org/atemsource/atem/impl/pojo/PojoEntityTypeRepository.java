@@ -185,10 +185,11 @@ public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object>
 			return null;
 		}
 		EntityType entityType = super.getEntityType(entityName);
-		if (entityType == null)
-		{
-			entityType = createEntityType(entityName);
-		}
+		// TODO why was this here
+		// if (entityType == null)
+		// {
+		// entityType = createEntityType(entityName);
+		// }
 		if (entityType == null)
 		{
 			nonAvailableEntityNames.add(entityName);

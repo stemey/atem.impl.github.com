@@ -1,4 +1,4 @@
-package org.atemsource.atem.impl.json.type;
+package org.atemsource.atem.impl.json.schema;
 
 import java.net.URI;
 

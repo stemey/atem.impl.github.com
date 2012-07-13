@@ -84,8 +84,7 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 		}
 		else
 		{
-			throw new IllegalStateException("attribute " + attribute.getEntityType().getCode() + "." + attribute.getCode()
-				+ " already exists");
+			throw new IllegalStateException("attribute " + getCode() + "." + attribute.getCode() + " already exists");
 		}
 	}
 
@@ -384,7 +383,9 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 		}
 		EntityType<Object> entityType = entityTypeRepository.getEntityType(entity);
 		EntityType<Object> otherType = entityTypeRepository.getEntityType(other);
-		if (!entityType.equals(otherType))
+
+		// can be null for dynamic types
+		if (entityType != null && otherType != null && !entityType.equals(otherType))
 		{
 			return false;
 		}
@@ -454,7 +455,7 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 	@Override
 	public <C> void visit(ViewVisitor<C> visitor, C context)
 	{
-		for (Attribute<?, ?> attribute : getAttributes())
+		for (Attribute<?, ?> attribute : getDeclaredAttributes())
 		{
 			if (attribute.getTargetType() instanceof PrimitiveType)
 			{

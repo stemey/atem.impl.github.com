@@ -15,7 +15,6 @@ import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.PrimitiveType;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.AbstractEntityTypeBuilder;
-import org.atemsource.atem.impl.common.attribute.SingleAssociationAttribute;
 import org.atemsource.atem.impl.common.attribute.SingleAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.primitive.BooleanTypeImpl;
 import org.atemsource.atem.impl.common.attribute.primitive.DoubleType;
@@ -30,6 +29,7 @@ import org.atemsource.atem.impl.json.attribute.LongAttribute;
 import org.atemsource.atem.impl.json.attribute.MapNodeAttribute;
 import org.atemsource.atem.impl.json.attribute.ObjectNodeAttribute;
 import org.atemsource.atem.impl.json.attribute.StringAttribute;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -38,6 +38,8 @@ import org.springframework.stereotype.Component;
 @Scope("prototype")
 public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 {
+
+	private ObjectMapper objectMapper;
 
 	@Override
 	public <K, V, ObjectNode> MapAttribute<K, V, ObjectNode> addMapAssociationAttribute(String name, Type<K> keyType,
@@ -51,10 +53,14 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 		mapAttribute.setCode(name);
 		mapAttribute.setEntityType(getEntityType());
 		mapAttribute.setTargetType(valueType);
+		mapAttribute.setWriteable(true);
+		mapAttribute.setObjectMapper(objectMapper);
+		addAttribute(mapAttribute);
 		return mapAttribute;
 	}
 
-	public CollectionAttribute addMultiAssociationAttribute(String code, EntityType targetType,
+	@Override
+	public CollectionAttribute addMultiAssociationAttribute(String code, Type targetType,
 		CollectionSortType collectionSortType)
 	{
 		ArrayNodeAttribute attribute = beanLocator.getInstance(ArrayNodeAttribute.class);
@@ -62,6 +68,9 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 		attribute.setEntityType(getEntityType());
 		attribute.setTargetType(targetType);
 		addAttribute(attribute);
+		attribute.setWriteable(true);
+		attribute.setObjectMapper(objectMapper);
+
 		return attribute;
 	}
 
@@ -102,17 +111,20 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 		attribute.setCode(code);
 		addAttribute(attribute);
 		attribute.setEntityType(getEntityType());
+		attribute.setWriteable(true);
 		return attribute;
 	}
 
 	@Override
-	public SingleAssociationAttribute addSingleAssociationAttribute(String code, EntityType targetType)
+	public SingleAttribute addSingleAssociationAttribute(String code, EntityType targetType)
 	{
 		ObjectNodeAttribute attribute = beanLocator.getInstance(ObjectNodeAttribute.class);
 		attribute.setCode(code);
 		attribute.setEntityType(getEntityType());
 		attribute.setTargetType(targetType);
 		addAttribute(attribute);
+		attribute.setWriteable(true);
+
 		return attribute;
 	}
 
@@ -127,6 +139,16 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 		{
 			return addPrimitiveAttribute(code, (PrimitiveType<J>) type);
 		}
+	}
+
+	public ObjectMapper getObjectMapper()
+	{
+		return objectMapper;
+	}
+
+	public void setObjectMapper(ObjectMapper objectMapper)
+	{
+		this.objectMapper = objectMapper;
 	}
 
 }

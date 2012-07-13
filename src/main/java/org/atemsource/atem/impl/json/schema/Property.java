@@ -1,4 +1,4 @@
-package org.atemsource.atem.impl.json.type;
+package org.atemsource.atem.impl.json.schema;
 
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.annotation.Cardinality;
