@@ -16,17 +16,18 @@ import org.atemsource.atem.impl.common.AbstractEntityType;
 import org.atemsource.atem.impl.common.AbstractEntityTypeBuilder.EntityTypeBuilderCallback;
 import org.atemsource.atem.impl.common.AbstractMetaDataRepository;
 import org.atemsource.atem.impl.json.attribute.ChildrenAttribute;
+import org.atemsource.atem.impl.json.attribute.PropertiesAttribute;
 import org.atemsource.atem.spi.DynamicEntityTypeSubrepository;
 import org.atemsource.atem.spi.EntityTypeCreationContext;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
-public class JsonEntityTypeRepository extends AbstractMetaDataRepository<ObjectNode> implements
-	DynamicEntityTypeSubrepository<ObjectNode>, EntityTypeBuilderCallback
-{
+public class JsonEntityTypeRepository extends
+		AbstractMetaDataRepository<ObjectNode> implements
+		DynamicEntityTypeSubrepository<ObjectNode>, EntityTypeBuilderCallback {
 	@Autowired
 	private BeanLocator beanLocator;
 
@@ -36,36 +37,49 @@ public class JsonEntityTypeRepository extends AbstractMetaDataRepository<ObjectN
 
 	private String typeProperty = "_type";
 
-	public void afterFirstInitialization(EntityTypeRepository entityTypeRepositoryImpl)
-	{
+	private JsonEntityTypeImpl objectNodeType;
+
+	private JsonEntityTypeImpl arrayNodeType;
+
+	public void afterFirstInitialization(
+			EntityTypeRepository entityTypeRepositoryImpl) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void afterInitialization()
-	{
-		// EntityTypeBuilder genericTypeBuilder = createBuilder(ObjectNode.class.getName());
+	public void afterInitialization() {
+		// EntityTypeBuilder genericTypeBuilder =
+		// createBuilder(ObjectNode.class.getName());
 		// genericTypeBuilder.addMapAssociationAttribute("properties",
 		// entityTypeCreationContext.getTypeReference(String.class),
 		// entityTypeCreationContext.getEntityTypeReference(Object.class));
 		// genericTypeBuilder.createEntityType();
 
 		// TODO does not work yet. We need to add types for textnode and so on.
-		JsonEntityTypeImpl genericType = createEntityType(ObjectNode.class.getName());
-		ChildrenAttribute mapAttribute = beanLocator.getInstance(ChildrenAttribute.class);
+		objectNodeType = createEntityType(ObjectNode.class
+				.getName());
+		PropertiesAttribute mapAttribute = beanLocator
+				.getInstance(PropertiesAttribute.class);
 		mapAttribute.setCode("properties");
-		mapAttribute.setEntityType(genericType);
-		mapAttribute.setTargetType((Type<JsonNode>) entityTypeCreationContext.getEntityTypeReference(JsonNode.class));
-		mapAttribute.setWriteable(true);
-		mapAttribute.setObjectMapper(objectMapper);
-		genericType.addAttribute(mapAttribute);
-		onFinished(genericType);
+		mapAttribute.setEntityType(objectNodeType);
+		objectNodeType.addAttribute(mapAttribute);
+		onFinished(objectNodeType);
+
+		arrayNodeType = createEntityType(ArrayNode.class
+				.getName());
+		ChildrenAttribute childrenAttribute = beanLocator
+				.getInstance(ChildrenAttribute.class);
+		childrenAttribute.setCode("children");
+		childrenAttribute.setEntityType(arrayNodeType);
+		arrayNodeType.addAttribute(childrenAttribute);
+		onFinished(arrayNodeType);
+
 	}
 
 	@Override
-	public EntityTypeBuilder createBuilder(String code)
-	{
-		JsonEntityTypeBuilder builder = beanLocator.getInstance(JsonEntityTypeBuilder.class);
+	public EntityTypeBuilder createBuilder(String code) {
+		JsonEntityTypeBuilder builder = beanLocator
+				.getInstance(JsonEntityTypeBuilder.class);
 		JsonEntityTypeImpl entityType = createEntityType(code);
 		builder.setEntityType(entityType);
 		builder.setEntityClass(ObjectNode.class);
@@ -74,17 +88,17 @@ public class JsonEntityTypeRepository extends AbstractMetaDataRepository<ObjectN
 		return builder;
 	}
 
-	public JsonEntityTypeImpl createEntityType(String code)
-	{
-		final JsonEntityTypeImpl dynamicEntityTypeImpl = beanLocator.getInstance(JsonEntityTypeImpl.class);
+	public JsonEntityTypeImpl createEntityType(String code) {
+		final JsonEntityTypeImpl dynamicEntityTypeImpl = beanLocator
+				.getInstance(JsonEntityTypeImpl.class);
 		dynamicEntityTypeImpl.setTypeCodeConverter(typeCodeConverter);
 		dynamicEntityTypeImpl.setCode(code);
 		dynamicEntityTypeImpl.setObjectMapper(objectMapper);
 		dynamicEntityTypeImpl.setTypeProperty(typeProperty);
 
-		if (getEntityType(code) != null)
-		{
-			throw new IllegalArgumentException("dynamic type with name " + code + " already exists.");
+		if (getEntityType(code) != null) {
+			throw new IllegalArgumentException("dynamic type with name " + code
+					+ " already exists.");
 		}
 		AbstractEntityType x = dynamicEntityTypeImpl;
 		this.nameToEntityTypes.put(code, x);
@@ -94,6 +108,9 @@ public class JsonEntityTypeRepository extends AbstractMetaDataRepository<ObjectN
 	@Override
 	public EntityType<ObjectNode> getEntityType(Object entity)
 	{
+		if (entity instanceof ArrayNode) {
+			return arrayNodeType;
+		}
 		try
 		{
 			ObjectNode objectNode = (ObjectNode) entity;
@@ -104,7 +121,7 @@ public class JsonEntityTypeRepository extends AbstractMetaDataRepository<ObjectN
 			}
 			else
 			{
-				return null;
+				return objectNodeType;
 			}
 		}
 		catch (ClassCastException e)
@@ -113,41 +130,35 @@ public class JsonEntityTypeRepository extends AbstractMetaDataRepository<ObjectN
 		}
 	}
 
-	public ObjectMapper getObjectMapper()
-	{
+	public ObjectMapper getObjectMapper() {
 		return objectMapper;
 	}
 
-	public String getTypeProperty()
-	{
+	public String getTypeProperty() {
 		return typeProperty;
 	}
 
-	public void initialize(EntityTypeCreationContext entityTypeCreationContext)
-	{
+	public void initialize(EntityTypeCreationContext entityTypeCreationContext) {
 		this.entityTypeCreationContext = entityTypeCreationContext;
 	}
 
 	@Override
-	public void onFinished(AbstractEntityType<?> entityType)
-	{
+	public void onFinished(AbstractEntityType<?> entityType) {
 		attacheServicesToEntityType(entityType);
-		((AbstractEntityType) entityType).initializeIncomingAssociations(entityTypeCreationContext);
+		((AbstractEntityType) entityType)
+				.initializeIncomingAssociations(entityTypeCreationContext);
 		entityTypeCreationContext.lazilyInitialized(entityType);
 	}
 
-	public void setObjectMapper(ObjectMapper objectMapper)
-	{
+	public void setObjectMapper(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
 	}
 
-	public void setTypeCodeConverter(TypeCodeConverter typeCodeConverter)
-	{
+	public void setTypeCodeConverter(TypeCodeConverter typeCodeConverter) {
 		this.typeCodeConverter = typeCodeConverter;
 	}
 
-	public void setTypeProperty(String typeProperty)
-	{
+	public void setTypeProperty(String typeProperty) {
 		this.typeProperty = typeProperty;
 	}
 }

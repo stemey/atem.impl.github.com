@@ -25,6 +25,18 @@ import org.atemsource.atem.api.type.Type;
 public abstract class PrimitiveTypeImpl<J> implements PrimitiveType<J>
 {
 
+	
+
+	@Override
+	public boolean equals(Object obj) {
+		return ((PrimitiveType<?>)obj).getJavaType().equals(getJavaType());
+	}
+
+	@Override
+	public int hashCode() {
+		return getJavaType().hashCode();
+	}
+
 	private boolean nullable = true;
 
 	public PrimitiveTypeImpl()

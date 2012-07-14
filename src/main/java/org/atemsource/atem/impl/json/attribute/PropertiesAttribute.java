@@ -7,11 +7,8 @@
  ******************************************************************************/
 package org.atemsource.atem.impl.json.attribute;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -23,8 +20,6 @@ import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.CollectionSortType;
 import org.atemsource.atem.api.attribute.MapAttribute;
 import org.atemsource.atem.api.attribute.annotation.Cardinality;
-import org.atemsource.atem.api.attribute.relation.ArrayAssociationAttribute;
-import org.atemsource.atem.api.attribute.relation.ListAssociationAttribute;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.json.JsonUtils;
@@ -37,10 +32,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class ChildrenAttribute implements ListAssociationAttribute< Object> {
+public class PropertiesAttribute implements MapAttribute<String, Object, Map> {
 
 	@PostConstruct
 	public void initialize() {
+		keyType=entityTypeRepository.getType(String.class);
 		targetType=entityTypeRepository.getType(Object.class);
 	}
 	
@@ -49,7 +45,6 @@ public class ChildrenAttribute implements ListAssociationAttribute< Object> {
 
 	@Override
 	public Type<Object> getTargetType(Object value) {
-		// TODO we dont check the property type here.
 		if (value instanceof ObjectNode) {
 			return entityTypeRepository.getEntityType(ObjectNode.class.getName());
 		} else if (value instanceof ArrayNode) {
@@ -60,31 +55,34 @@ public class ChildrenAttribute implements ListAssociationAttribute< Object> {
 	}
 
 	@Override
-	public List getValue(Object entity) {
-		List< Object> children = new ArrayList< Object>();
-		ArrayNode node = (ArrayNode) entity;
-		for (int index=0;index<node.size();index++){
-			JsonNode child = node.get(index);
-			children.add( JsonUtils.convertToJava(child));
+	public Map getValue(Object entity) {
+		Map<String, Object> children = new HashMap<String, Object>();
+		ObjectNode node = (ObjectNode) entity;
+		Iterator<String> fieldNames = node.getFieldNames();
+		while (fieldNames.hasNext()) {
+			String fieldName = fieldNames.next();
+			JsonNode child = node.get(fieldName);
+			children.put(fieldName, JsonUtils.convertToJava(child));
 
 		}
 		return children;
 	}
 
 	@Override
-	public void setValue(Object entity, List value) {
-		ArrayNode oldNode = (ArrayNode) entity;
+	public void setValue(Object entity, Map value) {
+		ObjectNode oldNode = (ObjectNode) entity;
 		oldNode.removeAll();
-		for (int index=0;index<oldNode.size();index++){
-			JsonNode child = oldNode.get(index);
-			oldNode.add( JsonUtils.convertToJson(child));
-
+		Iterator<String> fieldNames = value.keySet().iterator();
+		while (fieldNames.hasNext()) {
+			String fieldName = fieldNames.next();
+			oldNode.put(fieldName,
+					JsonUtils.convertToJson(value.get(fieldName)));
 		}
 	}
 
 	@Override
-	public Class<List> getAssociationType() {
-		return List.class;
+	public Class<Map> getAssociationType() {
+		return Map.class;
 	}
 
 	private String code;
@@ -100,8 +98,8 @@ public class ChildrenAttribute implements ListAssociationAttribute< Object> {
 	private EntityType entityType;
 
 	@Override
-	public Class<List> getReturnType() {
-		return List.class;
+	public Class<Map> getReturnType() {
+		return Map.class;
 	}
 
 	@Override
@@ -133,7 +131,10 @@ public class ChildrenAttribute implements ListAssociationAttribute< Object> {
 		((ObjectNode)entity).removeAll();
 	}
 
-
+	@Override
+	public boolean containsValue(Object entity, Object element) {
+		throw new UnsupportedOperationException("not supported");
+	}
 
 	public EntityType getEntityType() {
 		return entityType;
@@ -160,77 +161,56 @@ public class ChildrenAttribute implements ListAssociationAttribute< Object> {
 		return CollectionSortType.NONE;
 	}
 
-	
+	@Override
+	public Object getElement(Object entity, String keye) {
+		return getValue(entity).get(keye);
+	}
 
+	@Override
+	public Map getEmptyMap() {
+		return new HashMap<String,Object>();
+	}
+
+	@Override
+	public Iterator<Entry<?, ?>> getIterator(Object entity) {
+		return getValue(entity).entrySet().iterator();
+	}
+
+	@Override
+	public Set<String> getKeySet(Object entity) {
+		return getValue(entity).keySet();
+	}
+
+	@Override
+	public Type<String> getKeyType() {
+		return keyType;
+	}
+
+	private Type<String> keyType;
 
 	@Override
 	public int getSize(Object entity) {
-		return ((ArrayNode)entity).size();
+		return ((ObjectNode)entity).size();
 	}
 
 	@Override
-	public void addElement(Object entity, Object element) {
-		ArrayNode node=(ArrayNode) entity;
-		node.add(JsonUtils.convertToJson(element));
+	public void putElement(Object entity, String key, Object value) {
+		((ObjectNode)entity).put(key, JsonUtils.convertToJson(value));
 	}
 
 	@Override
-	public boolean contains(Object entity, Object element) {
+	public void removeKey(Object entity, String key) {
+		((ObjectNode)entity).remove(key);
+	}
+
+	@Override
+	public void removeValue(Object entity, Object value) {
 		throw new UnsupportedOperationException("not supported");
 	}
 
 	@Override
-	public Collection<Object> getElements(Object entity) {
-		List<Object> list = new ArrayList<Object>();
-		ArrayNode node = (ArrayNode) entity;
-		for (int index=0;index<node.size();index++) {
-			list.add(JsonUtils.convertToJson(node.get(index)));
-		}
-		return list;
+	public Type<String> getKeyType(String key) {
+		return keyType;
 	}
-
-	@Override
-	public List getEmptyCollection(Object entity) {
-		return new ArrayList();
-	}
-
-	@Override
-	public Iterator<Object> getIterator(Object entity) {
-		return getElements(entity).iterator();
-	}
-
-	@Override
-	public void removeElement(Object entity, Object element) {
-		throw new UnsupportedOperationException("not supported");
-	}
-
-	@Override
-	public void addElement(Object entity, int index, Object value) {
-		throw new UnsupportedOperationException("not supported");
-	}
-
-	@Override
-	public Object getElement(Object entity, int index) {
-		ArrayNode node=(ArrayNode) entity;
-		return JsonUtils.convertToJava(node.get(index));
-	}
-
-	@Override
-	public int getIndex(Object entity, Object value) {
-		throw new UnsupportedOperationException("not supported");
-	}
-
-	@Override
-	public void moveElement(Object entity, int fromIndex, int toIndex) {
-		throw new UnsupportedOperationException("not supported");
-	}
-
-	@Override
-	public Object removeElement(Object entity, int index) {
-		ArrayNode node=(ArrayNode) entity;
-		return JsonUtils.convertToJava(node.remove(index));
-	}
-
-
 
 }

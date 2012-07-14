@@ -12,13 +12,16 @@ import org.atemsource.atem.api.attribute.CollectionSortType;
 import org.atemsource.atem.api.attribute.MapAttribute;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.attribute.AbstractAttribute;
+import org.atemsource.atem.impl.json.JsonUtils;
+import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-public abstract class AbstractMapNodeAttribute<V extends JsonNode> extends AbstractAttribute<V, ObjectNode> implements
+public abstract class AbstractMapNodeAttribute<V> extends AbstractAttribute<V, ObjectNode> implements
 	MapAttribute<String, V, ObjectNode>
 {
 
@@ -55,7 +58,7 @@ public abstract class AbstractMapNodeAttribute<V extends JsonNode> extends Abstr
 	public V getElement(Object entity, String keye)
 	{
 
-		return (V) getValue(entity).get(keye);
+		return (V) JsonUtils.convertToJava(getValue(entity).get(keye));
 	}
 
 	public ObjectNode getEmptyMap()
@@ -139,7 +142,7 @@ public abstract class AbstractMapNodeAttribute<V extends JsonNode> extends Abstr
 
 	public void putElement(Object entity, String key, V value)
 	{
-		getValue(entity).put(key, value);
+			getValue(entity).put(key, JsonUtils.convertToJson(value));
 	}
 
 	public void removeKey(Object entity, String key)
