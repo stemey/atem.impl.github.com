@@ -162,4 +162,15 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 	{
 		this.callback = callback;
 	}
+
+	@Override
+	public void superType(EntityType<?> superType)
+	{
+		entityType.setSuperEntityType(superType);
+		// TODO this should be done by repository. It might span more than one repository.
+		if (superType instanceof AbstractEntityType)
+		{
+			((AbstractEntityType) superType).addSubEntityType(entityType);
+		}
+	}
 }

@@ -8,8 +8,9 @@
 package org.atemsource.atem.impl.common.attribute.collection;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.atemsource.atem.api.attribute.CollectionAttribute;
 import org.atemsource.atem.api.attribute.CollectionSortType;
@@ -19,8 +20,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class ArrayAttributeImpl<J> extends AbstractCollectionAttributeImpl<J, J[]> implements
-	CollectionAttribute<J, J[]>
+public class ArrayAttributeImpl<J> extends AbstractCollectionAttributeImpl<J, Object> implements
+	CollectionAttribute<J, Object>
 {
 
 	@Override
@@ -30,9 +31,9 @@ public class ArrayAttributeImpl<J> extends AbstractCollectionAttributeImpl<J, J[
 	}
 
 	@Override
-	public Class<J[]> getAssociationType()
+	public Class<Object> getAssociationType()
 	{
-		return (Class<J[]>) Array.newInstance(getTargetType().getJavaType(), 0).getClass();
+		return (Class<Object>) Array.newInstance(getTargetType().getJavaType(), 0).getClass();
 	}
 
 	@Override
@@ -42,29 +43,34 @@ public class ArrayAttributeImpl<J> extends AbstractCollectionAttributeImpl<J, J[
 	}
 
 	@Override
-	public Collection<J> getElements(Object entity)
+	public Collection getElements(Object entity)
 	{
-		final J[] array = getValue(entity);
+		final Object array = getValue(entity);
+		List arrayList = new ArrayList();
 		if (array == null)
 		{
 			return null;
 		}
 		else
 		{
-			return Arrays.asList(array);
+			for (int index = 0; index < Array.getLength(array); index++)
+			{
+				arrayList.add(Array.get(array, index));
+			}
+			return arrayList;
 		}
 	}
 
 	@Override
-	public J[] getEmptyCollection(Object entity)
+	public Object getEmptyCollection(Object entity)
 	{
-		return (J[]) Array.newInstance(getTargetType().getJavaType(), 0);
+		return Array.newInstance(getTargetType().getJavaType(), 0);
 	}
 
 	@Override
 	public int getSize(Object entity)
 	{
-		return ((Object[]) getAccessor().getValue(entity)).length;
+		return Array.getLength(getAccessor().getValue(entity));
 	}
 
 }

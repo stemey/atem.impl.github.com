@@ -18,7 +18,7 @@ import org.atemsource.atem.api.attribute.CollectionSortType;
 import org.atemsource.atem.api.attribute.OrderableCollection;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.attribute.AbstractAttribute;
-import org.codehaus.jackson.JsonNode;
+import org.atemsource.atem.impl.json.JsonUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -28,23 +28,23 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class ArrayNodeAttribute extends AbstractAttribute<JsonNode, ArrayNode> implements
-	CollectionAttribute<JsonNode, ArrayNode>, OrderableCollection<JsonNode, ArrayNode>
+public class ArrayNodeAttribute extends AbstractAttribute<Object, ArrayNode> implements
+	CollectionAttribute<Object, ArrayNode>, OrderableCollection<Object, ArrayNode>
 {
 
 	private ObjectMapper objectMapper;
 
 	@Override
-	public void addElement(Object entity, int index, JsonNode value)
+	public void addElement(Object entity, int index, Object value)
 	{
 		ArrayNode array = getValue(entity);
-		array.set(index, value);
+		array.set(index, JsonUtils.convertToJson(value));
 	}
 
-	public void addElement(Object entity, JsonNode element)
+	public void addElement(Object entity, Object element)
 	{
 		ArrayNode arrayNode = getArrayNode(entity);
-		arrayNode.add(element);
+		arrayNode.add(JsonUtils.convertToJson(element));
 	}
 
 	public void clear(Object entity)
@@ -53,7 +53,7 @@ public class ArrayNodeAttribute extends AbstractAttribute<JsonNode, ArrayNode> i
 		arrayNode.removeAll();
 	}
 
-	public boolean contains(Object entity, JsonNode element)
+	public boolean contains(Object entity, Object element)
 	{
 		throw new UnsupportedOperationException("notimplemented yet");
 	}
@@ -76,16 +76,16 @@ public class ArrayNodeAttribute extends AbstractAttribute<JsonNode, ArrayNode> i
 	@Override
 	public Object getElement(Object entity, int index)
 	{
-		return getValue(entity).get(index);
+		return JsonUtils.convertToJava(getValue(entity).get(index));
 	}
 
-	public Collection<JsonNode> getElements(Object entity)
+	public Collection<Object> getElements(Object entity)
 	{
-		List<JsonNode> collection = new ArrayList<JsonNode>();
+		List<Object> collection = new ArrayList<Object>();
 		ArrayNode arrayNode = getArrayNode(entity);
 		for (int index = 0; index < arrayNode.size(); index++)
 		{
-			collection.add(arrayNode.get(index));
+			collection.add(JsonUtils.convertToJson(arrayNode.get(index)));
 		}
 		return collection;
 	}
@@ -96,13 +96,13 @@ public class ArrayNodeAttribute extends AbstractAttribute<JsonNode, ArrayNode> i
 	}
 
 	@Override
-	public int getIndex(Object entity, JsonNode value)
+	public int getIndex(Object entity, Object value)
 	{
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public Iterator<JsonNode> getIterator(Object entity)
+	public Iterator<Object> getIterator(Object entity)
 	{
 		return getElements(entity).iterator();
 	}
@@ -129,7 +129,7 @@ public class ArrayNodeAttribute extends AbstractAttribute<JsonNode, ArrayNode> i
 		return getArrayNode(entity).size();
 	}
 
-	public Type<JsonNode> getTargetType(JsonNode value)
+	public Type<Object> getTargetType(Object value)
 	{
 		return getTargetType();
 	}
@@ -203,7 +203,7 @@ public class ArrayNodeAttribute extends AbstractAttribute<JsonNode, ArrayNode> i
 		return getValue(entity).remove(index);
 	}
 
-	public void removeElement(Object entity, JsonNode element)
+	public void removeElement(Object entity, Object element)
 	{
 		throw new UnsupportedOperationException("notimplemented yet");
 	}
@@ -216,6 +216,14 @@ public class ArrayNodeAttribute extends AbstractAttribute<JsonNode, ArrayNode> i
 	@Override
 	public void setValue(Object entity, ArrayNode value)
 	{
-		((ObjectNode) entity).put(getCode(), value);
+		ObjectNode node = (ObjectNode) entity;
+		if (value == null)
+		{
+			node.putNull(getCode());
+		}
+		else
+		{
+			node.put(getCode(), value);
+		}
 	}
 }

@@ -13,10 +13,8 @@ import org.atemsource.atem.api.attribute.MapAttribute;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.attribute.AbstractAttribute;
 import org.atemsource.atem.impl.json.JsonUtils;
-import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -142,7 +140,7 @@ public abstract class AbstractMapNodeAttribute<V> extends AbstractAttribute<V, O
 
 	public void putElement(Object entity, String key, V value)
 	{
-			getValue(entity).put(key, JsonUtils.convertToJson(value));
+		getValue(entity).put(key, JsonUtils.convertToJson(value));
 	}
 
 	public void removeKey(Object entity, String key)
@@ -167,6 +165,10 @@ public abstract class AbstractMapNodeAttribute<V> extends AbstractAttribute<V, O
 		if (node.isNull())
 		{
 			throw new NullPointerException("entity is null");
+		}
+		else if (value == null)
+		{
+			node.putNull(getCode());
 		}
 		else
 		{

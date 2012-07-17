@@ -45,6 +45,10 @@ public class ObjectNodeAttribute extends AbstractSingleAssociationAttribute<Obje
 		{
 			throw new NullPointerException("entity is null");
 		}
+		if (value == null)
+		{
+			node.putNull(getCode());
+		}
 		else
 		{
 			node.put(getCode(), value);

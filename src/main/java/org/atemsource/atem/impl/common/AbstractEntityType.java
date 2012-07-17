@@ -473,7 +473,14 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 		}
 		if (superEntityType != null)
 		{
-			superEntityType.visit(visitor, context);
+			visitor.visitSuperView(context, superEntityType);
+		}
+		if (getSubEntityTypes(true) != null)
+		{
+			for (EntityType<?> subType : getSubEntityTypes(true))
+			{
+				visitor.visitSubView(context, subType);
+			}
 		}
 	}
 
