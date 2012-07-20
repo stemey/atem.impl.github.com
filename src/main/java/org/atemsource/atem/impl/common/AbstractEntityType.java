@@ -464,11 +464,14 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 			else
 			{
 				Type<?> targetType = attribute.getTargetType();
-				if (targetType == null)
+				if (targetType != null)
 				{
-					throw new IllegalStateException("target type of " + attribute.getCode() + " is null");
+					visitor.visit(context, attribute, new AttributeVisitor<C>(visitor, (View) targetType));
 				}
-				visitor.visit(context, attribute, new AttributeVisitor<C>(visitor, (View) targetType));
+				else
+				{
+					visitor.visit(context, attribute);
+				}
 			}
 		}
 		if (superEntityType != null)

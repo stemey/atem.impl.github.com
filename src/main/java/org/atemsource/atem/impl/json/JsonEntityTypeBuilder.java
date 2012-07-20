@@ -131,7 +131,7 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 	@Override
 	public <J> SingleAttribute<J> addSingleAttribute(String code, Type<J> type)
 	{
-		if (type instanceof EntityType<?>)
+		if (type == null || type instanceof EntityType<?>)
 		{
 			return addSingleAssociationAttribute(code, (EntityType<J>) type);
 		}

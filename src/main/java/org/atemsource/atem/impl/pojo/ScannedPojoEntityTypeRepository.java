@@ -23,6 +23,8 @@ import org.atemsource.atem.api.infrastructure.exception.TechnicalException;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.impl.common.AbstractEntityType;
 import org.atemsource.atem.impl.common.AbstractMetaDataRepository;
+import org.atemsource.atem.impl.common.infrastructure.CandidateByAnnotationResolver;
+import org.atemsource.atem.impl.common.infrastructure.CandidateResolver;
 import org.atemsource.atem.impl.common.infrastructure.ClasspathScanner;
 import org.atemsource.atem.impl.infrastructure.BeanCreator;
 import org.atemsource.atem.impl.pojo.attribute.AttributeFactory;
@@ -34,12 +36,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<Object> implements
 	EntityTypeSubrepository<Object>
 {
-	private Set<Class<? extends Annotation>> annotationTypes;
-
 	private List<AttributeFactory> attributeFactories = new ArrayList<AttributeFactory>();
 
 	@Autowired
 	private BeanCreator beanCreator;
+
+	private CandidateResolver candidateResolver;
 
 	private Class entityClass;
 
@@ -140,11 +142,6 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 			return null;
 		}
 		return createEntityType(clazz);
-	}
-
-	public Set<Class<? extends Annotation>> getAnnotationTypes()
-	{
-		return annotationTypes;
 	}
 
 	public List<AttributeFactory> getAttributeFactories()
@@ -273,12 +270,8 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 	{
 		try
 		{
-			if (annotationTypes == null)
-			{
-				annotationTypes = new HashSet<Class<? extends Annotation>>();
-				annotationTypes.add(org.atemsource.atem.api.type.Entity.class);
-			}
-			Collection<Class<?>> classes = scanner.findClasses(includedPackage, annotationTypes.toArray(new Class[0]));
+
+			Collection<Class<?>> classes = scanner.findClasses(includedPackage, candidateResolver);
 
 			for (Class<?> clazz : classes)
 			{
@@ -303,12 +296,19 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 
 	public void setAnnotationTypes(Set<Class<? extends Annotation>> annotationTypes)
 	{
-		this.annotationTypes = annotationTypes;
+		annotationTypes = new HashSet<Class<? extends Annotation>>();
+		annotationTypes.add(org.atemsource.atem.api.type.Entity.class);
+		this.candidateResolver = new CandidateByAnnotationResolver(annotationTypes);
 	}
 
 	public void setAttributeFactories(List<AttributeFactory> attributeFactories)
 	{
 		this.attributeFactories = attributeFactories;
+	}
+
+	public void setCandidateResolver(CandidateResolver candidateResolver)
+	{
+		this.candidateResolver = candidateResolver;
 	}
 
 	public void setEntityClass(Class<?> entityClass)

@@ -2,47 +2,80 @@ package org.atemsource.atem.impl.json.schema;
 
 import java.util.Map;
 
-public class JsonSchema implements JsonSchemaRef {
+
+public class JsonSchema implements JsonSchemaRef
+{
+	private String description;
+
+	private String id;
+
+	private JsonSchemaUri mixinTypes;
+
 	private Map<String, Property> properties;
-	public Map<String, Property> getProperties() {
-		return properties;
-	}
-	public void setProperties(Map<String, Property> properties) {
-		this.properties = properties;
-	}
-	public String getDescription() {
+
+	private String ref;
+
+	private JsonSchemaUri superType;
+
+	private SimpleType[] type;
+
+	public String getDescription()
+	{
 		return description;
 	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	public JsonSchemaUri getSuperType() {
-		return superType;
-	}
-	public void setSuperType(JsonSchemaUri superType) {
-		this.superType = superType;
-	}
-	public SimpleType[] getType() {
-		return type;
-	}
-	public void setType(SimpleType[] type) {
-		this.type = type;
-	}
-	public String getId() {
+
+	public String getId()
+	{
 		return id;
 	}
-	public void setId(String id) {
-		this.id = id;
+
+	public Map<String, Property> getProperties()
+	{
+		return properties;
 	}
-	public String getRef() {
+
+	public String getRef()
+	{
 		return ref;
 	}
-	public void setRef(String ref) {
+
+	public JsonSchemaUri getSuperType()
+	{
+		return superType;
+	}
+
+	public SimpleType[] getType()
+	{
+		return type;
+	}
+
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
+
+	public void setId(String id)
+	{
+		this.id = id;
+	}
+
+	public void setProperties(Map<String, Property> properties)
+	{
+		this.properties = properties;
+	}
+
+	public void setRef(String ref)
+	{
 		this.ref = ref;
 	}
-	private String description;
-	private JsonSchemaUri superType;
-	private SimpleType[] type;
-	private String id;
-	private String ref;
+
+	public void setSuperType(JsonSchemaUri superType)
+	{
+		this.superType = superType;
+	}
+
+	public void setType(SimpleType[] type)
+	{
+		this.type = type;
+	}
 }

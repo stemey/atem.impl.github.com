@@ -1,7 +1,6 @@
 package org.atemsource.atem.impl.common.infrastructure;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -20,7 +19,9 @@ import org.springframework.util.SystemPropertyUtils;
 @Component
 public class ClasspathScanner
 {
-	public Collection<Class<?>> findClasses(String basePackage, Class<? extends Annotation>... a) throws IOException
+	private CandidateResolver candidateResolver;
+
+	public Collection<Class<?>> findClasses(String basePackage, CandidateResolver candidateResolver) throws IOException
 	{
 		ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
 		MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(resourcePatternResolver);
@@ -34,50 +35,36 @@ public class ClasspathScanner
 			if (resource.isReadable())
 			{
 				MetadataReader metadataReader = metadataReaderFactory.getMetadataReader(resource);
-				if (isCandidate(metadataReader, a))
+				try
 				{
-					try
+					Class<?> clazz = Class.forName(metadataReader.getClassMetadata().getClassName());
+					if (candidateResolver == null || candidateResolver.isCandidate(clazz))
 					{
-						candidates.add(Class.forName(metadataReader.getClassMetadata().getClassName()));
+						candidates.add(clazz);
 					}
-					catch (ClassNotFoundException e)
-					{
-						MetaLogs.LOG.error("cannort find class for scanned metadata", e);
-					}
+				}
+				catch (ClassNotFoundException e)
+				{
+					MetaLogs.LOG.error("cannot find class for scanned meta data", e);
 				}
 			}
 		}
 		return candidates;
 	}
 
-	private boolean isCandidate(MetadataReader metadataReader, Class<? extends Annotation>[] annotationTypes)
+	public CandidateResolver getCandidateResolver()
 	{
-		if (annotationTypes.length == 0)
-		{
-			return true;
-		}
-		Class<?> c;
-		try
-		{
-			c = Class.forName(metadataReader.getClassMetadata().getClassName());
-			for (Class<? extends Annotation> annotationType : annotationTypes)
-			{
-				if (c.isAnnotationPresent(annotationType))
-				{
-					return true;
-				}
-			}
-		}
-		catch (ClassNotFoundException e)
-		{
-			MetaLogs.LOG.error("cannot find class for scanned meta data", e);
-		}
-		return false;
+		return candidateResolver;
 	}
 
 	private String resolveBasePackage(String basePackage)
 	{
 		return ClassUtils.convertClassNameToResourcePath(SystemPropertyUtils.resolvePlaceholders(basePackage));
+	}
+
+	public void setCandidateResolver(CandidateResolver candidateResolver)
+	{
+		this.candidateResolver = candidateResolver;
 	}
 
 }
