@@ -59,7 +59,7 @@
 		<property name="attributeCode" value="id" />
 	</bean>
 	<bean id="atem-pojo-store"
-		class="org.atemsource.atem.impl.pojo.InMemoryPojoRepository"></bean>
+		class="org.atemsource.atem.impl.pojo.persistence.InMemoryPojoStore"></bean>
 
 
 	
