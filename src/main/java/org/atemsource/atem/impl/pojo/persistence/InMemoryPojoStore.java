@@ -5,7 +5,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  ******************************************************************************/
-package org.atemsource.atem.impl.pojo;
+package org.atemsource.atem.impl.pojo.persistence;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,7 +14,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+
+import org.atemsource.atem.api.BeanLocator;
 import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.CollectionAttribute;
@@ -29,43 +34,33 @@ import org.atemsource.atem.api.type.EntityType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-public class InMemoryPojoRepository implements FindByAttributeService, PersistenceService, FindByTypedIdService
+public class InMemoryPojoStore implements FindByAttributeService, PersistenceService, FindByTypedIdService
 {
 
-	private static class TypedId implements Serializable
-	{
-		private Serializable id;
+	
 
-		private String typeCode;
+	private static final String FIND_BY_ATTRIBUTE = "findByAttribute";
 
-		public TypedId(String typeCode, Serializable id)
-		{
-			super();
-			this.typeCode = typeCode;
-			this.id = id;
-		}
-
-		public Serializable getId()
-		{
-			return id;
-		}
-
-		public String getTypeCode()
-		{
-			return typeCode;
-		}
-	}
-
-	private boolean createIndex;
+	private static final String FIND_BY_ID = "findById";
 
 	@Autowired
 	private EntityTypeRepository entityTypeRepository;
 
-	private Map<Attribute, Map<Object, Object>> singleIndexes = new HashMap<Attribute, Map<Object, Object>>();
-
+	@Inject
+	private BeanLocator beanLocator;
+	
 	private List<Class> supportedClasses;
+	
+	
+	private Map<String,ViewIndex> viewIndexes=new HashMap<String, ViewIndex>();
+	private Map<String,SingleViewIndex> singleViewIndexes=new HashMap<String, SingleViewIndex>();
+	
+	@PostConstruct
+	public void initialize() {
+		singleViewIndexes.put(FIND_BY_ATTRIBUTE,new SingleViewIndex(beanLocator.getInstance(SingleAttributeViewCreator.class)));
+		singleViewIndexes.put(FIND_BY_ID,new SingleViewIndex(beanLocator.getInstance(FindByIdViewCreator.class)));
+	}
 
-	private Map<TypedId, Object> typedIds = new HashMap<TypedId, Object>();
 
 	public void clearAssociatedEntities(Object entity, CollectionAttribute collectionAssociationAttribute)
 	{
@@ -75,58 +70,20 @@ public class InMemoryPojoRepository implements FindByAttributeService, Persisten
 	@Override
 	public Object findByTypedId(EntityType<?> entityType, Serializable id)
 	{
-		return typedIds.get(new TypedId(entityType.getCode(), id));
+		return singleViewIndexes.get(FIND_BY_ID).find(new Object[]{entityType,id});
 	}
 
 	public Object findSingleByAttribute(Object targetEntity, Attribute<?, ?> attribute)
 	{
-		Map<Object, Object> index = null;
-		if (singleIndexes != null)
-		{
-			index = singleIndexes.get(attribute);
-		}
-		if (index == null)
-		{
-			if (createIndex)
-			{
-
-				index = new HashMap<Object, Object>();
-				singleIndexes.put(attribute, index);
-			}
-			Object entities = new HashSet<Object>();
-			for (Object entity : typedIds.values())
-			{
-				EntityType<Object> entityType = entityTypeRepository.getEntityType(entity);
-				if (attribute.getEntityType().isAssignableFrom(entity))
-				{
-					if (attribute instanceof SingleAttribute<?>)
-					{
-						Object aTargetEntity = attribute.getValue(entity);
-						if (targetEntity != null && targetEntity.equals(aTargetEntity))
-						{
-							if (createIndex)
-							{
-
-								index.put(targetEntity, entity);
-							}
-							return entity;
-						}
-					}
-				}
-			}
-
-			return null;
-		}
-		else
-		{
-			return index.get(targetEntity);
-		}
+		return singleViewIndexes.get(FIND_BY_ATTRIBUTE).find(new Object[]{attribute,targetEntity});
 	}
+	
+	private Collection<Object> entities= new HashSet<Object>();
 
 	public <T> Collection<T> getEntities(Class<T> clazz)
 	{
 		List<T> entities = new ArrayList<T>();
-		for (Object entity : typedIds.values())
+		for (Object entity : entities)
 		{
 			if (clazz.isInstance(entity))
 			{
@@ -146,13 +103,16 @@ public class InMemoryPojoRepository implements FindByAttributeService, Persisten
 	{
 		EntityType<?> entityType = entityTypeRepository.getEntityType(entity);
 		Serializable id = entityType.getService(IdentityService.class).getId(entityType, entity);
-		typedIds.put(new TypedId(entityType.getCode(), id), entity);
+		entities.add(entity);
+		for (SingleViewIndex index:singleViewIndexes.values()) {
+			index.insert(entity);
+		}
+		for (ViewIndex index:viewIndexes.values()) {
+			index.insert(entity);
+		}
 	}
 
-	public boolean isCreateIndex()
-	{
-		return createIndex;
-	}
+
 
 	public boolean isEqual(CollectionAttribute collectionAssociationAttribute, Object entity, Object other)
 	{
@@ -162,9 +122,7 @@ public class InMemoryPojoRepository implements FindByAttributeService, Persisten
 	@Override
 	public boolean isPersistent(Object entity)
 	{
-		EntityType<?> entityType = entityTypeRepository.getEntityType(entity);
-		Serializable id = entityType.getService(IdentityService.class).getId(entityType, entity);
-		return typedIds.get(new TypedId(entityType.getCode(), id)) != null;
+		return entities.contains(entity);
 	}
 
 	@Override
@@ -179,10 +137,15 @@ public class InMemoryPojoRepository implements FindByAttributeService, Persisten
 		return new SinglePojoAttributeQuery(attribute, this);
 	}
 
-	public void setCreateIndex(boolean createIndex)
-	{
-		this.createIndex = createIndex;
+	
+	public Set<Object> find(String view, Object... parameters) {
+		return viewIndexes.get(view).find(parameters);
 	}
+	
+	public Object findSingle(String view, Object... parameters) {
+		return singleViewIndexes.get(view).find(parameters);
+	}
+	
 
 	public void setSupportedClasses(List<Class> supportedClasses)
 	{

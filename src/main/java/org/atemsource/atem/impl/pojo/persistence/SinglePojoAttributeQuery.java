@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.atemsource.atem.impl.pojo;
+package org.atemsource.atem.impl.pojo.persistence;
 
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.service.SingleAttributeQuery;
@@ -22,11 +22,11 @@ import org.atemsource.atem.api.service.SingleAttributeQuery;
 public class SinglePojoAttributeQuery implements SingleAttributeQuery
 {
 
-	private InMemoryPojoRepository inMemoryPojoRepository;
+	private InMemoryPojoStore inMemoryPojoRepository;
 
 	private Attribute<?, ?> attribute;
 
-	public SinglePojoAttributeQuery(Attribute<?, ?> attribute, InMemoryPojoRepository inMemoryPojoRepository)
+	public SinglePojoAttributeQuery(Attribute<?, ?> attribute, InMemoryPojoStore inMemoryPojoRepository)
 	{
 		this.inMemoryPojoRepository = inMemoryPojoRepository;
 		this.attribute = attribute;

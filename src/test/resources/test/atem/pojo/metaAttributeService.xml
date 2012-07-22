@@ -40,12 +40,12 @@
 		<property name="entityTypeServices">
 			<map>
 				<entry key="org.atemsource.atem.api.service.PersistenceService"
-					value-ref="inMemoryPojoRepository" />
+					value-ref="atem-inMemory-pojo-store" />
 				<entry
 					key="org.atemsource.atem.api.service.FindByAttributeService"
-					value-ref="inMemoryPojoRepository" />
+					value-ref="atem-inMemory-pojo-store" />
 				<entry key="org.atemsource.atem.api.service.FindByTypedIdService"
-					value-ref="inMemoryPojoRepository" />
+					value-ref="atem-inMemory-pojo-store" />
 				<entry key="org.atemsource.atem.api.service.IdentityService"
 					value-ref="dynamicIdentityService" />
 			</map>
@@ -58,8 +58,8 @@
 		class="org.atemsource.atem.impl.common.service.AttributeIdentityService">
 		<property name="attributeCode" value="id" />
 	</bean>
-	<bean id="atem-inMemory-pojo-Repository"
-		class="org.atemsource.atem.impl.pojo.InMemoryPojoRepository"></bean>
+	<bean id="atem-inMemory-pojo-store"
+		class="org.atemsource.atem.impl.pojo.persistence.InMemoryPojoStore"></bean>
 
 
 	<bean id="atem-repository"

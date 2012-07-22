@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.atemsource.atem.impl.pojo;
+package org.atemsource.atem.impl.pojo.persistence;
 
 
 import java.util.Collection;
@@ -25,11 +25,11 @@ import org.atemsource.atem.api.service.AttributeQuery;
 public class PojoAttributeQuery implements AttributeQuery
 {
 
-	private InMemoryPojoRepository inMemoryPojoRepository;
+	private InMemoryPojoStore inMemoryPojoRepository;
 
 	private Attribute<?, ?> attribute;
 
-	public PojoAttributeQuery(Attribute<?, ?> attribute, InMemoryPojoRepository inMemoryPojoRepository)
+	public PojoAttributeQuery(Attribute<?, ?> attribute, InMemoryPojoStore inMemoryPojoRepository)
 	{
 		this.inMemoryPojoRepository = inMemoryPojoRepository;
 		this.attribute = attribute;
