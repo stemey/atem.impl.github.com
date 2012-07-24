@@ -43,8 +43,6 @@ public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object>
 
 	protected Set<String> nonAvailableEntityNames = new HashSet<String>();
 
-	private int order;
-
 	private List<AbstractEntityType> uninitializedEntityTypes = new ArrayList<AbstractEntityType>();
 
 	protected Attribute addAttribute(AbstractEntityType entityType,
@@ -329,8 +327,4 @@ public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object>
 		this.includedPackage = includedPackage;
 	}
 
-	public void setOrder(int order)
-	{
-		this.order = order;
-	}
 }
