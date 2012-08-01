@@ -162,9 +162,9 @@ public class EntityTypeRepositoryImpl implements EntityTypeRepository, EntityTyp
 
 	}
 
-	public Collection<EntityType> getEntityTypes()
+	public Collection<EntityType<?>> getEntityTypes()
 	{
-		List<EntityType> entityTypes = new ArrayList<EntityType>();
+		List<EntityType<?>> entityTypes = new ArrayList<EntityType<?>>();
 		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
 		{
 			entityTypes.addAll(entityTypeSubrepository.getEntityTypes());
