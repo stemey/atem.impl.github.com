@@ -17,6 +17,8 @@ package org.atemsource.atem.impl.meta;
 
 
 import org.atemsource.atem.api.type.EntityType;
+import org.atemsource.atem.api.type.PrimitiveType;
+import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.AbstractEntityType;
 import org.atemsource.atem.api.infrastructure.util.ReflectionUtils;
 import org.springframework.context.annotation.Scope;
@@ -25,7 +27,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class EntityTypeEntityType extends AbstractEntityType<EntityType<?>>
+public class EntityTypeEntityType extends AbstractEntityType<Type<?>>
 {
 
 	public EntityTypeEntityType()
@@ -33,15 +35,25 @@ public class EntityTypeEntityType extends AbstractEntityType<EntityType<?>>
 	}
 
 	@Override
-	public Class<EntityType<?>> getJavaType()
+	public Class<Type<?>> getJavaType()
 	{
-		return ReflectionUtils.getActualTypeParameter(getClass(), EntityType.class);
+		return getEntityClass();
 	}
 
 	@Override
 	public boolean isAssignableFrom(Object entity)
 	{
-		return entity instanceof EntityType;
+		return getEntityClass().isInstance(entity);
+	}
+
+	@Override
+	public boolean isAssignableFrom(Type<?> type) {
+		// currently interfaces are not part of the entityType hierachy.
+		if (type instanceof EntityType<?>) {
+			return getEntityClass().isAssignableFrom(((EntityType<?>)type).getEntityClass());
+		}else{
+			return false;
+		}
 	}
 
 }

@@ -247,7 +247,11 @@ public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object>
 	protected void initializeEntityType(AbstractEntityType entityType)
 	{
 		Class clazz = entityType.getEntityClass();
-		final Class superclass = clazz.getSuperclass();
+		 Class superclass = clazz.getSuperclass();
+		if (clazz.isInterface() && clazz.getInterfaces().length==1) {
+			// TODO workaround for interface inheritance hierachy (Attribute)
+			superclass=clazz.getInterfaces()[0];
+		}
 		if (superclass != null && !superclass.equals(Object.class))
 		{
 			final EntityType superType = getEntityTypeReference(superclass);

@@ -15,7 +15,11 @@ public class JsonUtils
 {
 	public static Object convertToJava(JsonNode value)
 	{
-		if (value instanceof ObjectNode)
+		if (value == null)
+		{
+			return null;
+		}
+		else if (value instanceof ObjectNode)
 		{
 			return value;
 		}

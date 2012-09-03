@@ -48,13 +48,27 @@
 		<property name="entityTypeClass"
 			value="org.atemsource.atem.impl.meta.EntityTypeEntityType" />
 		<property name="entityClass"
-			value="org.atemsource.atem.api.type.EntityType" />
+			value="org.atemsource.atem.api.type.Type" />
 		<property name="entityTypeServices">
 			<map>
 
 				<entry key="org.atemsource.atem.api.service.IdentityService"
 					value-ref="atem-metaIdentityService" />
 			</map>
+		</property>
+		<property name="attributeFactories">
+			<list>
+				<bean
+					class="org.atemsource.atem.impl.pojo.attribute.PrimitiveAttributeFactory"></bean>
+				<bean
+					class="org.atemsource.atem.impl.pojo.attribute.ArrayAttributeFactory"></bean>
+				<bean
+					class="org.atemsource.atem.impl.pojo.attribute.CollectionAttributeFactory"></bean>
+				<bean
+					class="org.atemsource.atem.impl.pojo.attribute.MapAssociationAttributeFactory"></bean>
+				<bean
+					class="org.atemsource.atem.impl.pojo.attribute.SingleAssociationAttributeFactory"></bean>
+			</list>
 		</property>
 	</bean>
 
@@ -70,6 +84,20 @@
 				<entry key="org.atemsource.atem.api.service.IdentityService"
 					value-ref="atem-metaIdentityService" />
 			</map>
+		</property>
+		<property name="attributeFactories">
+			<list>
+				<bean
+					class="org.atemsource.atem.impl.pojo.attribute.PrimitiveAttributeFactory"></bean>
+				<bean
+					class="org.atemsource.atem.impl.pojo.attribute.ArrayAttributeFactory"></bean>
+				<bean
+					class="org.atemsource.atem.impl.pojo.attribute.CollectionAttributeFactory"></bean>
+				<bean
+					class="org.atemsource.atem.impl.pojo.attribute.MapAssociationAttributeFactory"></bean>
+				<bean
+					class="org.atemsource.atem.impl.pojo.attribute.SingleAssociationAttributeFactory"></bean>
+			</list>
 		</property>
 	</bean>
 

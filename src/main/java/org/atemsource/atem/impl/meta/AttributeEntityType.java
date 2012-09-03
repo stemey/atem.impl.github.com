@@ -18,6 +18,7 @@ package org.atemsource.atem.impl.meta;
 
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.type.EntityType;
+import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.AbstractEntityType;
 import org.atemsource.atem.api.infrastructure.util.ReflectionUtils;
 import org.springframework.context.annotation.Scope;
@@ -34,15 +35,25 @@ public class AttributeEntityType<J, R> extends AbstractEntityType<Attribute<J, R
 	}
 
 	@Override
-	public Class getJavaType()
-	{
-		return ReflectionUtils.getActualTypeParameter(getClass(), EntityType.class);
-	}
-
-	@Override
 	public boolean isAssignableFrom(Object entity)
 	{
 		return entity instanceof Attribute;
 	}
+	
+	@Override
+	public boolean isAssignableFrom(Type<?> type) {
+		// currently interfaces are not part of the entityType hierachy.
+		if (type instanceof EntityType<?>) {
+			return getEntityClass().isAssignableFrom(((EntityType<?>)type).getEntityClass());
+		}else{
+			return false;
+		}
+	}
+
+	@Override
+	public Class<Attribute<J, R>> getJavaType() {
+		return getEntityClass();
+	}
+
 
 }
