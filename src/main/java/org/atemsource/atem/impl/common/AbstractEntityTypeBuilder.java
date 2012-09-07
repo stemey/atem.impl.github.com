@@ -7,9 +7,13 @@
  ******************************************************************************/
 package org.atemsource.atem.impl.common;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.atemsource.atem.api.BeanLocator;
+import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.CollectionAttribute;
 import org.atemsource.atem.api.attribute.CollectionSortType;
@@ -35,6 +39,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 {
+	
 
 	public interface EntityTypeBuilderCallback
 	{
@@ -120,6 +125,15 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 		addAttribute(attribute);
 		return attribute;
 	}
+	
+	@Inject
+	private EntityTypeRepository entityTypeRepository;
+
+	@Override
+	public <J> SingleAttribute<J> addSingleAttribute(String code, Class<J> javaType)
+	{
+		return addSingleAttribute(code, entityTypeRepository.getType(javaType));
+	}
 
 	@Override
 	public <J> SingleAttribute<J> addSingleAttribute(String code, Type<J> type)
@@ -172,5 +186,12 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 		{
 			((AbstractEntityType) superType).addSubEntityType(entityType);
 		}
+	}
+
+
+
+	@Override
+	public void mixin(EntityType<?> mixinType) {
+		entityType.addMixin(mixinType);
 	}
 }

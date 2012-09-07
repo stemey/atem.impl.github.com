@@ -12,6 +12,7 @@ import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.infrastructure.exception.TechnicalException;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.impl.common.AbstractEntityType;
+import org.atemsource.atem.impl.common.DynamicEntityType;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class JsonEntityTypeImpl extends AbstractEntityType<ObjectNode> {
+public class JsonEntityTypeImpl extends DynamicEntityType<ObjectNode> {
 
 	@Autowired
 	private BeanLocator beanLocator;

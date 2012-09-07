@@ -172,7 +172,7 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 	@Override
 	public Attribute getAttribute(final String code)
 	{
-		Attribute attribute = attributeCodes.get(code);
+		Attribute attribute = getDeclaredAttribute(code);
 		if (attribute == null && getSuperEntityType() != null)
 		{
 			return getSuperEntityType().getAttribute(code);
@@ -187,7 +187,7 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 	public List<Attribute> getAttributes()
 	{
 		List<Attribute> allAttributes = new ArrayList<Attribute>();
-		allAttributes.addAll(this.attributes);
+		allAttributes.addAll(getDeclaredAttributes());
 		if (getSuperEntityType() != null)
 		{
 			allAttributes.addAll(getSuperEntityType().getAttributes());
@@ -485,6 +485,10 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 				visitor.visitSubView(context, subType);
 			}
 		}
+	}
+
+	public void addMixin(EntityType<?> mixinType) {
+		throw new UnsupportedOperationException("mixins are not supported by this type");
 	}
 
 }
