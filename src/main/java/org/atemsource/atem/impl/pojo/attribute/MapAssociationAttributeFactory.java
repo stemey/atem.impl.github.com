@@ -60,8 +60,7 @@ public class MapAssociationAttributeFactory extends AttributeFactory
 			attribute.setTargetType(targeType);
 			attribute.setKeyType(keyType);
 			setStandardProperties(entityType, propertyDescriptor, attribute);
-			attribute.setAccessor(new PojoAccessor(propertyDescriptor.getField(), propertyDescriptor.getReadMethod(),
-				propertyDescriptor.getWriteMethod(), false));
+			attribute.setAccessor(propertyDescriptor.getAccessor());
 		}
 		return attribute;
 

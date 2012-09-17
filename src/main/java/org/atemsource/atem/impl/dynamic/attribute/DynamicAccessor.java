@@ -67,4 +67,11 @@ public class DynamicAccessor implements Accessor
 		((DynamicEntity) entity).put(code, value);
 	}
 
+
+
+	@Override
+	public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
+		return null;
+	}
+
 }

@@ -24,10 +24,18 @@ import org.atemsource.atem.spi.EntityTypeCreationContext;
 import org.atemsource.atem.spi.EntityTypeSubrepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+public class PojoEntityTypeRepository extends
+		AbstractMetaDataRepository<Object> implements
+		EntityTypeSubrepository<Object> {
+	public PropertyDescriptorFactory getPropertyDescriptorFactory() {
+		return propertyDescriptorFactory;
+	}
 
-public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object> implements
-	EntityTypeSubrepository<Object>
-{
+	public void setPropertyDescriptorFactory(
+			PropertyDescriptorFactory propertyDescriptorFactory) {
+		this.propertyDescriptorFactory = propertyDescriptorFactory;
+	}
+
 	private List<AttributeFactory> attributeFactories = new ArrayList<AttributeFactory>();
 
 	@Autowired
@@ -37,7 +45,7 @@ public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object>
 
 	private Class<? extends AbstractEntityType> entityTypeClass;
 
-	private boolean fieldAccess = false;
+	private PropertyDescriptorFactory propertyDescriptorFactory;
 
 	private String includedPackage;
 
@@ -45,31 +53,28 @@ public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object>
 
 	private List<AbstractEntityType> uninitializedEntityTypes = new ArrayList<AbstractEntityType>();
 
-	protected Attribute addAttribute(AbstractEntityType entityType,
-		org.atemsource.atem.impl.pojo.attribute.PropertyDescriptor propertyDescriptor)
-	{
+	protected Attribute addAttribute(
+			AbstractEntityType entityType,
+			org.atemsource.atem.impl.pojo.attribute.PropertyDescriptor propertyDescriptor) {
 		Attribute attribute = null;
-		for (AttributeFactory attributeFactory : attributeFactories)
-		{
-			if (attributeFactory.canCreate(propertyDescriptor, entityTypeCreationContext))
-			{
-				attribute = attributeFactory.createAttribute(entityType, propertyDescriptor, entityTypeCreationContext);
+		for (AttributeFactory attributeFactory : attributeFactories) {
+			if (attributeFactory.canCreate(propertyDescriptor,
+					entityTypeCreationContext)) {
+				attribute = attributeFactory.createAttribute(entityType,
+						propertyDescriptor, entityTypeCreationContext);
 				break;
 			}
 		}
 		return attribute;
 	}
 
-	protected void addAttributes(AbstractEntityType entityType)
-	{
+	protected void addAttributes(AbstractEntityType entityType) {
 		List<Attribute> attributes = new ArrayList<Attribute>();
-		for (org.atemsource.atem.impl.pojo.attribute.PropertyDescriptor propertyDescriptor : org.atemsource.atem.impl.pojo.attribute.PropertyDescriptor
-			.getPropertyDescriptors(entityType.getEntityClass(), fieldAccess))
-		{
+		for (org.atemsource.atem.impl.pojo.attribute.PropertyDescriptor propertyDescriptor : propertyDescriptorFactory
+				.getPropertyDescriptors(entityType.getEntityClass())) {
 
 			Attribute attribute = addAttribute(entityType, propertyDescriptor);
-			if (attribute != null)
-			{
+			if (attribute != null) {
 				attributes.add(attribute);
 			}
 
@@ -79,33 +84,27 @@ public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object>
 	}
 
 	@Override
-	public void afterFirstInitialization(EntityTypeRepository entityTypeRepositoryImpl)
-	{
+	public void afterFirstInitialization(
+			EntityTypeRepository entityTypeRepositoryImpl) {
 		initializeReferences();
 	}
 
 	@Override
-	public void afterInitialization()
-	{
+	public void afterInitialization() {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public boolean contains(EntityType entityType)
-	{
-		if (entityTypeClass.isInstance(entityType))
-		{
+	public boolean contains(EntityType entityType) {
+		if (entityTypeClass.isInstance(entityType)) {
 			return true;
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
 
-	protected synchronized EntityType createEntityType(final Class clazz)
-	{
+	protected synchronized EntityType createEntityType(final Class clazz) {
 		AbstractEntityType entityType;
 		entityType = beanCreator.create(entityTypeClass);
 		entityType.setEntityClass(clazz);
@@ -118,44 +117,34 @@ public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object>
 		return entityType;
 	}
 
-	protected EntityType createEntityType(String entityName)
-	{
+	protected EntityType createEntityType(String entityName) {
 		Class clazz;
-		try
-		{
+		try {
 			clazz = Class.forName(entityName);
-		}
-		catch (ClassNotFoundException e)
-		{
+		} catch (ClassNotFoundException e) {
 			return null;
 		}
-		if (!isAvailable(clazz))
-		{
+		if (!isAvailable(clazz)) {
 			return null;
 		}
 		return createEntityType(clazz);
 	}
 
-	public List<AttributeFactory> getAttributeFactories()
-	{
+	public List<AttributeFactory> getAttributeFactories() {
 		return attributeFactories;
 	}
 
-	public Class getEntityClass()
-	{
+	public Class getEntityClass() {
 		return entityClass;
 	}
 
 	@Override
-	public EntityType getEntityType(Class clazz)
-	{
-		if (isAvailable(clazz))
-		{
+	public EntityType getEntityType(Class clazz) {
+		if (isAvailable(clazz)) {
 			return null;
 		}
 		EntityType entityType = super.getEntityType(clazz);
-		if (entityType == null)
-		{
+		if (entityType == null) {
 			entityType = createEntityType(clazz);
 
 		}
@@ -163,23 +152,17 @@ public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object>
 	}
 
 	@Override
-	public EntityType<Object> getEntityType(Object entity)
-	{
-		if (entity == null)
-		{
+	public EntityType<Object> getEntityType(Object entity) {
+		if (entity == null) {
 			return null;
-		}
-		else
-		{
+		} else {
 			return getEntityType(entity.getClass());
 		}
 	}
 
 	@Override
-	public EntityType getEntityType(String entityName)
-	{
-		if (nonAvailableEntityNames.contains(entityName))
-		{
+	public EntityType getEntityType(String entityName) {
+		if (nonAvailableEntityNames.contains(entityName)) {
 			return null;
 		}
 		EntityType entityType = super.getEntityType(entityName);
@@ -188,23 +171,20 @@ public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object>
 		// {
 		// entityType = createEntityType(entityName);
 		// }
-		if (entityType == null)
-		{
+		if (entityType == null) {
 			nonAvailableEntityNames.add(entityName);
 		}
 		return entityType;
 	}
 
 	@Override
-	public EntityType getEntityTypeReference(Class clazz)
-	{
-		if (isAvailable(clazz))
-		{
+	public EntityType getEntityTypeReference(Class clazz) {
+		if (isAvailable(clazz)) {
 			return null;
 		}
-		AbstractEntityType entityType = (AbstractEntityType) this.classToEntityTypes.get(clazz);
-		if (entityType == null)
-		{
+		AbstractEntityType entityType = (AbstractEntityType) this.classToEntityTypes
+				.get(clazz);
+		if (entityType == null) {
 			entityType = beanCreator.create(entityTypeClass);
 			entityType.setEntityClass(clazz);
 			entityType.setCode(clazz.getName());
@@ -217,48 +197,40 @@ public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object>
 	}
 
 	@Override
-	public EntityType getEntityTypeReference(String entityName)
-	{
+	public EntityType getEntityTypeReference(String entityName) {
 		Class clazz;
-		try
-		{
+		try {
 			clazz = Class.forName(entityName);
-		}
-		catch (ClassNotFoundException e)
-		{
+		} catch (ClassNotFoundException e) {
 			return null;
 		}
 		return getEntityTypeReference(clazz);
 	}
 
-	public String getIncludedPackage()
-	{
+	public String getIncludedPackage() {
 		return includedPackage;
 	}
 
 	@Override
-	public void initialize(EntityTypeCreationContext entityTypeCreationContext)
-	{
+	public void initialize(EntityTypeCreationContext entityTypeCreationContext) {
 		this.entityTypeCreationContext = entityTypeCreationContext;
 
 		initializeLookups();
 	}
 
-	protected void initializeEntityType(AbstractEntityType entityType)
-	{
+	protected void initializeEntityType(AbstractEntityType entityType) {
 		Class clazz = entityType.getEntityClass();
-		 Class superclass = clazz.getSuperclass();
-		if (clazz.isInterface() && clazz.getInterfaces().length==1) {
+		Class superclass = clazz.getSuperclass();
+		if (clazz.isInterface() && clazz.getInterfaces().length == 1) {
 			// TODO workaround for interface inheritance hierachy (Attribute)
-			superclass=clazz.getInterfaces()[0];
+			superclass = clazz.getInterfaces()[0];
 		}
-		if (superclass != null && !superclass.equals(Object.class))
-		{
+		if (superclass != null && !superclass.equals(Object.class)) {
 			final EntityType superType = getEntityTypeReference(superclass);
 			entityType.setSuperEntityType(superType);
-			// TODO this only works for AbstractEntityType but actually should work for all.
-			if (superType instanceof AbstractEntityType)
-			{
+			// TODO this only works for AbstractEntityType but actually should
+			// work for all.
+			if (superType instanceof AbstractEntityType) {
 				((AbstractEntityType) superType).addSubEntityType(entityType);
 			}
 		}
@@ -268,66 +240,53 @@ public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object>
 		entityTypeCreationContext.lazilyInitialized(entityType);
 	}
 
-	private void initializeReferences()
-	{
-		while (uninitializedEntityTypes.size() > 0)
-		{
-			Set<AbstractEntityType> copy = new HashSet<AbstractEntityType>(uninitializedEntityTypes);
+	private void initializeReferences() {
+		while (uninitializedEntityTypes.size() > 0) {
+			Set<AbstractEntityType> copy = new HashSet<AbstractEntityType>(
+					uninitializedEntityTypes);
 			uninitializedEntityTypes.clear();
-			for (Iterator<AbstractEntityType> iterator = copy.iterator(); iterator.hasNext();)
-			{
+			for (Iterator<AbstractEntityType> iterator = copy.iterator(); iterator
+					.hasNext();) {
 				AbstractEntityType uninitializedEntityType = iterator.next();
 				initializeEntityType(uninitializedEntityType);
 			}
 		}
 	}
 
-	protected boolean isAvailable(Class clazz)
-	{
+	protected boolean isAvailable(Class clazz) {
 		return (entityClass != null && !entityClass.isAssignableFrom(clazz))
-			|| (includedPackage != null && !clazz.getPackage().getName().startsWith(includedPackage));
+				|| (includedPackage != null && !clazz.getPackage().getName()
+						.startsWith(includedPackage));
 	}
 
-	private boolean isAvailable(String entityName)
-	{
-		AbstractEntityType<Object> abstractEntityType = nameToEntityTypes.get(entityName);
-		if (abstractEntityType != null)
-		{
+	private boolean isAvailable(String entityName) {
+		AbstractEntityType<Object> abstractEntityType = nameToEntityTypes
+				.get(entityName);
+		if (abstractEntityType != null) {
 			return true;
 		}
-		try
-		{
+		try {
 			Class.forName(entityName);
 			return true;
-		}
-		catch (ClassNotFoundException e)
-		{
+		} catch (ClassNotFoundException e) {
 			return false;
 		}
 	}
 
-	public void setAttributeFactories(List<AttributeFactory> attributeFactories)
-	{
+	public void setAttributeFactories(List<AttributeFactory> attributeFactories) {
 		this.attributeFactories = attributeFactories;
 	}
 
-	public void setEntityClass(Class entityClass)
-	{
+	public void setEntityClass(Class entityClass) {
 		this.entityClass = entityClass;
 	}
 
-	public void setEntityTypeClass(Class<? extends AbstractEntityType> entityTypeClass)
-	{
+	public void setEntityTypeClass(
+			Class<? extends AbstractEntityType> entityTypeClass) {
 		this.entityTypeClass = entityTypeClass;
 	}
 
-	public void setFieldAccess(boolean fieldAccess)
-	{
-		this.fieldAccess = fieldAccess;
-	}
-
-	public void setIncludedPackage(String includedPackage)
-	{
+	public void setIncludedPackage(String includedPackage) {
 		this.includedPackage = includedPackage;
 	}
 

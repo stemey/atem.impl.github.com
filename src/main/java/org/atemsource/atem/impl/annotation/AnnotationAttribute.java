@@ -1,4 +1,4 @@
-package org.atemsource.atem.impl.meta;
+package org.atemsource.atem.impl.annotation;
 
 import java.lang.annotation.Annotation;
 
@@ -34,7 +34,7 @@ private EntityType<J> annotationType;
 
 	@Override
 	public String getCode() {
-		return annotationType.getJavaType().getSimpleName();
+		return annotationType.getJavaType().getName();
 	}
 
 

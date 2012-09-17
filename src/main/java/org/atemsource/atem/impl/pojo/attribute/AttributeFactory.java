@@ -72,7 +72,7 @@ public abstract class AttributeFactory
 	protected void setStandardProperties(final AbstractEntityType entityType,
 		final PropertyDescriptor propertyDescriptor, final AbstractAttribute attribute)
 	{
-		String propertyName = propertyDescriptor.getName();
+		String propertyName = propertyDescriptor.getPropertyName();
 		attribute.setEntityType(entityType);
 		attribute.setCode(propertyName);
 		attribute.setWriteable(propertyDescriptor.isWritable());

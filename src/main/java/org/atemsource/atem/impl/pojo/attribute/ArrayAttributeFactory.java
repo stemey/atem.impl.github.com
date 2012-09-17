@@ -63,8 +63,7 @@ public class ArrayAttributeFactory extends AttributeFactory
 		attribute = new ArrayAttributeImpl();
 		((ArrayAttributeImpl) attribute).setTargetType(targetType);
 		setStandardProperties(entityType, propertyDescriptor, attribute);
-		((ArrayAttributeImpl) attribute).setAccessor(new PojoAccessor(propertyDescriptor.getField(), propertyDescriptor
-			.getReadMethod(), propertyDescriptor.getWriteMethod(), propertyDescriptor.isFieldAccess()));
+		((ArrayAttributeImpl) attribute).setAccessor(propertyDescriptor.getAccessor());
 
 		return attribute;
 

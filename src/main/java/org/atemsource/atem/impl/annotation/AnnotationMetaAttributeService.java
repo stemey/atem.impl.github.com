@@ -1,4 +1,4 @@
-package org.atemsource.atem.impl.meta;
+package org.atemsource.atem.impl.annotation;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
@@ -8,6 +8,7 @@ import org.atemsource.atem.api.attribute.relation.SingleAttribute;
 import org.atemsource.atem.api.extension.MetaAttributeService;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.Type;
+import org.atemsource.atem.api.type.TypeFilter;
 import org.atemsource.atem.spi.EntityTypeCreationContext;
 import org.atemsource.atem.spi.EntityTypeSubrepository;
 
@@ -32,19 +33,29 @@ public class AnnotationMetaAttributeService implements MetaAttributeService {
 		return null;
 	}
 	
-	private EntityTypeSubrepository<?> annotationRepository;
-
-	private Set<Class<? extends Annotation>> annotationClasses;
+	
+	private TypeFilter<?> annotationTypeFilter;
 
 	@Override
 	public void initialize(EntityTypeCreationContext ctx) {
 		EntityType<?> attributeType = ctx
 				.getEntityTypeReference(Attribute.class);
-		for (Class<? extends Annotation> annotationClass : annotationClasses) {
-			EntityType<?> entityTypeReference = ctx.getEntityTypeReference(annotationClass);
+		for (EntityType<?> entityTypeReference : annotationTypeFilter.getEntityTypes()) {
 			ctx.addMetaAttribute(attributeType, new AnnotationAttribute(
 					attributeType,entityTypeReference));
 		}
 	}
+
+	public TypeFilter<?> getAnnotationTypeFilter() {
+		return annotationTypeFilter;
+	}
+
+	public void setAnnotationTypeFilter(TypeFilter<?> annotationTypeFilter) {
+		this.annotationTypeFilter = annotationTypeFilter;
+	}
+
+
+
+
 
 }
