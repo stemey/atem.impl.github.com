@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.Map;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.annotation.MapAssociation;
-import org.atemsource.atem.api.type.PrimitiveType;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.AbstractEntityType;
 import org.atemsource.atem.impl.common.attribute.MapAttributeImpl;
@@ -41,15 +40,15 @@ public class MapAssociationAttributeFactory extends AttributeFactory
 		MapAttributeImpl attribute;
 
 		MapAssociation association = propertyDescriptor.getAnnotation(MapAssociation.class);
+
 		Type targeType = association == null ? null : ctx.getTypeReference(association.targetType());
+		Type keyType = association == null ? null : ctx.getTypeReference(association.keyType());
 		attribute = beanCreator.create(MapAttributeImpl.class);
 
-		PrimitiveType keyType = association == null ? null : primitiveTypeFactory.getPrimitiveType(association.keyType());
 		attribute.setTargetType(targeType);
 		attribute.setKeyType(keyType);
 		setStandardProperties(entityType, propertyDescriptor, attribute);
-		attribute.setAccessor(new PojoAccessor(propertyDescriptor.getField(), propertyDescriptor.getReadMethod(),
-			propertyDescriptor.getWriteMethod(), false));
+		attribute.setAccessor(propertyDescriptor.getAccessor());
 		return attribute;
 
 	}

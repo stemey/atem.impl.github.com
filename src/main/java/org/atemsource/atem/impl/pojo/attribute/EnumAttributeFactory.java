@@ -37,8 +37,7 @@ public class EnumAttributeFactory extends AttributeFactory
 		EntityTypeCreationContext ctx)
 	{
 		PrimitiveAttributeImpl attribute = new PrimitiveAttributeImpl();
-		attribute.setAccessor(new PojoAccessor(propertyDescriptor.getField(), propertyDescriptor.getReadMethod(),
-			propertyDescriptor.getWriteMethod(), propertyDescriptor.isFieldAccess()));
+		attribute.setAccessor(propertyDescriptor.getAccessor());
 		setStandardProperties(entityType, propertyDescriptor, attribute);
 		attribute.setTargetType(primitiveTypeFactory.getPrimitiveType(propertyDescriptor.getPropertyType()));
 		return attribute;

@@ -23,83 +23,58 @@ import org.atemsource.atem.spi.EntityTypeCreationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-
 @Component("pojo-SingleAssociationAttributeFactory")
-public class SingleAssociationAttributeFactory extends AttributeFactory
-{
+public class SingleAssociationAttributeFactory extends AttributeFactory {
 
 	@Autowired
 	private BeanCreator beanCreator;
 
 	@Override
-	public boolean canCreate(PropertyDescriptor propertyDescriptor, EntityTypeCreationContext ctx)
-	{
-		if (propertyDescriptor.getReadMethod() != null && propertyDescriptor.getPropertyType().isArray())
-		{
+	public boolean canCreate(PropertyDescriptor propertyDescriptor,
+			EntityTypeCreationContext ctx) {
+		if (propertyDescriptor.getPropertyType().isArray()) {
 			return false;
 		}
-		if (propertyDescriptor.getField() != null && propertyDescriptor.getField().getType().isArray())
-		{
-			return false;
-		}
-		EntityType entityType = ctx.getEntityTypeReference(propertyDescriptor.getPropertyType());
+
+		EntityType entityType = ctx.getEntityTypeReference(propertyDescriptor
+				.getPropertyType());
 		return entityType == null || entityType instanceof EntityType<?>;
 	}
 
 	@Override
-	public Attribute createAttribute(AbstractEntityType entityType, PropertyDescriptor propertyDescriptor,
-		EntityTypeCreationContext ctx)
-	{
-		final Method readMethod = propertyDescriptor.getReadMethod();
-		Association association = null;
-		if (readMethod != null)
-		{
-			association = readMethod.getAnnotation(Association.class);
-		}
-		if (association == null && propertyDescriptor.getField() != null)
-		{
-			association = propertyDescriptor.getField().getAnnotation(Association.class);
-		}
-		NotNull notNull = null;
-		if (readMethod != null)
-		{
-			notNull = readMethod.getAnnotation(NotNull.class);
-		}
-		if (notNull == null && propertyDescriptor.getField() != null)
-		{
-			notNull = propertyDescriptor.getField().getAnnotation(NotNull.class);
-		}
+	public Attribute createAttribute(AbstractEntityType entityType,
+			PropertyDescriptor propertyDescriptor, EntityTypeCreationContext ctx) {
+		Association association = propertyDescriptor
+				.getAnnotation(Association.class);
+		NotNull notNull = propertyDescriptor.getAnnotation(NotNull.class);
 
-		EntityType associatedEntityType = ctx.getEntityTypeReference(propertyDescriptor.getPropertyType());
-		SingleAttributeImpl attribute = beanCreator.create(SingleAssociationAttribute.class);
-		if (notNull != null)
-		{
+		EntityType associatedEntityType = ctx
+				.getEntityTypeReference(propertyDescriptor.getPropertyType());
+		SingleAttributeImpl attribute = beanCreator
+				.create(SingleAssociationAttribute.class);
+		if (notNull != null) {
 			attribute.setRequired(true);
 		}
-		if (association != null)
-		{
+		if (association != null) {
 			attribute.setTargetType(associatedEntityType);
-		}
-		else
-		{
-			attribute.setTargetType(ctx.getEntityTypeReference(propertyDescriptor.getPropertyType()));
+		} else {
+			attribute.setTargetType(ctx
+					.getEntityTypeReference(propertyDescriptor
+							.getPropertyType()));
 		}
 
-		attribute.setAccessor(new PojoAccessor(propertyDescriptor.getField(), propertyDescriptor.getReadMethod(),
-			propertyDescriptor.getWriteMethod(), propertyDescriptor.isFieldAccess()));
+		attribute.setAccessor(propertyDescriptor.getAccessor());
 		setStandardProperties(entityType, propertyDescriptor, attribute);
 		return attribute;
 	}
 
 	@Override
-	public Collection<Class> getClasses()
-	{
+	public Collection<Class> getClasses() {
 		return null;
 	}
 
 	@Override
-	public Class getCollectionClass()
-	{
+	public Class getCollectionClass() {
 		return null;
 	}
 

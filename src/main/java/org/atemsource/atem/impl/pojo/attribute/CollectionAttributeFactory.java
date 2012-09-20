@@ -105,16 +105,14 @@ public class CollectionAttributeFactory extends AttributeFactory
 			targeType = ctx.getEntityTypeReference(association.targetType());
 			attribute.setTargetType(targeType);
 			setStandardProperties(entityType, propertyDescriptor, attribute);
-			attribute.setAccessor(new PojoAccessor(propertyDescriptor.getField(), propertyDescriptor.getReadMethod(),
-				propertyDescriptor.getWriteMethod(), propertyDescriptor.isFieldAccess()));
+			attribute.setAccessor(propertyDescriptor.getAccessor());
 		}
 		else
 		{
 
 			attribute.setTargetType(targeType);
 			setStandardProperties(entityType, propertyDescriptor, attribute);
-			attribute.setAccessor(new PojoAccessor(propertyDescriptor.getField(), propertyDescriptor.getReadMethod(),
-				propertyDescriptor.getWriteMethod(), false));
+			attribute.setAccessor(propertyDescriptor.getAccessor());
 		}
 
 		return attribute;

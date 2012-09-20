@@ -14,9 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.inject.Inject;
-
 import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.infrastructure.exception.TechnicalException;
@@ -47,11 +45,11 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 
 	private Class<? extends AbstractEntityType> entityTypeClass;
 
-	private boolean fieldAccess = false;
-
 	private String includedPackage;
 
 	protected Set<String> nonAvailableEntityNames = new HashSet<String>();
+
+	private PropertyDescriptorFactory propertyDescriptorFactory;
 
 	@Inject
 	private ClasspathScanner scanner;
@@ -74,8 +72,8 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 	protected void addAttributes(AbstractEntityType entityType)
 	{
 		List<Attribute> attributes = new ArrayList<Attribute>();
-		for (org.atemsource.atem.impl.pojo.attribute.PropertyDescriptor propertyDescriptor : org.atemsource.atem.impl.pojo.attribute.PropertyDescriptor
-			.getPropertyDescriptors(entityType.getEntityClass(), fieldAccess))
+		for (org.atemsource.atem.impl.pojo.attribute.PropertyDescriptor propertyDescriptor : propertyDescriptorFactory
+			.getPropertyDescriptors(entityType.getEntityClass()))
 		{
 
 			Attribute attribute = addAttribute(entityType, propertyDescriptor);
@@ -214,6 +212,11 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 		return includedPackage;
 	}
 
+	public PropertyDescriptorFactory getPropertyDescriptorFactory()
+	{
+		return propertyDescriptorFactory;
+	}
+
 	@Override
 	public void initialize(EntityTypeCreationContext entityTypeCreationContext)
 	{
@@ -229,7 +232,8 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 		{
 			final EntityType superType = getEntityTypeReference(superclass);
 			entityType.setSuperEntityType(superType);
-			// TODO this only works for AbstractEntityType but actually should work for all.
+			// TODO this only works for AbstractEntityType but actually should
+			// work for all.
 			if (superType instanceof AbstractEntityType)
 			{
 				((AbstractEntityType) superType).addSubEntityType(entityType);
@@ -244,8 +248,10 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 
 	protected boolean isAvailable(Class clazz)
 	{
+		// TODO package is null for enum types and inner types?
 		return (entityClass != null && !entityClass.isAssignableFrom(clazz))
-			|| (includedPackage != null && !clazz.getPackage().getName().startsWith(includedPackage));
+			|| (includedPackage != null && clazz.getPackage() != null && !clazz.getPackage().getName()
+				.startsWith(includedPackage));
 	}
 
 	private boolean isAvailable(String entityName)
@@ -321,14 +327,14 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 		this.entityTypeClass = entityTypeClass;
 	}
 
-	public void setFieldAccess(boolean fieldAccess)
-	{
-		this.fieldAccess = fieldAccess;
-	}
-
 	public void setIncludedPackage(String includedPackage)
 	{
 		this.includedPackage = includedPackage;
+	}
+
+	public void setPropertyDescriptorFactory(PropertyDescriptorFactory propertyDescriptorFactory)
+	{
+		this.propertyDescriptorFactory = propertyDescriptorFactory;
 	}
 
 }

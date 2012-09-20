@@ -8,7 +8,6 @@
 package org.atemsource.atem.impl.json;
 
 import javax.annotation.PostConstruct;
-
 import org.atemsource.atem.api.BeanLocator;
 import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.type.EntityType;
@@ -43,12 +42,14 @@ public class JsonEntityTypeRepository extends AbstractMetaDataRepository<ObjectN
 
 	private String typeProperty = "_type";
 
+	@Override
 	public void afterFirstInitialization(EntityTypeRepository entityTypeRepositoryImpl)
 	{
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public void afterInitialization()
 	{
 	}
@@ -109,6 +110,11 @@ public class JsonEntityTypeRepository extends AbstractMetaDataRepository<ObjectN
 				return null;
 			}
 		}
+		else if (entity instanceof JsonNode)
+		{
+			return null;
+		}
+
 		return null;
 	}
 
@@ -132,6 +138,7 @@ public class JsonEntityTypeRepository extends AbstractMetaDataRepository<ObjectN
 		// classToEntityTypes.put(ArrayNode.class, arrayNodeType);
 	}
 
+	@Override
 	public void initialize(EntityTypeCreationContext entityTypeCreationContext)
 	{
 		this.entityTypeCreationContext = entityTypeCreationContext;
