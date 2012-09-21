@@ -16,12 +16,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.Resource;
-
 import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.Attribute;
-import org.atemsource.atem.api.attribute.JavaMetaData;
 import org.atemsource.atem.api.attribute.annotation.Cardinality;
 import org.atemsource.atem.api.infrastructure.exception.TechnicalException;
 import org.atemsource.atem.api.service.AttributeQuery;
@@ -58,9 +55,9 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 	@Resource
 	protected EntityTypeRepository entityTypeRepository;
 
-	private Collection<Attribute> incomingAssociations = new ArrayList<Attribute>();
+	private final Collection<Attribute> incomingAssociations = new ArrayList<Attribute>();
 
-	private Map<String, Attribute> metaAttributes = new HashMap<String, Attribute>();
+	private final Map<String, Attribute> metaAttributes = new HashMap<String, Attribute>();
 
 	private Set<EntityType<?>> selfAndSubTypes = new HashSet<EntityType<?>>();
 
@@ -97,6 +94,11 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 	public void addMetaAttribute(Attribute<?, ?> attribute)
 	{
 		metaAttributes.put(attribute.getCode(), attribute);
+	}
+
+	public void addMixin(EntityType<?> mixinType)
+	{
+		throw new UnsupportedOperationException("mixins are not supported by this type");
 	}
 
 	public void addService(final Class key, final Object service)
@@ -188,10 +190,18 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 	public List<Attribute> getAttributes()
 	{
 		List<Attribute> allAttributes = new ArrayList<Attribute>();
+		Set<String> attributeCodes = new HashSet<String>();
+		attributeCodes.addAll(this.attributeCodes.keySet());
 		allAttributes.addAll(getDeclaredAttributes());
 		if (getSuperEntityType() != null)
 		{
-			allAttributes.addAll(getSuperEntityType().getAttributes());
+			for (Attribute attribute : getSuperEntityType().getAttributes())
+			{
+				if (!attributeCodes.contains(attribute.getCode()))
+				{
+					allAttributes.add(attribute);
+				}
+			}
 		}
 		return allAttributes;
 	}
@@ -256,6 +266,7 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 		return attribute;
 	}
 
+	@Override
 	public Collection<Attribute> getMetaAttributes()
 	{
 		return metaAttributes.values();
@@ -279,13 +290,19 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 	}
 
 	@Override
+	public Set<EntityType> getSubEntityTypes()
+	{
+		return subEntityTypes;
+	}
+
+	@Override
 	public Set<EntityType> getSubEntityTypes(final boolean includeAbstract)
 	{
 		return subEntityTypes;
 	}
 
 	@Override
-	public EntityType getSuperEntityType()
+	public EntityType<J> getSuperEntityType()
 	{
 		return superEntityType;
 	}
@@ -398,9 +415,9 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 				return false;
 			}
 		}
-		if (getSuperEntityType() != null)
+		if (superEntityType != null)
 		{
-			return getSuperEntityType().isEqual(entity, other);
+			return superEntityType.isEqual(entity, other);
 		}
 		else
 		{
@@ -486,10 +503,6 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 				visitor.visitSubView(context, subType);
 			}
 		}
-	}
-
-	public void addMixin(EntityType<?> mixinType) {
-		throw new UnsupportedOperationException("mixins are not supported by this type");
 	}
 
 }
