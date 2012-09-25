@@ -37,6 +37,9 @@ public class AttributeSubrepository extends ScannedPojoEntityTypeRepository {
 
 	@Override
 	public EntityType getEntityType(Class clazz) {
+		if (!isAvailable(clazz)) {
+			return null;
+		}
 		EntityType entityType = super.getEntityType(clazz);
 		if (entityType == null) {
 			entityType = getFromInterfaces(clazz);
@@ -48,17 +51,17 @@ public class AttributeSubrepository extends ScannedPojoEntityTypeRepository {
 	}
 
 	protected EntityType getFromInterfaces(Class clazz) {
-		if (clazz==null) {
+		if (clazz == null) {
 			return null;
 		}
-		for (Class possibleTypeInterface:clazz.getInterfaces()) {
-			EntityType entityType=getEntityType(possibleTypeInterface);
-			if (entityType!=null) {
+		for (Class possibleTypeInterface : clazz.getInterfaces()) {
+			EntityType entityType = getEntityType(possibleTypeInterface);
+			if (entityType != null) {
 				return entityType;
 			}
 		}
-		EntityType entityType=getFromInterfaces(clazz.getSuperclass());
-		if (entityType!=null) {
+		EntityType entityType = getFromInterfaces(clazz.getSuperclass());
+		if (entityType != null) {
 			return entityType;
 		}
 		return null;
