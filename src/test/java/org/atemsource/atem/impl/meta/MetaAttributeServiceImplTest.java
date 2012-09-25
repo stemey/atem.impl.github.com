@@ -13,6 +13,8 @@ import junit.framework.Assert;
 
 import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.Attribute;
+import org.atemsource.atem.api.attribute.relation.SingleAttribute;
+import org.atemsource.atem.api.extension.MetaAttributeService;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.impl.pojo.EntityB;
 import org.junit.Test;
@@ -24,7 +26,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @ContextConfiguration(locations = {"classpath:/test/atem/pojo/metaAttributeService.xml"})
 @RunWith(SpringJUnit4ClassRunner.class)
-public class MetaAttributeServiceTest
+public class MetaAttributeServiceImplTest
 {
 
 	@Resource
@@ -40,7 +42,7 @@ public class MetaAttributeServiceTest
 		EntityType<MetaDataExample> metaDataType = entityTypeRepository.getEntityType(MetaDataExample.class);
 		EntityType<EntityB> entityType = entityTypeRepository.getEntityType(EntityB.class);
 		Attribute attribute = entityType.getAttribute("singleA");
-		SingleMetaAttribute<MetaDataExample> addMetaAttribute =
+		SingleAttribute<MetaDataExample> testMetaAttribute =
 			dynamicMetaAttributeService.addSingleMetaAttribute("test", holderType, metaDataType);
 		MetaDataExample ex = new MetaDataExample();
 		ex.setData("hallo");

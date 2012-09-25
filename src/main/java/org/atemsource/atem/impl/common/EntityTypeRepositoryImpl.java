@@ -14,6 +14,7 @@ import java.util.List;
 import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.extension.EntityTypePostProcessor;
+import org.atemsource.atem.api.extension.EntityTypeRepositoryPostProcessor;
 import org.atemsource.atem.api.extension.MetaAttributeService;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.PrimitiveType;
@@ -27,9 +28,8 @@ import org.atemsource.atem.spi.Phase;
 import org.atemsource.atem.spi.PhaseEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
-public class EntityTypeRepositoryImpl implements EntityTypeRepository, EntityTypeCreationContext
-{
+public class EntityTypeRepositoryImpl implements EntityTypeRepository,
+		EntityTypeCreationContext {
 
 	@Autowired
 	private BeanCreator beanCreator;
@@ -40,49 +40,45 @@ public class EntityTypeRepositoryImpl implements EntityTypeRepository, EntityTyp
 
 	private List<EntityTypeRepositoryListener> listeners = new ArrayList<EntityTypeRepositoryListener>();
 
-	private Collection<MetaAttributeService> metaAttributeServices;
+	private Collection<EntityTypeRepositoryPostProcessor> entityTypeRepositoryPostProcessors;
 
 	@Autowired
 	private PrimitiveTypeFactory primitiveTypeFactory;
 
 	private boolean secondPhase;
 
-	public void addIncomingAssociation(EntityType entityType, Attribute<?, ?> incomingRelation)
-	{
-		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
-		{
-			if (entityTypeSubrepository.contains(entityType))
-			{
-				entityTypeSubrepository.addIncomingAssociation(entityType, incomingRelation);
+	public void addIncomingAssociation(EntityType entityType,
+			Attribute<?, ?> incomingRelation) {
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories) {
+			if (entityTypeSubrepository.contains(entityType)) {
+				entityTypeSubrepository.addIncomingAssociation(entityType,
+						incomingRelation);
 			}
 		}
 	}
 
 	@Override
-	public void addListener(EntityTypeRepositoryListener entityTypeRepositoryListener)
-	{
+	public void addListener(
+			EntityTypeRepositoryListener entityTypeRepositoryListener) {
 		this.listeners.add(entityTypeRepositoryListener);
 	}
 
 	@Override
-	public void addMetaAttribute(EntityType entityType, Attribute<?, ?> metaAttribute)
-	{
-		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
-		{
-			if (entityTypeSubrepository.contains(entityType))
-			{
-				entityTypeSubrepository.addMetaAttribute(entityType, metaAttribute);
+	public void addMetaAttribute(EntityType entityType,
+			Attribute<?, ?> metaAttribute) {
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories) {
+			if (entityTypeSubrepository.contains(entityType)) {
+				entityTypeSubrepository.addMetaAttribute(entityType,
+						metaAttribute);
 			}
 		}
 	}
 
-	public EntityType getEntityType(Class clazz)
-	{
-		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
-		{
-			EntityType entityType = entityTypeSubrepository.getEntityType(clazz);
-			if (entityType != null)
-			{
+	public EntityType getEntityType(Class clazz) {
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories) {
+			EntityType entityType = entityTypeSubrepository
+					.getEntityType(clazz);
+			if (entityType != null) {
 				return entityType;
 			}
 		}
@@ -90,209 +86,166 @@ public class EntityTypeRepositoryImpl implements EntityTypeRepository, EntityTyp
 	}
 
 	@Override
-	public <J> EntityType<J> getEntityType(J entity)
-	{
-		for (EntityTypeSubrepository subrepository : entityTypeSubrepositories)
-		{
+	public <J> EntityType<J> getEntityType(J entity) {
+		for (EntityTypeSubrepository subrepository : entityTypeSubrepositories) {
 			EntityType entityType = subrepository.getEntityType(entity);
-			if (entityType != null)
-			{
+			if (entityType != null) {
 				return entityType;
 			}
 		}
 		return null;
 	}
 
-	public EntityType getEntityType(String typeCode)
-	{
-		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
-		{
-			EntityType entityType = entityTypeSubrepository.getEntityType(typeCode);
-			if (entityType != null)
-			{
+	public EntityType getEntityType(String typeCode) {
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories) {
+			EntityType entityType = entityTypeSubrepository
+					.getEntityType(typeCode);
+			if (entityType != null) {
 				return entityType;
 			}
 		}
 		return null;
 	}
 
-	public EntityType getEntityTypeReference(Class clazz)
-	{
+	public EntityType getEntityTypeReference(Class clazz) {
 		EntityType entityType = null;
-		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
-		{
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories) {
 			entityType = entityTypeSubrepository.getEntityTypeReference(clazz);
-			if (entityType != null)
-			{
+			if (entityType != null) {
 				break;
 			}
 
 		}
-		if (entityType == null)
-		{
+		if (entityType == null) {
 			return null;
-		}
-		else if (secondPhase)
-		{
+		} else if (secondPhase) {
 			performInitializationBeforeSecondPhase();
 		}
 		return entityType;
 	}
 
-	public EntityType getEntityTypeReference(String typeCode)
-	{
+	public EntityType getEntityTypeReference(String typeCode) {
 		EntityType entityType = null;
-		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
-		{
-			entityType = entityTypeSubrepository.getEntityTypeReference(typeCode);
-			if (entityType != null)
-			{
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories) {
+			entityType = entityTypeSubrepository
+					.getEntityTypeReference(typeCode);
+			if (entityType != null) {
 				break;
 			}
 		}
-		if (entityType == null)
-		{
+		if (entityType == null) {
 			return null;
-		}
-		else if (secondPhase)
-		{
+		} else if (secondPhase) {
 			performInitializationBeforeSecondPhase();
 		}
 		return entityType;
 
 	}
 
-	public Collection<EntityType<?>> getEntityTypes()
-	{
+	public Collection<EntityType<?>> getEntityTypes() {
 		List<EntityType<?>> entityTypes = new ArrayList<EntityType<?>>();
-		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
-		{
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories) {
 			entityTypes.addAll(entityTypeSubrepository.getEntityTypes());
 		}
 		return entityTypes;
 	}
 
-	public <J> Type<J> getType(Class<J> clazz)
-	{
-		PrimitiveType primitiveType = primitiveTypeFactory.getPrimitiveType(clazz);
-		if (primitiveType != null)
-		{
+	public <J> Type<J> getType(Class<J> clazz) {
+		PrimitiveType primitiveType = primitiveTypeFactory
+				.getPrimitiveType(clazz);
+		if (primitiveType != null) {
 			return primitiveType;
-		}
-		else
-		{
+		} else {
 			return getEntityType(clazz);
 		}
 	}
 
 	@Override
-	public <J> Type<J> getType(J entity)
-	{
-		PrimitiveType primitiveType = primitiveTypeFactory.getPrimitiveType(entity.getClass());
-		if (primitiveType == null)
-		{
+	public <J> Type<J> getType(J entity) {
+		PrimitiveType primitiveType = primitiveTypeFactory
+				.getPrimitiveType(entity.getClass());
+		if (primitiveType == null) {
 			return getEntityType(entity);
-		}
-		else
-		{
+		} else {
 			return primitiveType;
 		}
 	}
 
-	public Type getTypeReference(Class clazz)
-	{
-		PrimitiveType primitiveType = primitiveTypeFactory.getPrimitiveType(clazz);
-		if (primitiveType != null)
-		{
+	public Type getTypeReference(Class clazz) {
+		PrimitiveType primitiveType = primitiveTypeFactory
+				.getPrimitiveType(clazz);
+		if (primitiveType != null) {
 			return primitiveType;
-		}
-		else
-		{
+		} else {
 
 			return getEntityTypeReference(clazz);
 		}
 	}
 
-	public boolean hasEntityTypeReference(Class entityClass)
-	{
-		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
-		{
-			if (entityTypeSubrepository.hasEntityTypeReference(entityClass))
-			{
+	public boolean hasEntityTypeReference(Class entityClass) {
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories) {
+			if (entityTypeSubrepository.hasEntityTypeReference(entityClass)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public void init()
-	{
-		entityTypePostProcessors = beanCreator.getBeans(EntityTypePostProcessor.class);
-		metaAttributeServices = beanCreator.getBeans(MetaAttributeService.class);
-		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
-		{
+	public void init() {
+		entityTypePostProcessors = beanCreator
+				.getBeans(EntityTypePostProcessor.class);
+		entityTypeRepositoryPostProcessors = beanCreator
+				.getBeans(EntityTypeRepositoryPostProcessor.class);
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories) {
 			entityTypeSubrepository.initialize(this);
 		}
-		for (MetaAttributeService metaAttributeService : metaAttributeServices)
-		{
-			metaAttributeService.initialize(this);
+		for (EntityTypeRepositoryPostProcessor entityTypeRepositoryPostProcessor : entityTypeRepositoryPostProcessors) {
+			entityTypeRepositoryPostProcessor.initialize(this);
 		}
 		onPhase(Phase.ENTITY_TYPES_INITIALIZED);
-		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
-		{
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories) {
 			entityTypeSubrepository.afterFirstInitialization(this);
 		}
-		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
-		{
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories) {
 			entityTypeSubrepository.initializeIncomingAssociations();
 		}
 		secondPhase = true;
-		for (EntityType entityType : getEntityTypes())
-		{
-			for (EntityTypePostProcessor entityTypePostProcessor : entityTypePostProcessors)
-			{
+		for (EntityType entityType : getEntityTypes()) {
+			for (EntityTypePostProcessor entityTypePostProcessor : entityTypePostProcessors) {
 				entityTypePostProcessor.postProcessEntityType(this, entityType);
 			}
 		}
-		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
-		{
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories) {
 			entityTypeSubrepository.afterInitialization();
 		}
 	}
 
-	public void lazilyInitialized(EntityType entityType)
-	{
-		for (EntityTypePostProcessor entityTypePostProcessor : entityTypePostProcessors)
-		{
+	public void lazilyInitialized(EntityType entityType) {
+		for (EntityTypePostProcessor entityTypePostProcessor : entityTypePostProcessors) {
 			entityTypePostProcessor.postProcessEntityType(this, entityType);
 		}
 	}
 
 	@Override
-	public void onPhase(Phase phase)
-	{
-		for (EntityTypeRepositoryListener listener : listeners)
-		{
+	public void onPhase(Phase phase) {
+		for (EntityTypeRepositoryListener listener : listeners) {
 			listener.onEvent(new PhaseEvent(this, phase));
 		}
 	}
 
-	private void performInitializationBeforeSecondPhase()
-	{
-		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
-		{
+	private void performInitializationBeforeSecondPhase() {
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories) {
 			entityTypeSubrepository.afterFirstInitialization(this);
 		}
 	}
 
 	@Override
-	public void registerType(Class<?> clazz, PrimitiveType primitiveType)
-	{
+	public void registerType(Class<?> clazz, PrimitiveType primitiveType) {
 		primitiveTypeFactory.registerType(clazz, primitiveType);
 	}
 
-	public void setRepositories(List<EntityTypeSubrepository> entityTypeSubrepositories)
-	{
+	public void setRepositories(
+			List<EntityTypeSubrepository> entityTypeSubrepositories) {
 		this.entityTypeSubrepositories = entityTypeSubrepositories;
 	}
 
