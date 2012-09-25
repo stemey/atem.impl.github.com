@@ -27,45 +27,11 @@
 
 	<!-- Scans for application @Components to deploy -->
 
-	<import resource="classpath:/atem/dynamic/entitytype.xml" />
 	<import resource="common.xml" />
 
-	<bean id="atem-dynamic-MetaAttributeService"
-		class="org.atemsource.atem.impl.meta.MetaAttributeService">
-		<property name="dynamicEntityTypeSubrepository" ref="atem-dynamicEntity-repository" />
+	<bean id="atem-memory-metaAttributeService"
+		class="org.atemsource.atem.impl.meta.MetaAttributeServiceImpl">
 	</bean>
-
-	<bean id="atem-dynamicEntity-repository"
-		class="org.atemsource.atem.impl.dynamic.DynamicEntityTypeRepository">
-		<property name="entityTypeServices">
-			<map>
-				<entry key="org.atemsource.atem.api.service.PersistenceService"
-					value-ref="atem-pojo-store" />
-				<entry
-					key="org.atemsource.atem.api.service.FindByAttributeService"
-					value-ref="atem-pojo-store" />
-				<entry key="org.atemsource.atem.api.service.FindByTypedIdService"
-					value-ref="atem-pojo-store" />
-				<entry key="org.atemsource.atem.api.service.IdentityService"
-					value-ref="atem-dynamic-identityService" />
-			</map>
-		</property>
-	</bean>
-
-
-
-	<bean id="atem-dynamic-identityService"
-		class="org.atemsource.atem.impl.common.service.AttributeIdentityService">
-		<property name="attributeCode" value="id" />
-	</bean>
-	<bean id="atem-pojo-store"
-		class="org.atemsource.atem.impl.pojo.persistence.InMemoryPojoStore"></bean>
-
-
-	
-
-
-
 
 
 

@@ -28,11 +28,8 @@
 	<!-- Scans for application @Components to deploy -->
 
 	<import resource="classpath:/atem/pojo/entitytype-example.xml" />
-
-	<bean id="dynamicMetaAttributeService"
-		class="org.atemsource.atem.impl.meta.MetaAttributeServiceImpl">
-	</bean>
-
+	<import resource="classpath:/atem/impl/memory-meta.xml" />
+	
 
 
 
