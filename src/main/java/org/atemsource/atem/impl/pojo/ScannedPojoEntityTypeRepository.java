@@ -118,10 +118,15 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 		entityType = beanCreator.create(entityTypeClass);
 		entityType.setEntityClass(clazz);
 		entityType.setCode(clazz.getName());
+		addEntityTypeToLookup(clazz, entityType);
+		return entityType;
+	}
+
+	protected void addEntityTypeToLookup(final Class clazz,
+			AbstractEntityType entityType) {
 		nameToEntityTypes.put(clazz.getName(), entityType);
 		classToEntityTypes.put(clazz, entityType);
 		entityTypes.add(entityType);
-		return entityType;
 	}
 
 	protected EntityType createEntityType(String entityName)
@@ -155,7 +160,7 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 	@Override
 	public EntityType getEntityType(Class clazz)
 	{
-		if (isAvailable(clazz))
+		if (!isAvailable(clazz))
 		{
 			return null;
 		}
@@ -185,7 +190,7 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 	@Override
 	public EntityType getEntityTypeReference(Class clazz)
 	{
-		if (isAvailable(clazz))
+		if (!isAvailable(clazz))
 		{
 			return null;
 		}
@@ -226,6 +231,15 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 
 	protected void initializeEntityType(AbstractEntityType entityType)
 	{
+		initializeTypeHierachy(entityType);
+		addAttributes(entityType);
+
+		attacheServicesToEntityType(entityType);
+		entityType.initializeIncomingAssociations(entityTypeCreationContext);
+
+	}
+
+	protected void initializeTypeHierachy(AbstractEntityType entityType) {
 		Class clazz = entityType.getEntityClass();
 		final Class superclass = clazz.getSuperclass();
 		if (superclass != null && !superclass.equals(Object.class))
@@ -239,19 +253,14 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 				((AbstractEntityType) superType).addSubEntityType(entityType);
 			}
 		}
-		addAttributes(entityType);
-
-		attacheServicesToEntityType(entityType);
-		entityType.initializeIncomingAssociations(entityTypeCreationContext);
-
 	}
 
 	protected boolean isAvailable(Class clazz)
 	{
 		// TODO package is null for enum types and inner types?
-		return (entityClass != null && !entityClass.isAssignableFrom(clazz))
-			|| (includedPackage != null && clazz.getPackage() != null && !clazz.getPackage().getName()
-				.startsWith(includedPackage));
+		return (entityClass == null || entityClass.isAssignableFrom(clazz))
+			&& (includedPackage == null || ( clazz.getPackage() != null && clazz.getPackage().getName()
+				.startsWith(includedPackage)));
 	}
 
 	private boolean isAvailable(String entityName)

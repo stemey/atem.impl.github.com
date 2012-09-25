@@ -17,6 +17,7 @@ import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.AssociationAttribute;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.annotation.Cardinality;
+import org.atemsource.atem.api.attribute.relation.SingleAttribute;
 import org.atemsource.atem.api.service.IdentityService;
 import org.atemsource.atem.api.service.PersistenceService;
 import org.atemsource.atem.api.type.EntityType;
@@ -26,9 +27,8 @@ import org.atemsource.atem.impl.common.attribute.AbstractSingleAssociationAttrib
 import org.atemsource.atem.spi.DynamicEntityTypeSubrepository;
 import org.atemsource.atem.spi.EntityTypeCreationContext;
 
-
-public class MetaAttributeService implements org.atemsource.atem.api.extension.MetaAttributeService
-{
+public class MetaAttributeService implements
+		org.atemsource.atem.api.extension.MetaAttributeService {
 
 	private static final String HOLDER_ATTRIBUTE = "holder";
 
@@ -47,93 +47,126 @@ public class MetaAttributeService implements org.atemsource.atem.api.extension.M
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.atemsource.atem.impl.meta.MS#addSingleMetaAttribute(java.lang.String,
-	 * org.atemsource.atem.api.type.EntityType, org.atemsource.atem.api.type.EntityType)
+	 * 
+	 * @see
+	 * org.atemsource.atem.impl.meta.MS#addSingleMetaAttribute(java.lang.String,
+	 * org.atemsource.atem.api.type.EntityType,
+	 * org.atemsource.atem.api.type.EntityType)
 	 */
 	@Override
-	public <J> SingleMetaAttribute<J> addSingleMetaAttribute(String name, EntityType<?> holderType,
-		EntityType<J> metaDataType)
-	{
-		EntityTypeBuilder builder =
-			dynamicEntityTypeSubrepository.createBuilder(holderType.getCode() + "-" + metaDataType.getCode() + ":" + name);
-		AbstractSingleAssociationAttribute<J> metaDataAttribute =
-			(AbstractSingleAssociationAttribute<J>) builder.addSingleAssociationAttribute(META_DATA_ATTRIBUTE,
-				metaDataType);
+	public <J> SingleMetaAttribute<J> addSingleMetaAttribute(String name,
+			EntityType<?> holderType, EntityType<J> metaDataType) {
+		EntityTypeBuilder builder = dynamicEntityTypeSubrepository
+				.createBuilder(holderType.getCode() + "-"
+						+ metaDataType.getCode() + ":" + name);
+		AbstractSingleAssociationAttribute<J> metaDataAttribute = (AbstractSingleAssociationAttribute<J>) builder
+				.addSingleAssociationAttribute(META_DATA_ATTRIBUTE,
+						metaDataType);
 		metaDataAttribute.setTargetCardinality(Cardinality.ONE);
-		AbstractSingleAssociationAttribute<J> holderAttribute =
-			(AbstractSingleAssociationAttribute<J>) builder.addSingleAssociationAttribute(HOLDER_ATTRIBUTE, holderType);
+		AbstractSingleAssociationAttribute<J> holderAttribute = (AbstractSingleAssociationAttribute<J>) builder
+				.addSingleAssociationAttribute(HOLDER_ATTRIBUTE, holderType);
 		holderAttribute.setTargetCardinality(Cardinality.ONE);
-		builder.addPrimitiveAttribute(ID_ATTRIBUTE, (PrimitiveType<J>) entityTypeRepository.getType(String.class));
+		builder.addPrimitiveAttribute(ID_ATTRIBUTE,
+				(PrimitiveType<J>) entityTypeRepository.getType(String.class));
 		EntityType<?> entityType = builder.createEntityType();
 
-		PersistenceService persistenceService = entityType.getService(PersistenceService.class);
-		if (persistenceService == null)
-		{
-			throw new IllegalArgumentException("cannot add metaData via an unpersistable intermediate type");
+		PersistenceService persistenceService = entityType
+				.getService(PersistenceService.class);
+		if (persistenceService == null) {
+			throw new IllegalArgumentException(
+					"cannot add metaData via an unpersistable intermediate type");
 		}
-		IdentityService holderIdentityService = holderType.getService(IdentityService.class);
-		if (holderIdentityService == null)
-		{
-			throw new IllegalArgumentException("holder type " + holderType.getCode() + " must provide IdentityService");
+		IdentityService holderIdentityService = holderType
+				.getService(IdentityService.class);
+		if (holderIdentityService == null) {
+			throw new IllegalArgumentException("holder type "
+					+ holderType.getCode() + " must provide IdentityService");
 		}
-		SingleMetaAttribute singleMetaAttribute = new SingleMetaAttribute(metaDataAttribute, holderAttribute, this, name);
+		SingleMetaAttribute singleMetaAttribute = new SingleMetaAttribute(
+				metaDataAttribute, holderAttribute, this, name);
 		metaAttributes.put(name, singleMetaAttribute);
-		entityTypeCreationContext.addMetaAttribute(holderType, singleMetaAttribute);
+		entityTypeCreationContext.addMetaAttribute(holderType,
+				singleMetaAttribute);
 
 		return singleMetaAttribute;
 	}
 
-	public DynamicEntityTypeSubrepository<?> getDynamicEntityTypeSubrepository()
-	{
+	public DynamicEntityTypeSubrepository<?> getDynamicEntityTypeSubrepository() {
 		return dynamicEntityTypeSubrepository;
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.atemsource.atem.impl.meta.MS#getMetaAttribute(java.lang.String)
 	 */
 	@Override
-	public <J> SingleMetaAttribute<J> getMetaAttribute(String name)
-	{
+	public <J> SingleMetaAttribute<J> getMetaAttribute(String name) {
 		return (SingleMetaAttribute<J>) metaAttributes.get(name);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.atemsource.atem.impl.meta.MS#getMetaData(java.lang.String, java.lang.Object)
+	 * 
+	 * @see org.atemsource.atem.impl.meta.MS#getMetaData(java.lang.String,
+	 * java.lang.Object)
 	 */
 	@Override
-	public Object getMetaData(String name, Object holder)
-	{
-		EntityType<Object> entityType = entityTypeRepository.getEntityType(name);
-		AssociationAttribute holderAttribute = (AssociationAttribute) entityType.getAttribute(HOLDER_ATTRIBUTE);
-		Attribute<?, ?> incomingRelation = holderAttribute.getIncomingRelation();
+	public Object getMetaData(String name, Object holder) {
+
+		EntityType<Object> entityType = entityTypeRepository
+				.getEntityType(name);
+		AssociationAttribute holderAttribute = (AssociationAttribute) entityType
+				.getAttribute(HOLDER_ATTRIBUTE);
+		Attribute<?, ?> incomingRelation = holderAttribute
+				.getIncomingRelation();
+		Object intermediate = getIntermediate(holder, entityType,
+				holderAttribute, incomingRelation);
+		if (intermediate == null) {
+			EntityType<Object> holderType = entityTypeRepository
+					.getEntityType(holder);
+			Attribute metaAttribute = holderType
+					.getMetaAttribute(DerivedObject.META_ATTRIBUTE_CODE);
+			if (metaAttribute != null) {
+				Object original = metaAttribute.getValue(holder);
+				if (original != null) {
+					intermediate = getIntermediate(original, entityType,
+							holderAttribute, incomingRelation);
+				}
+			}
+		}
+		return intermediate;
+	}
+
+	protected Object getIntermediate(Object holder,
+			EntityType<Object> entityType,
+			AssociationAttribute holderAttribute,
+			Attribute<?, ?> incomingRelation) {
 		Object intermediate = incomingRelation.getValue(holder);
-		if (intermediate == null)
-		{
+		if (intermediate == null) {
 			intermediate = entityType.createEntity();
 		}
 		holderAttribute.setValue(intermediate, holder);
-		PersistenceService persistenceService = entityType.getService(PersistenceService.class);
-		if (!persistenceService.isPersistent(intermediate))
-		{
-			Serializable id =
-				((IdentityService) holderAttribute.getTargetType().getService(IdentityService.class)).getId(
+		PersistenceService persistenceService = entityType
+				.getService(PersistenceService.class);
+		if (!persistenceService.isPersistent(intermediate)) {
+			Serializable id = ((IdentityService) holderAttribute
+					.getTargetType().getService(IdentityService.class)).getId(
 					holderAttribute.getEntityType(), holder);
-			entityType.getAttribute(ID_ATTRIBUTE).setValue(intermediate, id.toString());
+			entityType.getAttribute(ID_ATTRIBUTE).setValue(intermediate,
+					id.toString());
 			persistenceService.insert(intermediate);
 		}
 		return intermediate;
 	}
 
 	@Override
-	public void initialize(EntityTypeCreationContext ctx)
-	{
+	public void initialize(EntityTypeCreationContext ctx) {
 		this.entityTypeCreationContext = ctx;
 	}
 
-	public void setDynamicEntityTypeSubrepository(DynamicEntityTypeSubrepository<?> dynamicEntityTypeSubrepository)
-	{
+	public void setDynamicEntityTypeSubrepository(
+			DynamicEntityTypeSubrepository<?> dynamicEntityTypeSubrepository) {
 		this.dynamicEntityTypeSubrepository = dynamicEntityTypeSubrepository;
 	}
 

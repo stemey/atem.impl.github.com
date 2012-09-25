@@ -8,7 +8,7 @@
 package org.atemsource.atem.impl.common.attribute.primitive;
 
 public class IntegerType extends PrimitiveTypeImpl<Integer> implements
-	org.atemsource.atem.api.attribute.primitive.IntegerType
+	org.atemsource.atem.api.type.primitive.IntegerType
 {
 
 	public static final String TYPE_CODE = "Integer";

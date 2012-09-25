@@ -25,5 +25,7 @@ public interface DynamicEntity
 	public abstract Object put(String key, Object value);
 
 	public abstract Object remove(Object key);
+	
+	abstract String[] getAttributeNames();
 
 }

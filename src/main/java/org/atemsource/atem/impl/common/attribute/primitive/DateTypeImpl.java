@@ -20,7 +20,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import org.atemsource.atem.api.attribute.primitive.DateType;
+import org.atemsource.atem.api.type.primitive.DateType;
 
 
 public class DateTypeImpl extends PrimitiveTypeImpl<Object> implements DateType

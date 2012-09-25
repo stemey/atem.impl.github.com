@@ -19,7 +19,7 @@ import java.util.Locale;
 
 
 public class DoubleType extends PrimitiveTypeImpl<Double> implements
-	org.atemsource.atem.api.attribute.primitive.DoubleType
+	org.atemsource.atem.api.type.primitive.DoubleType
 {
 	public static final String TYPE_CODE = "Double";
 

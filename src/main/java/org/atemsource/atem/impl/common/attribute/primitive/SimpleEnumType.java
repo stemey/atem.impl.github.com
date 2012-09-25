@@ -10,7 +10,7 @@ package org.atemsource.atem.impl.common.attribute.primitive;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.atemsource.atem.api.attribute.primitive.EnumType;
+import org.atemsource.atem.api.type.primitive.EnumType;
 
 
 public class SimpleEnumType extends PrimitiveTypeImpl<Enum> implements EnumType

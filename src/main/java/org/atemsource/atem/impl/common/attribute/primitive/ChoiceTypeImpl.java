@@ -18,7 +18,7 @@ package org.atemsource.atem.impl.common.attribute.primitive;
 
 import java.util.Map;
 
-import org.atemsource.atem.api.attribute.primitive.ChoiceType;
+import org.atemsource.atem.api.type.primitive.ChoiceType;
 
 
 public class ChoiceTypeImpl extends PrimitiveTypeImpl<Object> implements ChoiceType<Object>

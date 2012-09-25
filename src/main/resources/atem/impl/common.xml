@@ -36,11 +36,10 @@
 			</list>
 		</property>
 	</bean>
-	<bean id="atem-entityType-repository" class="org.atemsource.atem.impl.pojo.PojoEntityTypeRepository">
+	<bean id="atem-entityType-repository" class="org.atemsource.atem.impl.meta.EntityTypeSubrepository">
 		<property name="entityTypeClass"
 			value="org.atemsource.atem.impl.meta.EntityTypeEntityType" />
 		<property name="propertyDescriptorFactory" ref="pojoPropertyDescriptorFactory" />
-		<property name="entityClass" value="org.atemsource.atem.api.type.Type" />
 		<property name="entityTypeServices">
 			<map>
 
@@ -64,10 +63,9 @@
 		</property>
 	</bean>
 
-	<bean id="atem-attribute-repository" class="org.atemsource.atem.impl.pojo.PojoEntityTypeRepository">
+	<bean id="atem-attribute-repository" class="org.atemsource.atem.impl.meta.AttributeSubrepository">
 		<property name="entityTypeClass"
 			value="org.atemsource.atem.impl.meta.AttributeEntityType" />
-		<property name="entityClass" value="org.atemsource.atem.api.attribute.Attribute" />
 		<property name="propertyDescriptorFactory" ref="pojoPropertyDescriptorFactory" />
 		<property name="entityTypeServices">
 			<map>

@@ -18,7 +18,7 @@ package org.atemsource.atem.impl.common.attribute.primitive;
 
 import java.util.Locale;
 
-import org.atemsource.atem.api.attribute.primitive.LocaleType;
+import org.atemsource.atem.api.type.primitive.LocaleType;
 
 
 public class LocaleTypeImpl extends PrimitiveTypeImpl<Locale> implements LocaleType

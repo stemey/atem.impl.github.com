@@ -2,30 +2,34 @@ package org.atemsource.atem.impl.annotation;
 
 import java.lang.annotation.Annotation;
 
+import javax.inject.Inject;
+
+import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.JavaMetaData;
 import org.atemsource.atem.api.attribute.annotation.Cardinality;
 import org.atemsource.atem.api.attribute.relation.SingleAttribute;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.Type;
-import org.atemsource.atem.impl.common.attribute.SingleAttributeImpl;
+import org.atemsource.atem.impl.meta.DerivedObject;
 
-public class AnnotationAttribute<J extends Annotation> implements SingleAttribute<J> {
-private EntityType attributeType;
-private EntityType<J> annotationType;
+public class AnnotationAttribute<J extends Annotation> implements
+		SingleAttribute<J> {
+	private EntityType attributeType;
+	private EntityType<J> annotationType;
+
+	@Inject
+	private EntityTypeRepository entityTypeRepository;
+
 	public AnnotationAttribute(EntityType<?> attributeType,
-		EntityType<J> annotationType) {
-	this.attributeType=attributeType;
-	this.annotationType=annotationType;
-}
-
-
+			EntityType<J> annotationType) {
+		this.attributeType = attributeType;
+		this.annotationType = annotationType;
+	}
 
 	public EntityType getEntityType() {
-	return attributeType;
-}
-
-
+		return attributeType;
+	}
 
 	@Override
 	public Class<J> getAssociationType() {
@@ -36,8 +40,6 @@ private EntityType<J> annotationType;
 	public String getCode() {
 		return annotationType.getJavaType().getName();
 	}
-
-
 
 	@Override
 	public Class<J> getReturnType() {
@@ -61,24 +63,42 @@ private EntityType<J> annotationType;
 
 	@Override
 	public J getValue(Object entity) {
-		return ((JavaMetaData)entity).getAnnotation(annotationType.getJavaType());
+		J value = null;
+		if (entity instanceof JavaMetaData) {
+			value = ((JavaMetaData) entity).getAnnotation(annotationType
+					.getJavaType());
+		}
+		if (value == null) {
+			Attribute metaAttribute = attributeType
+					.getMetaAttribute(DerivedObject.META_ATTRIBUTE_CODE);
+			if (metaAttribute != null) {
+				DerivedObject derivedObject = (DerivedObject) metaAttribute
+						.getValue(entity);
+				Object original = derivedObject.getOriginal();
+				if (original != null) {
+					return getValue(original);
+				}
+			}
+
+		}
+		return value;
 	}
 
 	@Override
 	public boolean isComposition() {
-			return true;
+		return true;
 	}
 
 	@Override
 	public boolean isEqual(Object entity, Object other) {
 		J value = getValue(entity);
 		J otherValue = getValue(other);
-		if (value!=null) {
+		if (value != null) {
 			return value.equals(otherValue);
-		}else{
-			return otherValue==null;
+		} else {
+			return otherValue == null;
 		}
-		
+
 	}
 
 	@Override
@@ -95,6 +115,5 @@ private EntityType<J> annotationType;
 	public void setValue(Object entity, J value) {
 		throw new UnsupportedOperationException("cannot write annotation");
 	}
-
 
 }

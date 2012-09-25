@@ -16,7 +16,7 @@
 package org.atemsource.atem.impl.common.attribute.primitive;
 
 public class LongType extends PrimitiveTypeImpl<Long> implements
-	org.atemsource.atem.api.attribute.primitive.LongType
+	org.atemsource.atem.api.type.primitive.LongType
 {
 	public static final String TYPE_CODE = "Long";
 

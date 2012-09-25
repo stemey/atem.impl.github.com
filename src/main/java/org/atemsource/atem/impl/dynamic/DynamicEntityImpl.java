@@ -69,4 +69,10 @@ public class DynamicEntityImpl implements DynamicEntity
 		this.typeCode = typeCode;
 	}
 
+	@Override
+	public String[] getAttributeNames() {
+		return attributes.keySet().toArray(new String[0]);
+	}
+	
+	
 }

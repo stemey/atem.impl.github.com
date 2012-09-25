@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 
 
 public class BigDecimalTypeImpl extends PrimitiveTypeImpl<BigDecimal> implements
-	org.atemsource.atem.api.attribute.primitive.BigDecimalType
+	org.atemsource.atem.api.type.primitive.BigDecimalType
 {
 	public static final String TYPE_CODE = "BigDecimal";
 

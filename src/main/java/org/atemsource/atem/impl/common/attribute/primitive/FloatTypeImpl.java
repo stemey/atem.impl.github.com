@@ -16,7 +16,7 @@
 package org.atemsource.atem.impl.common.attribute.primitive;
 
 public class FloatTypeImpl extends PrimitiveTypeImpl<Float> implements
-	org.atemsource.atem.api.attribute.primitive.FloatType
+	org.atemsource.atem.api.type.primitive.FloatType
 {
 	public static final String TYPE_CODE = "Float";
 

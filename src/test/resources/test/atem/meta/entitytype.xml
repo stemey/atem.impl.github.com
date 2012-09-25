@@ -27,31 +27,20 @@
 
 	<import resource="classpath:/atem/impl/common.xml" />
 
-	<context:component-scan base-package="org.atemsource.atem.impl.annotation">
-	</context:component-scan>
 
-	<bean id="atem-annotation-repository" class="org.atemsource.atem.impl.pojo.ScannedPojoEntityTypeRepository" abstract="true">
-		<property name="entityTypeClass"
-			value="org.atemsource.atem.impl.pojo.PlainPojoEntityType" />
-		<property name="entityClass" value="java.lang.annotation.Annotation" />
-		<property name="propertyDescriptorFactory">
-			<bean class="org.atemsource.atem.impl.annotation.AnnotationPropertyDescriptorFactory"/>
-		</property>
-		<property name="attributeFactories">
+	<bean id="atem-repository"
+		class="org.atemsource.atem.impl.common.EntityTypeRepositoryImpl"
+		init-method="init">
+		<property name="repositories">
 			<list>
-				<bean
-					class="org.atemsource.atem.impl.pojo.attribute.PrimitiveAttributeFactory"></bean>
-				<bean
-					class="org.atemsource.atem.impl.pojo.attribute.ArrayAttributeFactory"></bean>
-				<bean
-					class="org.atemsource.atem.impl.pojo.attribute.CollectionAttributeFactory"></bean>
-				<bean
-					class="org.atemsource.atem.impl.pojo.attribute.MapAssociationAttributeFactory"></bean>
-				<bean
-					class="org.atemsource.atem.impl.pojo.attribute.SingleAssociationAttributeFactory"></bean>
+				<ref bean="atem-entityType-repository" />
 			</list>
 		</property>
 	</bean>
+
+
+
+
 
 
 </beans>

@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.atemsource.atem.impl.common.attribute.primitive;
 
-import org.atemsource.atem.api.attribute.primitive.TextType;
+import org.atemsource.atem.api.type.primitive.TextType;
 
 
 public class SimpleTextType extends PrimitiveTypeImpl<String> implements TextType

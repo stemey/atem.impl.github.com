@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.atemsource.atem.impl.common.attribute.primitive;
 
-import org.atemsource.atem.api.attribute.primitive.BooleanType;
+import org.atemsource.atem.api.type.primitive.BooleanType;
 
 
 public class BooleanTypeImpl extends PrimitiveTypeImpl<Boolean> implements BooleanType
