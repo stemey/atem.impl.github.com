@@ -19,9 +19,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-
-public class DynamicEntityImpl implements DynamicEntity
-{
+public class DynamicEntityImpl implements DynamicEntity {
 
 	private Map<String, Object> attributes = new HashMap<String, Object>();
 
@@ -29,43 +27,35 @@ public class DynamicEntityImpl implements DynamicEntity
 
 	private Serializable id;
 
-	public DynamicEntityImpl()
-	{
+	public DynamicEntityImpl() {
 		super();
 	}
 
-	public Object get(Object key)
-	{
+	public Object get(Object key) {
 		return attributes.get(key);
 	}
 
-	public Serializable getId()
-	{
+	public Serializable getId() {
 		return id;
 	}
 
-	public String getTypeCode()
-	{
+	public String getTypeCode() {
 		return typeCode;
 	}
 
-	public Object put(String key, Object value)
-	{
+	public Object put(String key, Object value) {
 		return attributes.put(key, value);
 	}
 
-	public Object remove(Object key)
-	{
+	public Object remove(Object key) {
 		return attributes.remove(key);
 	}
 
-	public void setId(Serializable id)
-	{
+	public void setId(Serializable id) {
 		this.id = id;
 	}
 
-	public void setTypeCode(String typeCode)
-	{
+	public void setTypeCode(String typeCode) {
 		this.typeCode = typeCode;
 	}
 
@@ -73,6 +63,19 @@ public class DynamicEntityImpl implements DynamicEntity
 	public String[] getAttributeNames() {
 		return attributes.keySet().toArray(new String[0]);
 	}
-	
-	
+
+	public String getAsString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(typeCode);
+		builder.append("\n");
+		for (String attribute : getAttributeNames()) {
+			builder.append(attribute);
+			builder.append(" : ");
+			
+			builder.append(String.valueOf(get(attribute)));
+			builder.append("\n");
+		}
+		return builder.toString();
+	}
+
 }

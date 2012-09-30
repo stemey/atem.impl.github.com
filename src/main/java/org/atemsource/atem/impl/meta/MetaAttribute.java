@@ -9,8 +9,7 @@ import org.atemsource.atem.api.attribute.relation.SingleAttribute;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.Type;
 
-public class MetaAttribute<J> implements
-		SingleAttribute<J> {
+public class MetaAttribute<J> implements SingleAttribute<J> {
 	private EntityType attributeType;
 	private EntityType<J> targetType;
 
@@ -19,13 +18,12 @@ public class MetaAttribute<J> implements
 	private MetaDataService metaDataService;
 	private String code;
 
-	public MetaAttribute(EntityType<?> attributeType,
-			EntityType<J> targetType,MetaDataService metaDataService
-			,String code) {
+	public MetaAttribute(EntityType<?> attributeType, EntityType<J> targetType,
+			MetaDataService metaDataService, String code) {
 		this.attributeType = attributeType;
 		this.targetType = targetType;
-		this.metaDataService= metaDataService;
-		this.code=code;
+		this.metaDataService = metaDataService;
+		this.code = code;
 	}
 
 	public EntityType getEntityType() {
@@ -64,13 +62,19 @@ public class MetaAttribute<J> implements
 
 	@Override
 	public J getValue(Object entity) {
-		J value = (J) metaDataService.getMetaData(entity,this);
+		J value = (J) metaDataService.getMetaData(entity, this);
 		if (value == null) {
 			Attribute metaAttribute = attributeType
 					.getMetaAttribute(DerivedObject.META_ATTRIBUTE_CODE);
+			if (metaAttribute == this) {
+				return null;
+			}
 			if (metaAttribute != null) {
 				DerivedObject derivedObject = (DerivedObject) metaAttribute
 						.getValue(entity);
+				if (derivedObject==null) {
+					return null;
+				}
 				Object original = derivedObject.getOriginal();
 				if (original != null) {
 					return getValue(original);
@@ -110,7 +114,7 @@ public class MetaAttribute<J> implements
 
 	@Override
 	public void setValue(Object entity, J value) {
-		metaDataService.setMetaData(entity,value,this);
+		metaDataService.setMetaData(entity, value, this);
 	}
 
 }

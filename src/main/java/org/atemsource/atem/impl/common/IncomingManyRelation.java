@@ -20,8 +20,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.atemsource.atem.api.attribute.relation.SetAssociationAttribute;
 import org.atemsource.atem.api.service.AttributeQuery;
 import org.atemsource.atem.api.type.EntityType;
+import org.atemsource.atem.impl.common.attribute.collection.AbstractCollectionAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.collection.SetAttributeImpl;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -29,7 +31,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class IncomingManyRelation<J> extends SetAttributeImpl<J>
+public class IncomingManyRelation<J> extends AbstractCollectionAttributeImpl<J, Set> implements SetAssociationAttribute<J>
 {
 
 	private AttributeQuery attributeQuery;
@@ -85,5 +87,25 @@ public class IncomingManyRelation<J> extends SetAttributeImpl<J>
 	{
 		this.attributeQuery = attributeQuery;
 	}
+
+	@Override
+	public Class<Set> getAssociationType()
+	{
+		return Set.class;
+	}
+
+	@Override
+	public Collection<J> getElements(Object entity)
+	{
+		Set<J> value = getValue(entity);
+		return value;
+	}
+
+	@Override
+	public Set getEmptyCollection(Object entity)
+	{
+		return new HashSet();
+	}
+
 
 }
