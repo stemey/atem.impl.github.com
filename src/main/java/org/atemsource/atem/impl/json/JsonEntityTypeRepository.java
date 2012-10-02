@@ -78,8 +78,8 @@ public class JsonEntityTypeRepository extends AbstractMetaDataRepository<ObjectN
 		{
 			throw new IllegalArgumentException("dynamic type with name " + code + " already exists.");
 		}
-		AbstractEntityType x = dynamicEntityTypeImpl;
-		this.nameToEntityTypes.put(code, x);
+		this.nameToEntityTypes.put(code, dynamicEntityTypeImpl);
+		entityTypes.add(dynamicEntityTypeImpl);
 		return dynamicEntityTypeImpl;
 	}
 

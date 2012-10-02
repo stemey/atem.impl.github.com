@@ -1,20 +1,11 @@
 /*******************************************************************************
- * Stefan Meyer, 2012
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Stefan Meyer, 2012 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  ******************************************************************************/
 package org.atemsource.atem.impl.dynamic;
-
 
 import org.atemsource.atem.api.BeanLocator;
 import org.atemsource.atem.api.EntityTypeRepository;
@@ -31,17 +22,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class DynamicEntityTypeRepository extends AbstractMetaDataRepository<DynamicEntity> implements
 	DynamicEntityTypeSubrepository<DynamicEntity>, EntityTypeBuilderCallback
 {
-	private boolean serializingPrimitiveValues;
-
 	@Autowired
 	private BeanLocator beanLocator;
 
+	private boolean serializingPrimitiveValues;
+
+	@Override
 	public void afterFirstInitialization(EntityTypeRepository entityTypeRepositoryImpl)
 	{
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public void afterInitialization()
 	{
 		// TODO Auto-generated method stub
@@ -68,8 +61,8 @@ public class DynamicEntityTypeRepository extends AbstractMetaDataRepository<Dyna
 		{
 			throw new IllegalArgumentException("dynamic type with name " + code + " already exists.");
 		}
-		AbstractEntityType x = dynamicEntityTypeImpl;
-		this.nameToEntityTypes.put(code, x);
+		this.nameToEntityTypes.put(code, dynamicEntityTypeImpl);
+		this.entityTypes.add(dynamicEntityTypeImpl);
 		dynamicEntityTypeImpl.setSerializingPrimitives(serializingPrimitiveValues);
 		attacheServicesToEntityType(dynamicEntityTypeImpl);
 		return dynamicEntityTypeImpl;
@@ -103,7 +96,7 @@ public class DynamicEntityTypeRepository extends AbstractMetaDataRepository<Dyna
 	@Override
 	public void onFinished(AbstractEntityType<?> entityType)
 	{
-		attacheServicesToEntityType((AbstractEntityType) entityType);
+		attacheServicesToEntityType(entityType);
 		((AbstractEntityType) entityType).initializeIncomingAssociations(entityTypeCreationContext);
 		entityTypeCreationContext.lazilyInitialized(entityType);
 	}

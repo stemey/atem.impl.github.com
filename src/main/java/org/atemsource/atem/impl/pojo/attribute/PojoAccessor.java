@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.atemsource.atem.api.attribute.Accessor;
 import org.atemsource.atem.api.attribute.JavaMetaData;
 import org.atemsource.atem.api.infrastructure.exception.TechnicalException;
@@ -46,6 +45,7 @@ public class PojoAccessor implements Accessor, JavaMetaData
 		this.readMethod = readMethod;
 	}
 
+	@Override
 	public <A extends Annotation> A getAnnotation(Class<A> annotationClass)
 	{
 		A a = null;
@@ -60,6 +60,7 @@ public class PojoAccessor implements Accessor, JavaMetaData
 		return a;
 	}
 
+	@Override
 	public Annotation getAnnotationAnnotatedBy(Class<? extends Annotation> annotationClass)
 	{
 		if (field != null)
@@ -87,6 +88,7 @@ public class PojoAccessor implements Accessor, JavaMetaData
 		return null;
 	}
 
+	@Override
 	public Collection<Annotation> getAnnotations()
 	{
 		Set<Annotation> annotations = new HashSet<Annotation>();
@@ -111,14 +113,27 @@ public class PojoAccessor implements Accessor, JavaMetaData
 		return readMethod;
 	}
 
+	@Override
 	public Object getValue(Object entity)
 	{
 		try
 		{
 			Object[] args;
 			args = new Object[0];
+			if (entity == null)
+			{
+				throw new NullPointerException("cannot get attribute value from null");
+			}
+			else if (readMethod == null && field != null)
+			{
+				field.setAccessible(true);
+				return field.get(entity);
+			}
+			else
+			{
 
-			return readMethod.invoke(entity, args);
+				return readMethod.invoke(entity, args);
+			}
 		}
 		catch (IllegalAccessException e)
 		{
@@ -139,11 +154,13 @@ public class PojoAccessor implements Accessor, JavaMetaData
 		return writeMethod;
 	}
 
+	@Override
 	public boolean isReadable()
 	{
 		return readMethod != null || (field != null && allowFieldAccess);
 	}
 
+	@Override
 	public boolean isWritable()
 	{
 		return writeMethod != null || (field != null && allowFieldAccess);
@@ -159,6 +176,7 @@ public class PojoAccessor implements Accessor, JavaMetaData
 		this.readMethod = readMethod;
 	}
 
+	@Override
 	public void setValue(Object entity, Object value)
 	{
 		if (writeMethod == null)
