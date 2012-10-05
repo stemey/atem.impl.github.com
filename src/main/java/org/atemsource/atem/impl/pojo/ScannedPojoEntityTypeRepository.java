@@ -71,20 +71,35 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 
 	protected void addAttributes(AbstractEntityType entityType)
 	{
-		List<Attribute> attributes = new ArrayList<Attribute>();
-		for (org.atemsource.atem.impl.pojo.attribute.PropertyDescriptor propertyDescriptor : propertyDescriptorFactory
-			.getPropertyDescriptors(entityType.getEntityClass()))
+		try
 		{
-
-			Attribute attribute = addAttribute(entityType, propertyDescriptor);
-			if (attribute != null)
+			List<Attribute> attributes = new ArrayList<Attribute>();
+			for (org.atemsource.atem.impl.pojo.attribute.PropertyDescriptor propertyDescriptor : propertyDescriptorFactory
+				.getPropertyDescriptors(entityType.getEntityClass()))
 			{
-				attributes.add(attribute);
+
+				Attribute attribute = addAttribute(entityType, propertyDescriptor);
+				if (attribute != null)
+				{
+					attributes.add(attribute);
+				}
+
 			}
 
+			entityType.setAttributes(attributes);
 		}
+		catch (NullPointerException e)
+		{
+			e.printStackTrace();
+			int x = 0;
+		}
+	}
 
-		entityType.setAttributes(attributes);
+	protected void addEntityTypeToLookup(final Class clazz, AbstractEntityType entityType)
+	{
+		nameToEntityTypes.put(clazz.getName(), entityType);
+		classToEntityTypes.put(clazz, entityType);
+		entityTypes.add(entityType);
 	}
 
 	@Override
@@ -120,13 +135,6 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 		entityType.setCode(clazz.getName());
 		addEntityTypeToLookup(clazz, entityType);
 		return entityType;
-	}
-
-	protected void addEntityTypeToLookup(final Class clazz,
-			AbstractEntityType entityType) {
-		nameToEntityTypes.put(clazz.getName(), entityType);
-		classToEntityTypes.put(clazz, entityType);
-		entityTypes.add(entityType);
 	}
 
 	protected EntityType createEntityType(String entityName)
@@ -239,7 +247,8 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 
 	}
 
-	protected void initializeTypeHierachy(AbstractEntityType entityType) {
+	protected void initializeTypeHierachy(AbstractEntityType entityType)
+	{
 		Class clazz = entityType.getEntityClass();
 		final Class superclass = clazz.getSuperclass();
 		if (superclass != null && !superclass.equals(Object.class))
@@ -259,7 +268,7 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 	{
 		// TODO package is null for enum types and inner types?
 		return (entityClass == null || entityClass.isAssignableFrom(clazz))
-			&& (includedPackage == null || ( clazz.getPackage() != null && clazz.getPackage().getName()
+			&& (includedPackage == null || (clazz.getPackage() != null && clazz.getPackage().getName()
 				.startsWith(includedPackage)));
 	}
 

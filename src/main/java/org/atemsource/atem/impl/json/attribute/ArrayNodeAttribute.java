@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
 import org.atemsource.atem.api.attribute.CollectionAttribute;
 import org.atemsource.atem.api.attribute.CollectionSortType;
 import org.atemsource.atem.api.attribute.OrderableCollection;
@@ -41,18 +40,21 @@ public class ArrayNodeAttribute extends AbstractAttribute<Object, ArrayNode> imp
 		array.set(index, JsonUtils.convertToJson(value));
 	}
 
+	@Override
 	public void addElement(Object entity, Object element)
 	{
 		ArrayNode arrayNode = getArrayNode(entity);
 		arrayNode.add(JsonUtils.convertToJson(element));
 	}
 
+	@Override
 	public void clear(Object entity)
 	{
 		ArrayNode arrayNode = getArrayNode(entity);
 		arrayNode.removeAll();
 	}
 
+	@Override
 	public boolean contains(Object entity, Object element)
 	{
 		throw new UnsupportedOperationException("notimplemented yet");
@@ -63,11 +65,13 @@ public class ArrayNodeAttribute extends AbstractAttribute<Object, ArrayNode> imp
 		return (ArrayNode) ((ObjectNode) entity).get(getCode());
 	}
 
+	@Override
 	public Class<ArrayNode> getAssociationType()
 	{
 		return ArrayNode.class;
 	}
 
+	@Override
 	public CollectionSortType getCollectionSortType()
 	{
 		return CollectionSortType.ORDERABLE;
@@ -79,17 +83,19 @@ public class ArrayNodeAttribute extends AbstractAttribute<Object, ArrayNode> imp
 		return JsonUtils.convertToJava(getValue(entity).get(index));
 	}
 
+	@Override
 	public Collection<Object> getElements(Object entity)
 	{
 		List<Object> collection = new ArrayList<Object>();
 		ArrayNode arrayNode = getArrayNode(entity);
 		for (int index = 0; index < arrayNode.size(); index++)
 		{
-			collection.add(JsonUtils.convertToJson(arrayNode.get(index)));
+			collection.add(JsonUtils.convertToJava(arrayNode.get(index)));
 		}
 		return collection;
 	}
 
+	@Override
 	public ArrayNode getEmptyCollection(Object entity)
 	{
 		return objectMapper.createArrayNode();
@@ -102,6 +108,7 @@ public class ArrayNodeAttribute extends AbstractAttribute<Object, ArrayNode> imp
 		return 0;
 	}
 
+	@Override
 	public Iterator<Object> getIterator(Object entity)
 	{
 		return getElements(entity).iterator();
@@ -124,11 +131,13 @@ public class ArrayNodeAttribute extends AbstractAttribute<Object, ArrayNode> imp
 		return null;
 	}
 
+	@Override
 	public int getSize(Object entity)
 	{
 		return getArrayNode(entity).size();
 	}
 
+	@Override
 	public Type<Object> getTargetType(Object value)
 	{
 		return getTargetType();
@@ -139,6 +148,7 @@ public class ArrayNodeAttribute extends AbstractAttribute<Object, ArrayNode> imp
 		return "arrayNode";
 	}
 
+	@Override
 	public ArrayNode getValue(Object entity)
 	{
 		return getArrayNode(entity);
@@ -203,6 +213,7 @@ public class ArrayNodeAttribute extends AbstractAttribute<Object, ArrayNode> imp
 		return getValue(entity).remove(index);
 	}
 
+	@Override
 	public void removeElement(Object entity, Object element)
 	{
 		throw new UnsupportedOperationException("notimplemented yet");

@@ -12,6 +12,7 @@ import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.infrastructure.exception.TechnicalException;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.impl.common.DynamicEntityType;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,11 @@ public class JsonEntityTypeImpl extends DynamicEntityType<ObjectNode>
 		return objectNode;
 	}
 
+	public String getExternalTypeCode()
+	{
+		return typeCodeConverter.toExternalCode(this);
+	}
+
 	@Override
 	public Class<ObjectNode> getJavaType()
 	{
@@ -85,7 +91,12 @@ public class JsonEntityTypeImpl extends DynamicEntityType<ObjectNode>
 		}
 		else if (entity instanceof ObjectNode)
 		{
-			String typeCode = ((ObjectNode) entity).get(typeProperty).getTextValue();
+			JsonNode typePropertyNode = ((ObjectNode) entity).get(typeProperty);
+			if (typePropertyNode == null)
+			{
+				return false;
+			}
+			String typeCode = typePropertyNode.getTextValue();
 			if (typeCodeConverter != null)
 			{
 				String versionedTypeCode = typeCodeConverter.fromExternalCode(this, typeCode);

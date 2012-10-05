@@ -82,7 +82,8 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 		}
 		else
 		{
-			throw new IllegalStateException("attribute " + getCode() + "." + attribute.getCode() + " already exists");
+			return;// throw new IllegalStateException("attribute " + getCode() + "." + attribute.getCode() +
+						// " already exists");
 		}
 	}
 
@@ -368,8 +369,12 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 						incomingOneRelation.setAttributeQuery(singleQuery);
 						incomingOneRelation.setCode(incomingCode);
 						incomingOneRelation.setAttribute(attribute);
-						((AbstractAttribute) attribute).setIncomingRelation(incomingOneRelation);
-						context.addIncomingAssociation(entityType, incomingOneRelation);
+						if (attribute instanceof AbstractAttribute)
+						{
+							// TODO lift this restriction
+							((AbstractAttribute) attribute).setIncomingRelation(incomingOneRelation);
+							context.addIncomingAssociation(entityType, incomingOneRelation);
+						}
 				}
 
 			}

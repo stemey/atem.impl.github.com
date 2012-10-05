@@ -8,6 +8,7 @@
 package org.atemsource.atem.impl.json.attribute;
 
 import org.atemsource.atem.impl.common.attribute.AbstractSingleAssociationAttribute;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -27,7 +28,15 @@ public class ObjectNodeAttribute extends AbstractSingleAssociationAttribute<Obje
 		}
 		else
 		{
-			return (ObjectNode) node.get(getCode());
+			JsonNode jsonNode = node.get(getCode());
+			if (jsonNode.isNull())
+			{
+				return null;
+			}
+			else
+			{
+				return (ObjectNode) jsonNode;
+			}
 		}
 	}
 

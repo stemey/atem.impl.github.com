@@ -148,7 +148,7 @@ public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object>
 	@Override
 	public EntityType getEntityType(Class clazz)
 	{
-		if (isAvailable(clazz))
+		if (!isAvailable(clazz))
 		{
 			return null;
 		}
@@ -197,7 +197,7 @@ public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object>
 	@Override
 	public EntityType getEntityTypeReference(Class clazz)
 	{
-		if (isAvailable(clazz))
+		if (!isAvailable(clazz))
 		{
 			return null;
 		}
@@ -290,9 +290,9 @@ public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object>
 
 	protected boolean isAvailable(Class clazz)
 	{
-		return (entityClass != null && !entityClass.isAssignableFrom(clazz))
-			|| (includedPackage != null && clazz.getPackage() != null && !clazz.getPackage().getName()
-				.startsWith(includedPackage));
+		return (entityClass == null || entityClass.isAssignableFrom(clazz))
+			&& (includedPackage == null || (clazz.getPackage() != null && clazz.getPackage().getName()
+				.startsWith(includedPackage)));
 	}
 
 	private boolean isAvailable(String entityName)

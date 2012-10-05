@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.atemsource.atem.impl.json.attribute;
 
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -27,7 +28,15 @@ public class LongAttribute extends JsonAttribute<Long>
 		}
 		else
 		{
-			return node.get(getCode()).getLongValue();
+			JsonNode jsonNode = node.get(getCode());
+			if (jsonNode == null)
+			{
+				return null;
+			}
+			else
+			{
+				return jsonNode.getLongValue();
+			}
 		}
 	}
 
