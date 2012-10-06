@@ -114,6 +114,7 @@ public class CollectionAttributeFactory extends AttributeFactory
 			setStandardProperties(entityType, propertyDescriptor, attribute);
 			attribute.setAccessor(propertyDescriptor.getAccessor());
 		}
+		initValidTypes(propertyDescriptor, ctx, attribute);
 
 		return attribute;
 

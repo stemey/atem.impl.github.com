@@ -34,15 +34,11 @@ import org.atemsource.atem.impl.dynamic.attribute.DynamicAccessor;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-
 @Scope("prototype")
 @Component
-public class AbstractEntityTypeBuilder implements EntityTypeBuilder
-{
-	
+public class AbstractEntityTypeBuilder implements EntityTypeBuilder {
 
-	public interface EntityTypeBuilderCallback
-	{
+	public interface EntityTypeBuilderCallback {
 
 		void onFinished(AbstractEntityType<?> entityType);
 
@@ -55,15 +51,21 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 
 	private AbstractEntityType<?> entityType;
 
-	protected void addAttribute(Attribute<?, ?> attribute)
-	{
+	protected void addAttribute(Attribute<?, ?> attribute) {
 		entityType.addAttribute(attribute);
 	}
 
 	@Override
-	public <K, V, Map> MapAttribute<K, V, Map> addMapAssociationAttribute(String code, Type<K> keyType, Type<V> valueType)
-	{
-		MapAttributeImpl attribute = beanLocator.getInstance(MapAttributeImpl.class);
+	public <K, V, Map> MapAttribute<K, V, Map> addMapAssociationAttribute(
+			String code, Type<K> keyType, Type<V> valueType) {
+		return addMapAssociationAttribute(code, keyType, valueType, null);
+	}
+
+	@Override
+	public <K, V, Map> MapAttribute<K, V, Map> addMapAssociationAttribute(
+			String code, Type<K> keyType, Type<V> valueType, Type[] validTypes) {
+		MapAttributeImpl attribute = beanLocator
+				.getInstance(MapAttributeImpl.class);
 		attribute.setAccessor(new DynamicAccessor(code));
 		attribute.setWriteable(true);
 		// attribute.setValidTypesSet(valueType.getSelfAndAllSubEntityTypes());
@@ -71,23 +73,30 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 		attribute.setCode(code);
 		attribute.setEntityType(entityType);
 		attribute.setTargetType(valueType);
+		attribute.setValidTargetTypes(validTypes);
 		addAttribute(attribute);
 		return attribute;
 	}
 
-	public CollectionAttribute addMultiAssociationAttribute(String code, Type targetType,
-		CollectionSortType collectionSortType)
-	{
+	public CollectionAttribute addMultiAssociationAttribute(String code,
+			Type targetType, CollectionSortType collectionSortType) {
+		return addMultiAssociationAttribute(code, targetType, null,
+				collectionSortType);
+	}
+
+	public CollectionAttribute addMultiAssociationAttribute(String code,
+			Type targetType, Type[] validTypes,
+			CollectionSortType collectionSortType) {
 		AbstractCollectionAttributeImpl attribute;
-		switch (collectionSortType)
-		{
-			case ORDERABLE:
-				attribute = beanLocator.getInstance(ListAttributeImpl.class);
+		switch (collectionSortType) {
+		case ORDERABLE:
+			attribute = beanLocator.getInstance(ListAttributeImpl.class);
 			break;
-			case SORTED:
-				throw new UnsupportedOperationException("sorted collectionsare not spported");
-			default:
-				attribute = beanLocator.getInstance(SetAttributeImpl.class);
+		case SORTED:
+			throw new UnsupportedOperationException(
+					"sorted collectionsare not spported");
+		default:
+			attribute = beanLocator.getInstance(SetAttributeImpl.class);
 			break;
 		}
 		attribute.setCollectionSortType(collectionSortType);
@@ -97,12 +106,13 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 		attribute.setAccessor(new DynamicAccessor(code));
 		attribute.setEntityType(entityType);
 		attribute.setTargetType(targetType);
+		attribute.setValidTargetTypes(validTypes);
 		addAttribute(attribute);
 		return attribute;
 	}
 
-	public <J> SingleAttribute<J> addPrimitiveAttribute(String code, PrimitiveType<J> type)
-	{
+	public <J> SingleAttribute<J> addPrimitiveAttribute(String code,
+			PrimitiveType<J> type) {
 		SingleAttributeImpl<J> attribute;
 		attribute = new PrimitiveAttributeImpl<J>();
 		attribute.setAccessor(new DynamicAccessor(code));
@@ -114,81 +124,94 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 		return attribute;
 	}
 
-	public <J> SingleAttribute<J> addSingleAssociationAttribute(String code, EntityType<J> targetType)
-	{
-		SingleAssociationAttribute<J> attribute = beanLocator.getInstance(SingleAssociationAttribute.class);
+	public <J> SingleAttribute<J> addSingleAssociationAttribute(String code,
+			EntityType<J> targetType) {
+		return addSingleAssociationAttribute(code, targetType, null);
+	}
+
+	public <J> SingleAttribute<J> addSingleAssociationAttribute(String code,
+			EntityType<J> targetType, Type[] validTypes) {
+		SingleAssociationAttribute<J> attribute = beanLocator
+				.getInstance(SingleAssociationAttribute.class);
 		attribute.setAccessor(new DynamicAccessor(code));
 		attribute.setWriteable(true);
 		attribute.setCode(code);
 		attribute.setTargetType(targetType);
 		attribute.setEntityType(entityType);
+		attribute.setValidTargetTypes(validTypes);
 		addAttribute(attribute);
 		return attribute;
 	}
-	
+
 	@Inject
 	private EntityTypeRepository entityTypeRepository;
 
 	@Override
-	public <J> SingleAttribute<J> addSingleAttribute(String code, Class<J> javaType)
-	{
+	public <J> SingleAttribute<J> addSingleAttribute(String code,
+			Class<J> javaType, Class[] validClasses) {
+		Type[] validTypes = new Type[validClasses.length];
+		for (int i = 0; i < validClasses.length; i++) {
+			validTypes[i] = entityTypeRepository.getType(validClasses[i]);
+		}
+		return addSingleAttribute(code, entityTypeRepository.getType(javaType),
+				validTypes);
+	}
+
+	@Override
+	public <J> SingleAttribute<J> addSingleAttribute(String code,
+			Class<J> javaType) {
 		return addSingleAttribute(code, entityTypeRepository.getType(javaType));
 	}
 
 	@Override
-	public <J> SingleAttribute<J> addSingleAttribute(String code, Type<J> type)
-	{
-		if (type instanceof EntityType<?>)
-		{
-			return addSingleAssociationAttribute(code, (EntityType<J>) type);
-		}
-		else
-		{
+	public <J> SingleAttribute<J> addSingleAttribute(String code, Type<J> type,
+			Type[] validTypes) {
+		if (type instanceof EntityType<?>) {
+			return addSingleAssociationAttribute(code, (EntityType<J>) type,
+					validTypes);
+		} else {
 			return addPrimitiveAttribute(code, (PrimitiveType<J>) type);
 		}
 	}
 
 	@Override
-	public EntityType<?> createEntityType()
-	{
+	public <J> SingleAttribute<J> addSingleAttribute(String code, Type<J> type) {
+		return addSingleAttribute(code, type, null);
+	}
+
+	@Override
+	public EntityType<?> createEntityType() {
 		callback.onFinished(entityType);
 		return entityType;
 	}
 
-	public AbstractEntityType<?> getEntityType()
-	{
+	public AbstractEntityType<?> getEntityType() {
 		return entityType;
 	}
 
 	@Override
-	public EntityTypeBuilder setEntityClass(Class<?> entityClass)
-	{
+	public EntityTypeBuilder setEntityClass(Class<?> entityClass) {
 		entityType.setEntityClass(entityClass);
 		return this;
 	}
 
-	public void setEntityType(AbstractEntityType<?> entityType)
-	{
+	public void setEntityType(AbstractEntityType<?> entityType) {
 		this.entityType = entityType;
 	}
 
-	public void setRepositoryCallback(EntityTypeBuilderCallback callback)
-	{
+	public void setRepositoryCallback(EntityTypeBuilderCallback callback) {
 		this.callback = callback;
 	}
 
 	@Override
-	public void superType(EntityType<?> superType)
-	{
+	public void superType(EntityType<?> superType) {
 		entityType.setSuperEntityType(superType);
-		// TODO this should be done by repository. It might span more than one repository.
-		if (superType instanceof AbstractEntityType)
-		{
+		// TODO this should be done by repository. It might span more than one
+		// repository.
+		if (superType instanceof AbstractEntityType) {
 			((AbstractEntityType) superType).addSubEntityType(entityType);
 		}
 	}
-
-
 
 	@Override
 	public void mixin(EntityType<?> mixinType) {

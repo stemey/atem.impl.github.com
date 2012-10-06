@@ -49,6 +49,7 @@ public class MapAssociationAttributeFactory extends AttributeFactory
 		attribute.setKeyType(keyType);
 		setStandardProperties(entityType, propertyDescriptor, attribute);
 		attribute.setAccessor(propertyDescriptor.getAccessor());
+		initValidTypes(propertyDescriptor, ctx, attribute);
 		return attribute;
 
 	}

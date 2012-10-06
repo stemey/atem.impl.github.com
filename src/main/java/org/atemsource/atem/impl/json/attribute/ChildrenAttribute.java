@@ -86,7 +86,10 @@ public class ChildrenAttribute implements ListAssociationAttribute< Object> {
 	public Class<List> getAssociationType() {
 		return List.class;
 	}
-
+	@Override
+	public Type<Object>[] getValidTargetTypes() {
+		return null;
+	}
 	private String code;
 
 	public String getCode() {

@@ -167,4 +167,9 @@ public class IncomingOneRelation<J> implements SingleAttribute<J>, AssociationAt
 		throw new UnsupportedOperationException("not imlemented yet");
 	}
 
+	@Override
+	public Type<J>[] getValidTargetTypes() {
+		return null;
+	}
+
 }

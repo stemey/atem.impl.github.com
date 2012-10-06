@@ -20,6 +20,7 @@ import org.atemsource.atem.impl.common.attribute.primitive.BooleanTypeImpl;
 import org.atemsource.atem.impl.common.attribute.primitive.DoubleType;
 import org.atemsource.atem.impl.common.attribute.primitive.IntegerType;
 import org.atemsource.atem.impl.common.attribute.primitive.LongType;
+import org.atemsource.atem.impl.common.attribute.primitive.SimpleEnumType;
 import org.atemsource.atem.impl.common.attribute.primitive.SimpleTextType;
 import org.atemsource.atem.impl.json.attribute.ArrayNodeAttribute;
 import org.atemsource.atem.impl.json.attribute.BooleanAttribute;
@@ -43,7 +44,7 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 
 	@Override
 	public <K, V, ObjectNode> MapAttribute<K, V, ObjectNode> addMapAssociationAttribute(String name, Type<K> keyType,
-		Type<V> valueType)
+		Type<V> valueType,Type[] validTypes)
 	{
 		if (keyType.getJavaType() != String.class)
 		{
@@ -56,11 +57,12 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 		mapAttribute.setWriteable(true);
 		mapAttribute.setObjectMapper(objectMapper);
 		addAttribute(mapAttribute);
-		return mapAttribute;
+		mapAttribute.setValidTargetTypes(validTypes);
+	return mapAttribute;
 	}
 
 	@Override
-	public CollectionAttribute addMultiAssociationAttribute(String code, Type targetType,
+	public CollectionAttribute addMultiAssociationAttribute(String code, Type targetType,Type[] validTypes,
 		CollectionSortType collectionSortType)
 	{
 		ArrayNodeAttribute attribute = beanLocator.getInstance(ArrayNodeAttribute.class);
@@ -70,6 +72,7 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 		addAttribute(attribute);
 		attribute.setWriteable(true);
 		attribute.setObjectMapper(objectMapper);
+		attribute.setValidTargetTypes(validTypes);
 
 		return attribute;
 	}
@@ -103,7 +106,6 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 			attribute = beanLocator.getInstance(BooleanAttribute.class);
 			attribute.setTargetType(new BooleanTypeImpl());
 		}
-
 		else
 		{
 			throw new UnsupportedOperationException("type " + type.getJavaType().getName() + " is not implemented yet");
@@ -116,7 +118,7 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 	}
 
 	@Override
-	public SingleAttribute addSingleAssociationAttribute(String code, EntityType targetType)
+	public SingleAttribute addSingleAssociationAttribute(String code, EntityType targetType,Type[] validTypes)
 	{
 		ObjectNodeAttribute attribute = beanLocator.getInstance(ObjectNodeAttribute.class);
 		attribute.setCode(code);
@@ -124,16 +126,17 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 		attribute.setTargetType(targetType);
 		addAttribute(attribute);
 		attribute.setWriteable(true);
+		attribute.setValidTargetTypes(validTypes);
 
 		return attribute;
 	}
 
 	@Override
-	public <J> SingleAttribute<J> addSingleAttribute(String code, Type<J> type)
+	public <J> SingleAttribute<J> addSingleAttribute(String code, Type<J> type,Type[] validTypes)
 	{
 		if (type == null || type instanceof EntityType<?>)
 		{
-			return addSingleAssociationAttribute(code, (EntityType<J>) type);
+			return addSingleAssociationAttribute(code, (EntityType<J>) type,validTypes);
 		}
 		else
 		{

@@ -20,7 +20,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.atemsource.atem.api.attribute.annotation.ValidTypes;
 import org.atemsource.atem.api.type.EntityType;
+import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.AbstractEntityType;
 import org.atemsource.atem.impl.common.attribute.AbstractAttribute;
 import org.atemsource.atem.impl.infrastructure.BeanCreator;
@@ -76,5 +78,21 @@ public abstract class AttributeFactory
 		attribute.setEntityType(entityType);
 		attribute.setCode(propertyName);
 		attribute.setWriteable(propertyDescriptor.isWritable());
+	}
+
+	protected void initValidTypes(PropertyDescriptor propertyDescriptor, EntityTypeCreationContext ctx, AbstractAttribute attribute) {
+		ValidTypes validTypes = propertyDescriptor
+				.getAnnotation(ValidTypes.class);
+		if (validTypes!=null) {
+			Type[] validTargetTypes = new Type[validTypes.value().length];
+			for (int i=0;i<validTypes.value().length;i++)
+			 {
+				Type validType=ctx.getTypeReference(validTypes.value()[i]);
+				validTargetTypes[i]=validType;
+			}
+			attribute.setValidTargetTypes(validTargetTypes);
+		}else{
+			attribute.setValidTargetTypes(new Type[]{attribute.getTargetType()});
+		}
 	}
 }

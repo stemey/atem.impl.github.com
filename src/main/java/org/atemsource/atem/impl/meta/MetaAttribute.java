@@ -54,7 +54,10 @@ public class MetaAttribute<J> implements SingleAttribute<J> {
 	public Type<J> getTargetType() {
 		return targetType;
 	}
-
+	@Override
+	public Type<J>[] getValidTargetTypes() {
+		return null;
+	}
 	@Override
 	public Type<J> getTargetType(J value) {
 		return targetType;

@@ -213,4 +213,9 @@ public class PropertiesAttribute implements MapAttribute<String, Object, Map> {
 		return keyType;
 	}
 
+	@Override
+	public Type<Object>[] getValidTargetTypes() {
+		return null;
+	}
+
 }

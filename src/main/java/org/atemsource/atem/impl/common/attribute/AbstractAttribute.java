@@ -48,6 +48,16 @@ public abstract class AbstractAttribute<J, R> implements org.atemsource.atem.api
 
 	private Type<J> targetType;
 
+	private Type<J>[] validTargetTypes;
+
+	public Type<J>[] getValidTargetTypes() {
+		return validTargetTypes;
+	}
+
+	public void setValidTargetTypes(Type<J>[] validTargetTypes) {
+		this.validTargetTypes = validTargetTypes;
+	}
+
 	private boolean writeable;
 
 	private boolean required;

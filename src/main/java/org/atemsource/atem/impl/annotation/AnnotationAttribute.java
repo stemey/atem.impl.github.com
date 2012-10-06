@@ -35,7 +35,10 @@ public class AnnotationAttribute<J extends Annotation> implements
 	public Class<J> getAssociationType() {
 		return (Class<J>) annotationType.getJavaType();
 	}
-
+	@Override
+	public Type<J>[] getValidTargetTypes() {
+		return new Type[]{annotationType};
+	}
 	@Override
 	public String getCode() {
 		return annotationType.getJavaType().getName();
@@ -58,7 +61,7 @@ public class AnnotationAttribute<J extends Annotation> implements
 
 	@Override
 	public Type<J> getTargetType(J value) {
-		return annotationType;
+		return null;
 	}
 
 	@Override
