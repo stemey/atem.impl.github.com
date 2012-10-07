@@ -15,9 +15,11 @@ import java.util.List;
 import org.atemsource.atem.api.attribute.CollectionAttribute;
 import org.atemsource.atem.api.attribute.CollectionSortType;
 import org.atemsource.atem.api.attribute.OrderableCollection;
+import org.atemsource.atem.api.infrastructure.exception.ConversionException;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.attribute.AbstractAttribute;
 import org.atemsource.atem.impl.json.JsonUtils;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -62,7 +64,11 @@ public class ArrayNodeAttribute extends AbstractAttribute<Object, ArrayNode> imp
 
 	private ArrayNode getArrayNode(Object entity)
 	{
-		return (ArrayNode) ((ObjectNode) entity).get(getCode());
+		JsonNode jsonNode = ((ObjectNode) entity).get(getCode());
+		if (!jsonNode.isArray()) {
+			throw new ConversionException(jsonNode.getValueAsText(),getAssociationType());
+		}
+		return (ArrayNode) jsonNode;
 	}
 
 	@Override

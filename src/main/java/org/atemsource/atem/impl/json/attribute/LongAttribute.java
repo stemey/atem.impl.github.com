@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.atemsource.atem.impl.json.attribute;
 
+import org.atemsource.atem.api.infrastructure.exception.ConversionException;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.springframework.context.annotation.Scope;
@@ -29,12 +30,15 @@ public class LongAttribute extends JsonAttribute<Long>
 		else
 		{
 			JsonNode jsonNode = node.get(getCode());
-			if (jsonNode == null)
+			if (jsonNode == null || jsonNode.isNull())
 			{
 				return null;
 			}
 			else
 			{
+				if (!jsonNode.isLong()) {
+					throw new ConversionException(jsonNode.getValueAsText(),getTargetType());
+				}
 				return jsonNode.getLongValue();
 			}
 		}

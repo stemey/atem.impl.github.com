@@ -19,11 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-
 @Component
 @Scope("prototype")
-public class JsonEntityTypeImpl extends DynamicEntityType<ObjectNode>
-{
+public class JsonEntityTypeImpl extends DynamicEntityType<ObjectNode> {
 
 	@Autowired
 	private BeanLocator beanLocator;
@@ -37,102 +35,86 @@ public class JsonEntityTypeImpl extends DynamicEntityType<ObjectNode>
 
 	private String typeProperty;
 
-	public JsonEntityTypeImpl()
-	{
+	public JsonEntityTypeImpl() {
 		super();
 		setEntityClass(ObjectNode.class);
 	}
 
 	@Override
-	public ObjectNode createEntity() throws TechnicalException
-	{
+	public ObjectNode createEntity() throws TechnicalException {
 		ObjectNode objectNode = objectMapper.createObjectNode();
-		if (typeProperty != null)
-		{
-			if (typeCodeConverter != null)
-			{
-				objectNode.put(typeProperty, typeCodeConverter.toExternalCode(this));
-			}
-			else
-			{
+		if (typeProperty != null) {
+			if (typeCodeConverter != null) {
+				objectNode.put(typeProperty,
+						typeCodeConverter.toExternalCode(this));
+			} else {
 				objectNode.put(typeProperty, this.getCode());
 			}
 		}
 		return objectNode;
 	}
 
-	public String getExternalTypeCode()
-	{
-		return typeCodeConverter.toExternalCode(this);
+	public String getExternalTypeCode() {
+		if (typeCodeConverter == null) {
+			return getCode();
+		} else {
+			return typeCodeConverter.toExternalCode(this);
+		}
 	}
 
 	@Override
-	public Class<ObjectNode> getJavaType()
-	{
+	public Class<ObjectNode> getJavaType() {
 		return ObjectNode.class;
 	}
 
-	public ObjectMapper getObjectMapper()
-	{
+	public ObjectMapper getObjectMapper() {
 		return objectMapper;
 	}
 
-	public String getTypeProperty()
-	{
+	public String getTypeProperty() {
 		return typeProperty;
 	}
 
 	@Override
-	public boolean isAssignableFrom(Object entity)
-	{
-		if (entity == null)
-		{
+	public boolean isAssignableFrom(Object entity) {
+		if (entity == null) {
 			return false;
-		}
-		else if (entity instanceof ObjectNode)
-		{
+		} else if (entity instanceof ObjectNode) {
 			JsonNode typePropertyNode = ((ObjectNode) entity).get(typeProperty);
-			if (typePropertyNode == null)
-			{
+			if (typePropertyNode == null) {
 				return false;
 			}
 			String typeCode = typePropertyNode.getTextValue();
-			if (typeCodeConverter != null)
-			{
-				String versionedTypeCode = typeCodeConverter.fromExternalCode(this, typeCode);
-				EntityType<Object> entityType = entityTypeRepository.getEntityType(versionedTypeCode);
+			if (typeCodeConverter != null) {
+				String versionedTypeCode = typeCodeConverter.fromExternalCode(
+						this, typeCode);
+				EntityType<Object> entityType = entityTypeRepository
+						.getEntityType(versionedTypeCode);
 				return isAssignableFrom(entityType);
-			}
-			else
-			{
-				EntityType<Object> entityType = entityTypeRepository.getEntityType(typeCode);
+			} else {
+				EntityType<Object> entityType = entityTypeRepository
+						.getEntityType(typeCode);
 				return isAssignableFrom(entityType);
 
 			}
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
 
-	public boolean isPersistable()
-	{
+	public boolean isPersistable() {
 		return true;
 	}
 
-	public void setObjectMapper(ObjectMapper objectMapper)
-	{
+	public void setObjectMapper(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
 	}
 
-	public void setTypeCodeConverter(TypeCodeConverter typeCodeConverter)
-	{
+	public void setTypeCodeConverter(TypeCodeConverter typeCodeConverter) {
 		this.typeCodeConverter = typeCodeConverter;
 	}
 
-	public void setTypeProperty(String typeProperty)
-	{
+	public void setTypeProperty(String typeProperty) {
 		this.typeProperty = typeProperty;
 	}
 }

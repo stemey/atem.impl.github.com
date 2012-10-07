@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.atemsource.atem.impl.json.attribute;
 
+import org.atemsource.atem.api.infrastructure.exception.ConversionException;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.springframework.context.annotation.Scope;
@@ -35,6 +36,9 @@ public class DoubleAttribute extends JsonAttribute<Double>
 			}
 			else
 			{
+				if (!jsonNode.isDouble()) {
+					throw new ConversionException(jsonNode.getValueAsText(),getTargetType());
+				}
 				return jsonNode.getDoubleValue();
 			}
 		}
