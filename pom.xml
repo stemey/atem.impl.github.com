@@ -17,8 +17,6 @@
 	<url>https://github.com/stemey/atem.impl.github.com</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<pom.siteAddress>ftp://ftp.atemsource.org:21</pom.siteAddress>
-		<pom.siteDirectory>maven/site/impl</pom.siteDirectory>
 	</properties>
 
 	<scm>
