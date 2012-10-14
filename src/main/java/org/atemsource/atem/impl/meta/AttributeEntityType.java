@@ -33,7 +33,7 @@ public class AttributeEntityType<J, R> extends
 	}
 
 	@Override
-	public boolean isAssignableFrom(Object entity) {
+	public boolean isInstance(Object entity) {
 		return entity instanceof Attribute;
 	}
 

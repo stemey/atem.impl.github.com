@@ -76,7 +76,7 @@ public class JsonEntityTypeImpl extends DynamicEntityType<ObjectNode> {
 	}
 
 	@Override
-	public boolean isAssignableFrom(Object entity) {
+	public boolean isInstance(Object entity) {
 		if (entity == null) {
 			return false;
 		} else if (entity instanceof ObjectNode) {

@@ -28,6 +28,11 @@ public abstract class PrimitiveTypeImpl<J> implements PrimitiveType<J>
 	
 
 	@Override
+	public boolean isInstance(Object value) {
+		return getJavaType().isInstance(value);
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		return ((PrimitiveType<?>)obj).getJavaType().equals(getJavaType());
 	}
