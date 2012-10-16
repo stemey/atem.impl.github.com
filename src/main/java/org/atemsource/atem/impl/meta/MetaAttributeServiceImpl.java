@@ -7,51 +7,38 @@
  ******************************************************************************/
 package org.atemsource.atem.impl.meta;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.inject.Inject;
-
-import org.atemsource.atem.api.EntityTypeRepository;
-import org.atemsource.atem.api.attribute.AssociationAttribute;
-import org.atemsource.atem.api.attribute.Attribute;
-import org.atemsource.atem.api.attribute.annotation.Cardinality;
 import org.atemsource.atem.api.attribute.relation.SingleAttribute;
 import org.atemsource.atem.api.extension.EntityTypeRepositoryPostProcessor;
 import org.atemsource.atem.api.extension.MetaAttributeService;
-import org.atemsource.atem.api.service.IdentityService;
-import org.atemsource.atem.api.service.PersistenceService;
 import org.atemsource.atem.api.type.EntityType;
-import org.atemsource.atem.api.type.EntityTypeBuilder;
-import org.atemsource.atem.api.type.PrimitiveType;
-import org.atemsource.atem.impl.common.attribute.AbstractSingleAssociationAttribute;
-import org.atemsource.atem.spi.DynamicEntityTypeSubrepository;
 import org.atemsource.atem.spi.EntityTypeCreationContext;
 
-public class MetaAttributeServiceImpl implements MetaDataService,
-		MetaAttributeService, EntityTypeRepositoryPostProcessor {
 
-	private Map<String, MetaDataStore<?>> data = new HashMap<String, MetaDataStore<?>>();
+public class MetaAttributeServiceImpl implements MetaDataService, MetaAttributeService,
+	EntityTypeRepositoryPostProcessor
+{
+
+	private final Map<String, MetaDataStore<?>> data = new HashMap<String, MetaDataStore<?>>();
+
 	private EntityTypeCreationContext entityTypeCreationContext;
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.atemsource.atem.impl.meta.MS#addSingleMetaAttribute(java.lang.String,
-	 * org.atemsource.atem.api.type.EntityType,
-	 * org.atemsource.atem.api.type.EntityType)
+	 * @see org.atemsource.atem.impl.meta.MS#addSingleMetaAttribute(java.lang.String,
+	 * org.atemsource.atem.api.type.EntityType, org.atemsource.atem.api.type.EntityType)
 	 */
 	@Override
-	public <J> SingleAttribute<J> addSingleMetaAttribute(String name,
-			EntityType<?> holderType, EntityType<J> metaDataType) {
+	public <J> SingleAttribute<J> addSingleMetaAttribute(String name, EntityType<?> holderType,
+		EntityType<J> metaDataType)
+	{
 
-		MetaAttribute attribute = new MetaAttribute(holderType, metaDataType,
-				this, name);
+		MetaAttribute attribute = new MetaAttribute(holderType, metaDataType, this, name);
 
 		MetaDataStore store = data.get(attribute.getCode());
-		if (store == null) {
+		if (store == null)
+		{
 			store = new MetaDataStore(attribute);
 			data.put(attribute.getCode(), store);
 		}
@@ -60,34 +47,34 @@ public class MetaAttributeServiceImpl implements MetaDataService,
 		return attribute;
 	}
 
-
-
 	@Override
-	public void initialize(EntityTypeCreationContext ctx) {
-		this.entityTypeCreationContext = ctx;
-	}
-
-	@Override
-	public Object getMetaData(Object entity, MetaAttribute attribute) {
+	public Object getMetaData(Object entity, MetaAttribute attribute)
+	{
 		MetaDataStore store = data.get(attribute.getCode());
-		if (store == null) {
+		if (store == null)
+		{
 			store = new MetaDataStore(attribute);
 			data.put(attribute.getCode(), store);
 			return null;
-		} else {
+		}
+		else
+		{
 			return store.find(entity);
 		}
 	}
 
 	@Override
-	public void setMetaData(Object entity, Object value, MetaAttribute attribute) {
+	public void initialize(EntityTypeCreationContext ctx)
+	{
+		this.entityTypeCreationContext = ctx;
+	}
+
+	@Override
+	public void setMetaData(Object entity, Object value, MetaAttribute attribute)
+	{
 		MetaDataStore store = data.get(attribute.getCode());
 
 		store.insert(entity, value);
 	}
-
-
-
-
 
 }

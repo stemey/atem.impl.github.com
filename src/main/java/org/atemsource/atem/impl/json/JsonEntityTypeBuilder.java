@@ -20,7 +20,6 @@ import org.atemsource.atem.impl.common.attribute.primitive.BooleanTypeImpl;
 import org.atemsource.atem.impl.common.attribute.primitive.DoubleType;
 import org.atemsource.atem.impl.common.attribute.primitive.IntegerType;
 import org.atemsource.atem.impl.common.attribute.primitive.LongType;
-import org.atemsource.atem.impl.common.attribute.primitive.SimpleEnumType;
 import org.atemsource.atem.impl.common.attribute.primitive.SimpleTextType;
 import org.atemsource.atem.impl.json.attribute.ArrayNodeAttribute;
 import org.atemsource.atem.impl.json.attribute.BooleanAttribute;
@@ -44,7 +43,7 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 
 	@Override
 	public <K, V, ObjectNode> MapAttribute<K, V, ObjectNode> addMapAssociationAttribute(String name, Type<K> keyType,
-		Type<V> valueType,Type[] validTypes)
+		Type<V> valueType, boolean sorted, Type[] validTypes)
 	{
 		if (keyType.getJavaType() != String.class)
 		{
@@ -58,11 +57,11 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 		mapAttribute.setObjectMapper(objectMapper);
 		addAttribute(mapAttribute);
 		mapAttribute.setValidTargetTypes(validTypes);
-	return mapAttribute;
+		return mapAttribute;
 	}
 
 	@Override
-	public CollectionAttribute addMultiAssociationAttribute(String code, Type targetType,Type[] validTypes,
+	public CollectionAttribute addMultiAssociationAttribute(String code, Type targetType, Type[] validTypes,
 		CollectionSortType collectionSortType)
 	{
 		ArrayNodeAttribute attribute = beanLocator.getInstance(ArrayNodeAttribute.class);
@@ -118,7 +117,7 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 	}
 
 	@Override
-	public SingleAttribute addSingleAssociationAttribute(String code, EntityType targetType,Type[] validTypes)
+	public SingleAttribute addSingleAssociationAttribute(String code, EntityType targetType, Type[] validTypes)
 	{
 		ObjectNodeAttribute attribute = beanLocator.getInstance(ObjectNodeAttribute.class);
 		attribute.setCode(code);
@@ -132,11 +131,11 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 	}
 
 	@Override
-	public <J> SingleAttribute<J> addSingleAttribute(String code, Type<J> type,Type[] validTypes)
+	public <J> SingleAttribute<J> addSingleAttribute(String code, Type<J> type, Type[] validTypes)
 	{
 		if (type == null || type instanceof EntityType<?>)
 		{
-			return addSingleAssociationAttribute(code, (EntityType<J>) type,validTypes);
+			return addSingleAssociationAttribute(code, (EntityType<J>) type, validTypes);
 		}
 		else
 		{

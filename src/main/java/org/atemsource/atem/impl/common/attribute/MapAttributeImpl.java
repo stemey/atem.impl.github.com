@@ -1,29 +1,19 @@
 /*******************************************************************************
- * Stefan Meyer, 2012
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Stefan Meyer, 2012 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  ******************************************************************************/
 package org.atemsource.atem.impl.common.attribute;
-
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
+import java.util.TreeMap;
 import org.atemsource.atem.api.EntityTypeRepository;
-import org.atemsource.atem.api.attribute.CollectionSortType;
 import org.atemsource.atem.api.attribute.MapAttribute;
 import org.atemsource.atem.api.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +26,14 @@ import org.springframework.stereotype.Component;
 public class MapAttributeImpl<K, J> extends AbstractAttribute<J, Map> implements MapAttribute<K, J, Map>
 {
 
-	private Type<K> keyType;
-
 	@Autowired
 	private EntityTypeRepository entityTypeRepository;
 
+	private Type<K> keyType;
+
+	private boolean sorted;
+
+	@Override
 	public void clear(Object entity)
 	{
 		Map map = getValue(entity);
@@ -77,20 +70,22 @@ public class MapAttributeImpl<K, J> extends AbstractAttribute<J, Map> implements
 	}
 
 	@Override
-	public CollectionSortType getCollectionSortType()
-	{
-		return CollectionSortType.NONE;
-	}
-
-	@Override
 	public J getElement(Object entity, K keye)
 	{
 		return (J) getValue(entity).get(keye);
 	}
 
+	@Override
 	public Map getEmptyMap()
 	{
-		return new HashMap();
+		if (isSorted())
+		{
+			return new TreeMap();
+		}
+		else
+		{
+			return new HashMap();
+		}
 	}
 
 	@Override
@@ -151,6 +146,12 @@ public class MapAttributeImpl<K, J> extends AbstractAttribute<J, Map> implements
 	}
 
 	@Override
+	public boolean isSorted()
+	{
+		return sorted;
+	}
+
+	@Override
 	public void putElement(Object entity, K key, J value)
 	{
 		Map map = getValue(entity);
@@ -174,6 +175,11 @@ public class MapAttributeImpl<K, J> extends AbstractAttribute<J, Map> implements
 	public void setKeyType(Type<K> keyType)
 	{
 		this.keyType = keyType;
+	}
+
+	public void setSorted(boolean sorted)
+	{
+		this.sorted = sorted;
 	}
 
 }
