@@ -41,7 +41,7 @@ public class EntityTypeEntityType extends AbstractEntityType<Type<?>>
 	}
 
 	@Override
-	public boolean isAssignableFrom(Object entity)
+	public boolean isInstance(Object entity)
 	{
 		return getEntityClass().isInstance(entity);
 	}

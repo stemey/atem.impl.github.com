@@ -54,7 +54,7 @@ public class DynamicEntityTypeImpl extends AbstractEntityType<DynamicEntity>
 		return DynamicEntity.class;
 	}
 
-	public boolean isAssignableFrom(Object entity)
+	public boolean isInstance(Object entity)
 	{
 		if (entity == null)
 		{
@@ -81,5 +81,7 @@ public class DynamicEntityTypeImpl extends AbstractEntityType<DynamicEntity>
 	{
 		this.serializingPrimitives = serializingPrimitives;
 	}
+
+
 
 }

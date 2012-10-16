@@ -217,4 +217,10 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder {
 	public void mixin(EntityType<?> mixinType) {
 		entityType.addMixin(mixinType);
 	}
+
+
+	@Override
+	public void setAbstract(boolean abstractType) {
+		entityType.setAbstractType(abstractType);
+	}
 }

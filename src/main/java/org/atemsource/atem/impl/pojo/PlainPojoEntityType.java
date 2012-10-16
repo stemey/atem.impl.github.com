@@ -37,7 +37,7 @@ public class PlainPojoEntityType extends AbstractEntityType<Object>
 	}
 
 	@Override
-	public boolean isAssignableFrom(Object entity)
+	public boolean isInstance(Object entity)
 	{
 		return getJavaType().isInstance(entity);
 	}

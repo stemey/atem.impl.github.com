@@ -13,9 +13,8 @@ public class AnnotationEntityType<A extends Annotation> extends AbstractEntityTy
 	}
 
 	@Override
-	public boolean isAssignableFrom(Object entity)
-	{
-		return getJavaType().isInstance(entity);
+	public boolean isInstance(Object value) {
+		return value instanceof Annotation;
 	}
 
 }
