@@ -36,8 +36,9 @@ public class DoubleAttribute extends JsonAttribute<Double>
 			}
 			else
 			{
-				if (!jsonNode.isDouble()) {
-					throw new ConversionException(jsonNode.getValueAsText(),getTargetType());
+				if (!jsonNode.isNumber())
+				{
+					throw new ConversionException(jsonNode.getValueAsText(), getTargetType());
 				}
 				return jsonNode.getDoubleValue();
 			}

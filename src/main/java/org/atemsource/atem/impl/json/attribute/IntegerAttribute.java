@@ -36,8 +36,9 @@ public class IntegerAttribute extends JsonAttribute<Integer>
 			}
 			else
 			{
-				if (!jsonNode.isInt()) {
-					throw new ConversionException(jsonNode.getValueAsText(),getTargetType());
+				if (!jsonNode.isNumber())
+				{
+					throw new ConversionException(jsonNode.getValueAsText(), getTargetType());
 				}
 				return jsonNode.getIntValue();
 			}

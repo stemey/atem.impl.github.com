@@ -29,7 +29,7 @@ public class ObjectNodeAttribute extends AbstractSingleAssociationAttribute<Obje
 		else
 		{
 			JsonNode jsonNode = node.get(getCode());
-			if (jsonNode.isNull())
+			if (jsonNode == null || jsonNode.isNull())
 			{
 				return null;
 			}

@@ -65,8 +65,13 @@ public class ArrayNodeAttribute extends AbstractAttribute<Object, ArrayNode> imp
 	private ArrayNode getArrayNode(Object entity)
 	{
 		JsonNode jsonNode = ((ObjectNode) entity).get(getCode());
-		if (!jsonNode.isArray()) {
-			throw new ConversionException(jsonNode.getValueAsText(),getAssociationType());
+		if (jsonNode == null || jsonNode.isNull())
+		{
+			return null;
+		}
+		if (!jsonNode.isArray())
+		{
+			throw new ConversionException(jsonNode.getValueAsText(), getAssociationType());
 		}
 		return (ArrayNode) jsonNode;
 	}

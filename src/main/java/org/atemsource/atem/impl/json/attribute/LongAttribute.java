@@ -36,8 +36,9 @@ public class LongAttribute extends JsonAttribute<Long>
 			}
 			else
 			{
-				if (!jsonNode.isLong()) {
-					throw new ConversionException(jsonNode.getValueAsText(),getTargetType());
+				if (!jsonNode.isNumber())
+				{
+					throw new ConversionException(jsonNode.getValueAsText(), getTargetType());
 				}
 				return jsonNode.getLongValue();
 			}

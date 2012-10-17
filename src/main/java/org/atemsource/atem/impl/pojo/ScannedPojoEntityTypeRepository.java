@@ -9,6 +9,7 @@ package org.atemsource.atem.impl.pojo;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -132,6 +133,8 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 		AbstractEntityType entityType;
 		entityType = beanCreator.create(entityTypeClass);
 		entityType.setEntityClass(clazz);
+
+		entityType.setAbstractType(clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers()));
 		entityType.setCode(clazz.getName());
 		addEntityTypeToLookup(clazz, entityType);
 		return entityType;
