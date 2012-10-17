@@ -21,6 +21,7 @@ import org.atemsource.atem.impl.common.attribute.primitive.DoubleType;
 import org.atemsource.atem.impl.common.attribute.primitive.IntegerType;
 import org.atemsource.atem.impl.common.attribute.primitive.LongType;
 import org.atemsource.atem.impl.common.attribute.primitive.SimpleTextType;
+import org.atemsource.atem.impl.json.attribute.AnyAttribute;
 import org.atemsource.atem.impl.json.attribute.ArrayNodeAttribute;
 import org.atemsource.atem.impl.json.attribute.BooleanAttribute;
 import org.atemsource.atem.impl.json.attribute.DoubleAttribute;
@@ -40,6 +41,18 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 {
 
 	private ObjectMapper objectMapper;
+
+	public SingleAttribute addAnyAttribute(String code)
+	{
+		AnyAttribute attribute = beanLocator.getInstance(AnyAttribute.class);
+		attribute.setCode(code);
+		attribute.setEntityType(getEntityType());
+		attribute.setTargetType(null);
+		addAttribute(attribute);
+		attribute.setWriteable(true);
+
+		return attribute;
+	}
 
 	@Override
 	public <K, V, ObjectNode> MapAttribute<K, V, ObjectNode> addMapAssociationAttribute(String name, Type<K> keyType,
@@ -133,7 +146,11 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 	@Override
 	public <J> SingleAttribute<J> addSingleAttribute(String code, Type<J> type, Type[] validTypes)
 	{
-		if (type == null || type instanceof EntityType<?>)
+		if (type == null)
+		{
+			return addAnyAttribute(code);
+		}
+		else if (type instanceof EntityType<?>)
 		{
 			return addSingleAssociationAttribute(code, (EntityType<J>) type, validTypes);
 		}

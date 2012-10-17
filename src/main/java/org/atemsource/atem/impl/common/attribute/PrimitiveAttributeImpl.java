@@ -28,7 +28,7 @@ public class PrimitiveAttributeImpl<J> extends SingleAttributeImpl<J> implements
 	@Override
 	public boolean isRequired()
 	{
-		return !((PrimitiveType<J>) getTargetType()).isNullable() || super.isRequired();
+		return getTargetType() != null && !((PrimitiveType<J>) getTargetType()).isNullable() || super.isRequired();
 	}
 
 }
