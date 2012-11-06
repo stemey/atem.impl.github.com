@@ -52,6 +52,10 @@ public abstract class PrimitiveTypeImpl<J> implements PrimitiveType<J>
 	@Override
 	public J clone(J value)
 	{
+		if (value == null)
+		{
+			return value;
+		}
 		if (value instanceof Number)
 		{
 			return value;
