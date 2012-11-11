@@ -44,6 +44,23 @@ public class JsoupSelectorPathFactory implements AttributePathFactory {
 		}
 	}
 
+	public AttributePath createMethodSelector(Cardinality cardinality,
+			String method, String cssQuery) {
+		switch (cardinality) {
+		case ONE:
+		case ZERO_TO_ONE:
+			return new JsoupSelectorPath(new CssQuerySingleMethodAttributes(
+					textType, elementType, method.substring(0,method.length()-2), cssQuery), "1::" + cssQuery);
+		case ZERO_TO_MANY:
+		case MANY:
+			// return new JsoupSelectorPath(new CssQueryMethodsAttributes(
+			// textType, cssQuery, method), "*::" + cssQuery);
+		default:
+			throw new IllegalStateException("unknown cardinality "
+					+ cardinality);
+		}
+	}
+
 	public AttributePath createElementSelector(Cardinality cardinality,
 			String cssQuery) {
 		switch (cardinality) {
@@ -62,18 +79,30 @@ public class JsoupSelectorPathFactory implements AttributePathFactory {
 	}
 
 	@Override
-	public AttributePath create(String path) {
+	public AttributePath create(String path, EntityType<?> baseType) {
+		if (baseType != elementType) {
+			throw new IllegalArgumentException(
+					"can only create paths on jsoup.Element");
+		}
 		int firstColon = path.indexOf(':');
 		String cardinality = path.substring(0, firstColon);
-		int secondColon = path.substring(firstColon+1).indexOf(':')+firstColon+1;
-		String attribute = path.substring(firstColon+1, secondColon);
-		String cssQuery = path.substring(firstColon+secondColon);
+		int secondColon = path.substring(firstColon + 1).indexOf(':')
+				+ firstColon + 1;
+		String attribute = path.substring(firstColon + 1, secondColon);
+		String cssQuery = path.substring(firstColon + secondColon);
 		if (StringUtils.isEmpty(attribute)) {
 			return createElementSelector(getCardinality(cardinality), cssQuery);
+		} else if (attribute.endsWith("()")) {
+			return createMethodSelector(getCardinality(cardinality), attribute,
+					cssQuery);
 		} else {
 			return createAttributeSelector(getCardinality(cardinality),
 					attribute, cssQuery);
 		}
+	}
+
+	public AttributePath create(String path) {
+		return create(path, elementType);
 	}
 
 	private Cardinality getCardinality(String cardinality) {
@@ -90,12 +119,6 @@ public class JsoupSelectorPathFactory implements AttributePathFactory {
 					+ cardinality);
 		}
 
-	}
-
-	@Override
-	public AttributePath create(AttributePath basePath, String path) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

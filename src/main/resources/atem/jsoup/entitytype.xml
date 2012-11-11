@@ -23,7 +23,7 @@
 	</context:component-scan>
 
 
-	<bean
+	<bean id="atem-jsoup-pathFactory"
 		class="org.atemsource.atem.impl.jsoup.selector.JsoupSelectorPathFactory" />
 
 	<bean id="atem-jsoup-repository"

@@ -64,7 +64,6 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 	{
 		MapAttributeImpl attribute = beanLocator.getInstance(MapAttributeImpl.class);
 		attribute.setAccessor(new DynamicAccessor(code));
-		attribute.setWriteable(true);
 		// attribute.setValidTypesSet(valueType.getSelfAndAllSubEntityTypes());
 		attribute.setKeyType(keyType);
 		attribute.setCode(code);
@@ -72,6 +71,7 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 		attribute.setTargetType(valueType);
 		attribute.setValidTargetTypes(validTypes);
 		attribute.setSorted(sorted);
+		attribute.setWriteable(true);
 		addAttribute(attribute);
 		return attribute;
 	}
@@ -135,11 +135,11 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 	{
 		SingleAssociationAttribute<J> attribute = beanLocator.getInstance(SingleAssociationAttribute.class);
 		attribute.setAccessor(new DynamicAccessor(code));
-		attribute.setWriteable(true);
 		attribute.setCode(code);
 		attribute.setTargetType(targetType);
 		attribute.setEntityType(entityType);
 		attribute.setValidTargetTypes(validTypes);
+		attribute.setWriteable(true);
 		addAttribute(attribute);
 		return attribute;
 	}

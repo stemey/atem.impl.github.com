@@ -14,16 +14,17 @@ import org.atemsource.atem.impl.jsoup.attribute.ChildrenAttribute;
 import org.atemsource.atem.impl.jsoup.attribute.NodesAttribute;
 import org.atemsource.atem.spi.DynamicEntityTypeSubrepository;
 import org.atemsource.atem.spi.EntityTypeCreationContext;
+import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 
 public class JsoupEntityTypeRepository extends
-		AbstractMetaDataRepository<Node> implements
-		DynamicEntityTypeSubrepository<Node> {
+		AbstractMetaDataRepository<Element> implements
+		DynamicEntityTypeSubrepository<Element> {
 	
 	@Inject
 	private BeanLocator beanLocator;
 
-	private EntityType<Node> nodeType;
+	private EntityType<Element> nodeType;
 
 	@Override
 	public void afterFirstInitialization(
@@ -44,8 +45,8 @@ public class JsoupEntityTypeRepository extends
 	}
 
 	@Override
-	public EntityType<Node> getEntityType(Object entity) {
-		if (entity instanceof Node) {
+	public EntityType<Element> getEntityType(Object entity) {
+		if (entity instanceof Element) {
 			return nodeType;
 		}
 
@@ -64,8 +65,8 @@ public class JsoupEntityTypeRepository extends
 		Type<String> textType = (Type<String>) entityTypeCreationContext.getTypeReference(String.class);
 		AttributesAttribute attributes = new AttributesAttribute(textType,nodeType);
 		this.nodeType=nodeType;
-		classToEntityTypes.put(Node.class, nodeType);
-		nameToEntityTypes.put(Node.class.getName(),nodeType);
+		classToEntityTypes.put(Element.class, nodeType);
+		nameToEntityTypes.put(Element.class.getName(),nodeType);
 		entityTypes.add(nodeType);
 	}
 
