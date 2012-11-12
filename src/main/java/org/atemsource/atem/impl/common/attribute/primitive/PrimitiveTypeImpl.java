@@ -29,7 +29,11 @@ public abstract class PrimitiveTypeImpl<J> implements PrimitiveType<J>
 		{
 			return null;
 		}
-		if (value instanceof Number)
+		else if (value instanceof Number)
+		{
+			return value;
+		}
+		else if (value instanceof Boolean)
 		{
 			return value;
 		}

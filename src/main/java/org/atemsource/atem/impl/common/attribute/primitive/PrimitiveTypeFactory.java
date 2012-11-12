@@ -1,20 +1,11 @@
 /*******************************************************************************
- * Stefan Meyer, 2012
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Stefan Meyer, 2012 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  ******************************************************************************/
 package org.atemsource.atem.impl.common.attribute.primitive;
-
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -22,9 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
-
 import org.atemsource.atem.api.BeanLocator;
 import org.atemsource.atem.api.type.PrimitiveType;
 import org.atemsource.atem.spi.PrimitiveTypeRegistrar;
@@ -36,12 +25,12 @@ import org.springframework.stereotype.Service;
 public class PrimitiveTypeFactory
 {
 
+	@Autowired
+	private BeanLocator beanLocator;
+
 	private Collection<Class> classes;
 
 	Map<Class<?>, PrimitiveType> classToType = new HashMap<Class<?>, PrimitiveType>();
-
-	@Autowired
-	private BeanLocator beanLocator;
 
 	public Collection<Class> getClasses()
 	{
@@ -182,7 +171,6 @@ public class PrimitiveTypeFactory
 		classes.add(Double.TYPE);
 		classes.add(Double.class);
 		classes.add(Character.TYPE);
-		classes.add(Character.class);
 		classes.add(Character.TYPE);
 		classes.add(Character.class);
 		classes.add(Byte.TYPE);
@@ -194,9 +182,10 @@ public class PrimitiveTypeFactory
 		for (PrimitiveTypeRegistrar registrar : registrars)
 		{
 			PrimitiveType<?>[] types = registrar.getTypes();
-			for(PrimitiveType<?> primitiveType:types) {
-			classToType.put(primitiveType.getJavaType(), primitiveType);
-			classes.add(primitiveType.getJavaType());
+			for (PrimitiveType<?> primitiveType : types)
+			{
+				classToType.put(primitiveType.getJavaType(), primitiveType);
+				classes.add(primitiveType.getJavaType());
 			}
 		}
 	}
