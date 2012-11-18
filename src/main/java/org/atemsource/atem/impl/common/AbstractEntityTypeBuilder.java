@@ -215,6 +215,10 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 	{
 		this.entityType = entityType;
 	}
+	
+	public EntityType getReference() {
+		return entityType;
+	}
 
 	public void setRepositoryCallback(EntityTypeBuilderCallback callback)
 	{
