@@ -16,7 +16,7 @@ public class AnnotationPropertyDescriptorFactory implements
 		for (Method method : entityClass.getDeclaredMethods()) {
 			propertyDescriptors.add(new PropertyDescriptor(method.getName(),
 					new AnnotationAccessor(method), method.getReturnType(),
-					false));
+					false,false));
 		}
 		return propertyDescriptors;
 	}

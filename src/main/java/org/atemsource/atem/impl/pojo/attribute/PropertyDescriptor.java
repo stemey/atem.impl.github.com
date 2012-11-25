@@ -50,7 +50,7 @@ public class PropertyDescriptor {
 	}
 
 	public PropertyDescriptor(String propertyName, Accessor accessor,
-			Class type, boolean writable) {
+			Class type, boolean writable,boolean derived) {
 		super();
 		this.propertyName = propertyName;
 		this.accessor = accessor;
