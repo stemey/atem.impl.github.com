@@ -8,6 +8,7 @@
 package org.atemsource.atem.impl.common.attribute.primitive;
 
 import java.io.Serializable;
+
 import org.atemsource.atem.api.type.PrimitiveType;
 import org.atemsource.atem.api.type.Type;
 
@@ -37,6 +38,10 @@ public abstract class PrimitiveTypeImpl<J> implements PrimitiveType<J>
 		{
 			return value;
 		}
+		else if (value instanceof Enum)
+		{
+			return value;
+		}
 		else if (value instanceof String)
 		{
 			return (J) new String((String) value);
@@ -47,7 +52,7 @@ public abstract class PrimitiveTypeImpl<J> implements PrimitiveType<J>
 		}
 		else
 		{
-			throw new UnsupportedOperationException("implement method");
+			throw new UnsupportedOperationException("implement clone for type " + getJavaType());
 		}
 	}
 
