@@ -172,4 +172,10 @@ public class IncomingOneRelation<J> implements SingleAttribute<J>, AssociationAt
 		return null;
 	}
 
+	@Override
+	public boolean isDerived() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

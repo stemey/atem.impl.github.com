@@ -29,6 +29,8 @@ public class PropertyDescriptor {
 	private Class propertyType;
 	private boolean writable;
 
+	private boolean derived;
+
 	public PropertyDescriptor() {
 
 	}
@@ -56,6 +58,11 @@ public class PropertyDescriptor {
 		this.accessor = accessor;
 		this.propertyType = type;
 		this.writable = writable;
+		this.derived=derived;
+	}
+
+	public boolean isDerived() {
+		return derived;
 	}
 
 	public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {

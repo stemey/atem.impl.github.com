@@ -120,4 +120,10 @@ public class MetaAttribute<J> implements SingleAttribute<J> {
 		metaDataService.setMetaData(entity, value, this);
 	}
 
+	@Override
+	public boolean isDerived() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

@@ -234,6 +234,12 @@ public class ChildrenAttribute implements ListAssociationAttribute< Object> {
 		return JsonUtils.convertToJava(node.remove(index));
 	}
 
+	@Override
+	public boolean isDerived() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 
 
 }

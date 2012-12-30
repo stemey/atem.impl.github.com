@@ -78,6 +78,7 @@ public abstract class AttributeFactory
 		attribute.setEntityType(entityType);
 		attribute.setCode(propertyName);
 		attribute.setWriteable(propertyDescriptor.isWritable());
+		attribute.setDerived(propertyDescriptor.isDerived());
 	}
 
 	protected void initValidTypes(PropertyDescriptor propertyDescriptor, EntityTypeCreationContext ctx, AbstractAttribute attribute) {

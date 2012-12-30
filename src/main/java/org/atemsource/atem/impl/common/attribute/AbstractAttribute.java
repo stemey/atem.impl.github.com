@@ -45,6 +45,16 @@ public abstract class AbstractAttribute<J, R> implements org.atemsource.atem.api
 	private Cardinality targetCardinality;
 
 	private EntityType entityType;
+	
+	private boolean derived;
+
+	public boolean isDerived() {
+		return derived;
+	}
+
+	public void setDerived(boolean derived) {
+		this.derived = derived;
+	}
 
 	private Type<J> targetType;
 

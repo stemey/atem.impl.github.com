@@ -258,4 +258,10 @@ public class PropertiesAttribute implements MapAttribute<String, Object, Map>
 		}
 	}
 
+	@Override
+	public boolean isDerived() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

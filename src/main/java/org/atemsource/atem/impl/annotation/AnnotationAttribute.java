@@ -119,4 +119,9 @@ public class AnnotationAttribute<J extends Annotation> implements
 		throw new UnsupportedOperationException("cannot write annotation");
 	}
 
+	@Override
+	public boolean isDerived() {
+		return true;
+	}
+
 }
