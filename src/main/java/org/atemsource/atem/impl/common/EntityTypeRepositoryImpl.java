@@ -228,6 +228,11 @@ public class EntityTypeRepositoryImpl implements EntityTypeRepository, EntityTyp
 	@Override
 	public boolean hasEntityTypeReference(Class entityClass)
 	{
+
+		if (primitiveTypeFactory.getPrimitiveType(entityClass) != null)
+		{
+			return true;
+		}
 		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
 		{
 			if (entityTypeSubrepository.hasEntityTypeReference(entityClass))
