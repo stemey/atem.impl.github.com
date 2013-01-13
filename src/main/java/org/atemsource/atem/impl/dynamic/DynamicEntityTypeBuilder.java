@@ -50,6 +50,7 @@ public class DynamicEntityTypeBuilder extends AbstractEntityTypeBuilder
 		attribute.setWriteable(true);
 		attribute.setTargetType(type);
 		attribute.setCode(code);
+		attribute.setMetaType(entityTypeRepository.getEntityType(attribute));
 		addAttribute(attribute);
 		attribute.setEntityType(getEntityType());
 		return attribute;

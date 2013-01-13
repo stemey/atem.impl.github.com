@@ -47,7 +47,7 @@ public class MapAssociationAttributeFactory extends AttributeFactory
 
 		attribute.setTargetType(targeType);
 		attribute.setKeyType(keyType);
-		setStandardProperties(entityType, propertyDescriptor, attribute);
+		setStandardProperties(entityType, propertyDescriptor, attribute,ctx);
 		attribute.setAccessor(propertyDescriptor.getAccessor());
 		initValidTypes(propertyDescriptor, ctx, attribute);
 		return attribute;

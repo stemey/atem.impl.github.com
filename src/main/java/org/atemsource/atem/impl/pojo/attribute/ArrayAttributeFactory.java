@@ -11,6 +11,7 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.annotation.Association;
+import org.atemsource.atem.api.attribute.relation.SingleAttribute;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.AbstractEntityType;
 import org.atemsource.atem.impl.common.attribute.AbstractAttribute;
@@ -40,7 +41,6 @@ public class ArrayAttributeFactory extends AttributeFactory
 	{
 		AbstractAttribute attribute;
 
-		Association association = propertyDescriptor.getAnnotation(Association.class);
 		Class[] includedTypes = null;
 		Class[] excludedTypes = null;
 		Class targetClass = propertyDescriptor.getPropertyType().getComponentType();
@@ -52,7 +52,7 @@ public class ArrayAttributeFactory extends AttributeFactory
 		}
 		attribute = beanCreator.create(ArrayAttributeImpl.class);
 		((ArrayAttributeImpl) attribute).setTargetType(targetType);
-		setStandardProperties(entityType, propertyDescriptor, attribute);
+		setStandardProperties(entityType, propertyDescriptor, attribute,ctx);
 		((ArrayAttributeImpl) attribute).setAccessor(propertyDescriptor.getAccessor());
 
 		return attribute;

@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import org.atemsource.atem.api.EntityTypeRepository;
+import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.MapAttribute;
 import org.atemsource.atem.api.attribute.annotation.Cardinality;
 import org.atemsource.atem.api.type.EntityType;
@@ -262,6 +263,26 @@ public class PropertiesAttribute implements MapAttribute<String, Object, Map>
 	public boolean isDerived() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void setMetaValue(String metaAttributeCode, Object value) {
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+
+	@Override
+	public Attribute<?, ?> getMetaAttribute(String metaAttributeCode) {
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+
+	@Override
+	public EntityType<? extends Attribute<?, ?>> getMetaType() {
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+
+	@Override
+	public Object getMetaValue(String metaAttributeCode) {
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 }

@@ -124,4 +124,28 @@ public class AnnotationAttribute<J extends Annotation> implements
 		return true;
 	}
 
+	@Override
+	public void setMetaValue(String metaAttributeCode, Object value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Attribute<?, ?> getMetaAttribute(String metaAttributeCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public EntityType<? extends Attribute<?, ?>> getMetaType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getMetaValue(String metaAttributeCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

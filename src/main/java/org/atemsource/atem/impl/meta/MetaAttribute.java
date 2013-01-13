@@ -126,4 +126,24 @@ public class MetaAttribute<J> implements SingleAttribute<J> {
 		return false;
 	}
 
+	@Override
+	public void setMetaValue(String metaAttributeCode, Object value) {
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+
+	@Override
+	public Attribute<?, ?> getMetaAttribute(String metaAttributeCode) {
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+
+	@Override
+	public EntityType<? extends Attribute<?, ?>> getMetaType() {
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+
+	@Override
+	public Object getMetaValue(String metaAttributeCode) {
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+
 }

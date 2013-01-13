@@ -67,7 +67,7 @@ public class SingleAssociationAttributeFactory extends AttributeFactory {
 		initValidTypes(propertyDescriptor, ctx, attribute);
 
 		attribute.setAccessor(propertyDescriptor.getAccessor());
-		setStandardProperties(entityType, propertyDescriptor, attribute);
+		setStandardProperties(entityType, propertyDescriptor, attribute,ctx);
 		return attribute;
 	}
 

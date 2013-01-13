@@ -38,7 +38,7 @@ public class EnumAttributeFactory extends AttributeFactory
 	{
 		PrimitiveAttributeImpl attribute = new PrimitiveAttributeImpl();
 		attribute.setAccessor(propertyDescriptor.getAccessor());
-		setStandardProperties(entityType, propertyDescriptor, attribute);
+		setStandardProperties(entityType, propertyDescriptor, attribute,ctx);
 		attribute.setTargetType(primitiveTypeFactory.getPrimitiveType(propertyDescriptor.getPropertyType()));
 		return attribute;
 	}

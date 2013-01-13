@@ -20,7 +20,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.inject.Inject;
+
+import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.annotation.ValidTypes;
+import org.atemsource.atem.api.attribute.relation.SingleAttribute;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.AbstractEntityType;
@@ -70,11 +74,13 @@ public abstract class AttributeFactory
 	public abstract Collection<Class> getClasses();
 
 	public abstract Class getCollectionClass();
+	
 
 	protected void setStandardProperties(final AbstractEntityType entityType,
-		final PropertyDescriptor propertyDescriptor, final AbstractAttribute attribute)
+		final PropertyDescriptor propertyDescriptor, final AbstractAttribute attribute, EntityTypeCreationContext ctx)
 	{
 		String propertyName = propertyDescriptor.getPropertyName();
+		attribute.setMetaType(ctx.getEntityTypeReference(attribute.getClass()));
 		attribute.setEntityType(entityType);
 		attribute.setCode(propertyName);
 		attribute.setWriteable(propertyDescriptor.isWritable());

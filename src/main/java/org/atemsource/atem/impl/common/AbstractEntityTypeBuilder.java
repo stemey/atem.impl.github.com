@@ -27,6 +27,7 @@ import org.atemsource.atem.impl.common.attribute.collection.AbstractCollectionAt
 import org.atemsource.atem.impl.common.attribute.collection.ListAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.collection.SetAttributeImpl;
 import org.atemsource.atem.impl.dynamic.attribute.DynamicAccessor;
+import org.atemsource.atem.impl.json.attribute.AnyAttribute;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -44,7 +45,7 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 	private AbstractEntityType<?> entityType;
 
 	@Inject
-	private EntityTypeRepository entityTypeRepository;
+	protected EntityTypeRepository entityTypeRepository;
 
 	protected void addAttribute(Attribute<?, ?> attribute)
 	{
@@ -68,6 +69,8 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 		// attribute.setValidTypesSet(valueType.getSelfAndAllSubEntityTypes());
 		attribute.setKeyType(keyType);
 		attribute.setCode(code);
+		attribute.setMetaType(entityTypeRepository.getEntityType(attribute));
+
 		attribute.setEntityType(entityType);
 		attribute.setTargetType(valueType);
 		attribute.setValidTargetTypes(validTypes);
@@ -100,6 +103,7 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 			break;
 		}
 		attribute.setCollectionSortType(collectionSortType);
+		attribute.setMetaType(entityTypeRepository.getEntityType(attribute));
 		attribute.setAccessor(new DynamicAccessor(code));
 		attribute.setWriteable(true);
 		attribute.setCode(code);
@@ -117,6 +121,7 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 		SingleAttributeImpl<J> attribute;
 		attribute = new PrimitiveAttributeImpl<J>();
 		attribute.setAccessor(new DynamicAccessor(code));
+		attribute.setMetaType(entityTypeRepository.getEntityType(attribute));
 		attribute.setWriteable(true);
 		attribute.setTargetType(type);
 		attribute.setCode(code);
@@ -140,6 +145,7 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 		attribute.setTargetType(targetType);
 		attribute.setEntityType(entityType);
 		attribute.setValidTargetTypes(validTypes);
+		attribute.setMetaType(entityTypeRepository.getEntityType(attribute));
 		addAttribute(attribute);
 		return attribute;
 	}

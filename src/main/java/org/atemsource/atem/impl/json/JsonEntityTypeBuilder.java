@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.atemsource.atem.impl.json;
 
+import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.CollectionAttribute;
 import org.atemsource.atem.api.attribute.CollectionSortType;
 import org.atemsource.atem.api.attribute.MapAttribute;
@@ -46,6 +47,7 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 	{
 		AnyAttribute attribute = beanLocator.getInstance(AnyAttribute.class);
 		attribute.setCode(code);
+		attribute.setMetaType(entityTypeRepository.getEntityType(attribute));
 		attribute.setEntityType(getEntityType());
 		attribute.setTargetType(null);
 		addAttribute(attribute);
@@ -63,6 +65,7 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 			throw new IllegalArgumentException("for json only keys of type string are possibkle");
 		}
 		MapNodeAttribute mapAttribute = beanLocator.getInstance(MapNodeAttribute.class);
+		mapAttribute.setMetaType(entityTypeRepository.getEntityType(mapAttribute));
 		mapAttribute.setCode(name);
 		mapAttribute.setEntityType(getEntityType());
 		mapAttribute.setTargetType(valueType);
@@ -79,6 +82,7 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 	{
 		ArrayNodeAttribute attribute = beanLocator.getInstance(ArrayNodeAttribute.class);
 		attribute.setCode(code);
+		attribute.setMetaType(entityTypeRepository.getEntityType(attribute));
 		attribute.setEntityType(getEntityType());
 		attribute.setTargetType(targetType);
 		addAttribute(attribute);
@@ -123,6 +127,7 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 			throw new UnsupportedOperationException("type " + type.getJavaType().getName() + " is not implemented yet");
 		}
 		attribute.setCode(code);
+		attribute.setMetaType(entityTypeRepository.getEntityType(attribute));
 		addAttribute(attribute);
 		attribute.setEntityType(getEntityType());
 		attribute.setWriteable(true);

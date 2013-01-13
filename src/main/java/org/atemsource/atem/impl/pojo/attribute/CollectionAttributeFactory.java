@@ -14,7 +14,6 @@ import java.util.SortedSet;
 
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.CollectionSortType;
-import org.atemsource.atem.api.attribute.annotation.Association;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.AbstractEntityType;
@@ -35,6 +34,8 @@ public class CollectionAttributeFactory extends AttributeFactory
 	{
 		return Collection.class.isAssignableFrom(propertyDescriptor.getPropertyType());
 	}
+	
+	private TargetClassResolver targetClassResolver= new AtemAnnotationTargetClassResolver();
 
 	@Override
 	public Attribute createAttribute(AbstractEntityType entityType, PropertyDescriptor propertyDescriptor,
@@ -43,23 +44,10 @@ public class CollectionAttributeFactory extends AttributeFactory
 		Class<?> propertyType = propertyDescriptor.getPropertyType();
 		AbstractCollectionAttributeImpl attribute;
 
-		Association association = propertyDescriptor.getAnnotation(Association.class);
+		Class targetClass=targetClassResolver.getCollectionElementClass(propertyDescriptor);
 		Class[] includedTypes = null;
 		Class[] excludedTypes = null;
 		Type targetType;
-		if (association != null)
-		{
-			targetType = ctx.getTypeReference(association.targetType());
-			if (targetType == null)
-			{
-				throw new IllegalStateException("cannot find type reference for " + association.targetType());
-			}
-		}
-		else
-		{
-			targetType = null;
-		}
-		Type targeType = association == null ? null : ctx.getTypeReference(association.targetType());
 
 		if (List.class.isAssignableFrom(propertyType))
 		{
@@ -89,29 +77,24 @@ public class CollectionAttributeFactory extends AttributeFactory
 			throw new IllegalStateException("properyType " + propertyType.getName()
 				+ " cannot be used for multi associations");
 		}
-		if (targeType != null && targeType instanceof EntityType)
+		if (targetClass!=null)
 		{
-			if (association.composition())
-			{
-				attribute.setComposition(true);
-			}
-
 			// there are two sub classes
 			// else if (Collection.class.isAssignableFrom(propertyType))
 			// {
 			// attribute = beanCreator.create(CollectionAssociationAttributeImpl.class);
 			// }
 
-			targeType = ctx.getEntityTypeReference(association.targetType());
+			Type<?> targeType = ctx.getEntityTypeReference(targetClass);
 			attribute.setTargetType(targeType);
-			setStandardProperties(entityType, propertyDescriptor, attribute);
+			setStandardProperties(entityType, propertyDescriptor, attribute,ctx);
 			attribute.setAccessor(propertyDescriptor.getAccessor());
 		}
 		else
 		{
 
-			attribute.setTargetType(targeType);
-			setStandardProperties(entityType, propertyDescriptor, attribute);
+			attribute.setTargetType(null);
+			setStandardProperties(entityType, propertyDescriptor, attribute,ctx);
 			attribute.setAccessor(propertyDescriptor.getAccessor());
 		}
 		initValidTypes(propertyDescriptor, ctx, attribute);

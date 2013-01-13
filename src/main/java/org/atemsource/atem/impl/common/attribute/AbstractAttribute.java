@@ -38,6 +38,39 @@ public abstract class AbstractAttribute<J, R> implements org.atemsource.atem.api
 
 	private Accessor accessor;
 
+	@Override
+	public void setMetaValue(String metaAttributeCode, Object value) {
+		Attribute<?, Object> metaAttribute = (Attribute<?, Object>) getMetaAttribute(metaAttributeCode);
+		if (metaAttribute==null) {
+			throw new IllegalArgumentException("there is not meta attribute with the name "+metaAttributeCode+" attached to attribute");
+		}
+		metaAttribute.setValue(this, value);
+	}
+
+	@Override
+	public Object getMetaValue(String metaAttributeCode) {
+		Attribute<?, Object> metaAttribute = (Attribute<?, Object>) getMetaAttribute(metaAttributeCode);
+		if (metaAttribute==null) {
+			return null;
+		}
+		return metaAttribute.getValue(this);
+	}
+
+	@Override
+	public Attribute<?, ?> getMetaAttribute(String metaAttributeCode) {
+		return getMetaType().getMetaAttribute(metaAttributeCode);
+	}
+	
+	private EntityType<? extends Attribute<?,?>> metaType;
+
+	public EntityType<? extends Attribute<?, ?>> getMetaType() {
+		return metaType;
+	}
+
+	public void setMetaType(EntityType<? extends Attribute<?, ?>> metaType) {
+		this.metaType = metaType;
+	}
+
 	private AssociationAttribute<?, ?> incomingRelation;
 
 	private boolean composition;
