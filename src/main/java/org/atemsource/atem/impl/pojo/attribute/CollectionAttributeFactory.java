@@ -14,7 +14,6 @@ import java.util.SortedSet;
 
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.CollectionSortType;
-import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.AbstractEntityType;
 import org.atemsource.atem.impl.common.attribute.collection.AbstractCollectionAttributeImpl;
@@ -29,13 +28,13 @@ import org.springframework.stereotype.Component;
 public class CollectionAttributeFactory extends AttributeFactory
 {
 
+	private final TargetClassResolver targetClassResolver = new AtemAnnotationTargetClassResolver();
+
 	@Override
 	public boolean canCreate(PropertyDescriptor propertyDescriptor, EntityTypeCreationContext ctx)
 	{
 		return Collection.class.isAssignableFrom(propertyDescriptor.getPropertyType());
 	}
-	
-	private TargetClassResolver targetClassResolver= new AtemAnnotationTargetClassResolver();
 
 	@Override
 	public Attribute createAttribute(AbstractEntityType entityType, PropertyDescriptor propertyDescriptor,
@@ -44,7 +43,7 @@ public class CollectionAttributeFactory extends AttributeFactory
 		Class<?> propertyType = propertyDescriptor.getPropertyType();
 		AbstractCollectionAttributeImpl attribute;
 
-		Class targetClass=targetClassResolver.getCollectionElementClass(propertyDescriptor);
+		Class targetClass = targetClassResolver.getCollectionElementClass(propertyDescriptor);
 		Class[] includedTypes = null;
 		Class[] excludedTypes = null;
 		Type targetType;
@@ -77,7 +76,7 @@ public class CollectionAttributeFactory extends AttributeFactory
 			throw new IllegalStateException("properyType " + propertyType.getName()
 				+ " cannot be used for multi associations");
 		}
-		if (targetClass!=null)
+		if (targetClass != null)
 		{
 			// there are two sub classes
 			// else if (Collection.class.isAssignableFrom(propertyType))
@@ -85,16 +84,16 @@ public class CollectionAttributeFactory extends AttributeFactory
 			// attribute = beanCreator.create(CollectionAssociationAttributeImpl.class);
 			// }
 
-			Type<?> targeType = ctx.getEntityTypeReference(targetClass);
+			Type<?> targeType = ctx.getTypeReference(targetClass);
 			attribute.setTargetType(targeType);
-			setStandardProperties(entityType, propertyDescriptor, attribute,ctx);
+			setStandardProperties(entityType, propertyDescriptor, attribute, ctx);
 			attribute.setAccessor(propertyDescriptor.getAccessor());
 		}
 		else
 		{
 
 			attribute.setTargetType(null);
-			setStandardProperties(entityType, propertyDescriptor, attribute,ctx);
+			setStandardProperties(entityType, propertyDescriptor, attribute, ctx);
 			attribute.setAccessor(propertyDescriptor.getAccessor());
 		}
 		initValidTypes(propertyDescriptor, ctx, attribute);

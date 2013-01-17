@@ -16,11 +16,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.annotation.Resource;
+
 import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.annotation.Cardinality;
-import org.atemsource.atem.api.attribute.relation.SingleAttribute;
 import org.atemsource.atem.api.infrastructure.exception.TechnicalException;
 import org.atemsource.atem.api.service.AttributeQuery;
 import org.atemsource.atem.api.service.FindByAttributeService;
@@ -266,6 +267,10 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 	public Attribute getMetaAttribute(final String code)
 	{
 		Attribute attribute = metaAttributes.get(code);
+		if (attribute == null && superEntityType != null)
+		{
+			return superEntityType.getMetaAttribute(code);
+		}
 		return attribute;
 	}
 
@@ -352,7 +357,7 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 						}
 						incomingManyRelation.setAttributeQuery(query);
 						incomingManyRelation.setCode(incomingCode);
-						//((Attribute<?,?>)attribute).setMetaType((EntityType)entityTypeRepository.getEntityType(incomingManyRelation));
+						// ((Attribute<?,?>)attribute).setMetaType((EntityType)entityTypeRepository.getEntityType(incomingManyRelation));
 						incomingManyRelation.setComposition(false);
 						incomingManyRelation.setEntityType((EntityType) attribute.getTargetType());
 						incomingManyRelation.setRequired(attribute.isRequired());

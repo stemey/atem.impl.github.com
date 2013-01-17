@@ -34,7 +34,7 @@ public class ScannedPojoRepositoryTest
 		Assert.assertNotNull(entityType);
 		Assert.assertNotNull(entityType.getSubEntityTypes(true));
 		Assert.assertEquals(1, entityType.getSubEntityTypes(true).size());
-		Assert.assertEquals(4, entityType.getDeclaredAttributes().size());
+		Assert.assertEquals(5, entityType.getDeclaredAttributes().size());
 		Assert.assertNotNull(entityType.getAttribute("list").getTargetType());
 
 	}

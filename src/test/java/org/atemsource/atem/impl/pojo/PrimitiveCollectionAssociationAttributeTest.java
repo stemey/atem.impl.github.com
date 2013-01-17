@@ -42,4 +42,13 @@ public class PrimitiveCollectionAssociationAttributeTest
 		a.getObjectList().add(new Object());
 		Assert.assertEquals(attribute.getSize(a), 2);
 	}
+
+	@Test
+	public void testTargetType()
+	{
+		EntityType entityType = entityTypeRepository.getEntityType(EntityA.class);
+		CollectionAttribute attribute = (CollectionAttribute) entityType.getAttribute("stringList");
+		Assert.assertNotNull(attribute);
+		Assert.assertEquals(String.class, attribute.getTargetType().getJavaType());
+	}
 }

@@ -30,6 +30,9 @@ public class EntityA
 
 	private String[] stringArray;
 
+	@Association(targetType = String.class)
+	private List<String> stringList;
+
 	public List<EntityB> getList()
 	{
 		return list;
@@ -50,6 +53,11 @@ public class EntityA
 		return stringArray;
 	}
 
+	public List<String> getStringList()
+	{
+		return stringList;
+	}
+
 	public void setList(List<EntityB> list)
 	{
 		this.list = list;
@@ -68,5 +76,10 @@ public class EntityA
 	public void setStringArray(String[] stringArray)
 	{
 		this.stringArray = stringArray;
+	}
+
+	public void setStringList(List<String> stringList)
+	{
+		this.stringList = stringList;
 	}
 }

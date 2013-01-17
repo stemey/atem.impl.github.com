@@ -36,14 +36,39 @@ public class MetaAttributeServiceImplTest
 	private EntityTypeRepository entityTypeRepository;
 
 	@Test
-	public void testSetMetaData()
+	public void testGetMetaValue()
 	{
+		// setup meta attribute
 		EntityType<Attribute> holderType = entityTypeRepository.getEntityType(Attribute.class);
 		EntityType<MetaDataExample> metaDataType = entityTypeRepository.getEntityType(MetaDataExample.class);
+		SingleAttribute<MetaDataExample> testMetaAttribute =
+			dynamicMetaAttributeService.addSingleMetaAttribute("test2", holderType, metaDataType);
+
+		// work with meta attribute
 		EntityType<EntityB> entityType = entityTypeRepository.getEntityType(EntityB.class);
 		Attribute attribute = entityType.getAttribute("singleA");
+
+		MetaDataExample ex = new MetaDataExample();
+		ex.setData("hallo");
+		attribute.setMetaValue("test2", ex);
+		Object metaValue = attribute.getMetaValue("test2");
+
+		Assert.assertEquals(ex, metaValue);
+
+	}
+
+	@Test
+	public void testSetMetaData()
+	{
+		// setup meta attribute
+		EntityType<Attribute> holderType = entityTypeRepository.getEntityType(Attribute.class);
+		EntityType<MetaDataExample> metaDataType = entityTypeRepository.getEntityType(MetaDataExample.class);
 		SingleAttribute<MetaDataExample> testMetaAttribute =
 			dynamicMetaAttributeService.addSingleMetaAttribute("test", holderType, metaDataType);
+
+		// work with meta attribute
+		EntityType<EntityB> entityType = entityTypeRepository.getEntityType(EntityB.class);
+		Attribute attribute = entityType.getAttribute("singleA");
 		MetaDataExample ex = new MetaDataExample();
 		ex.setData("hallo");
 		Attribute metaAttribute = holderType.getMetaAttribute("test");

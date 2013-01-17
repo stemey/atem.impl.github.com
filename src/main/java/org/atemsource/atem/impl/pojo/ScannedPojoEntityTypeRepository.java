@@ -15,7 +15,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.inject.Inject;
+
 import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.infrastructure.exception.TechnicalException;
@@ -205,7 +207,7 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 		{
 			return null;
 		}
-		return this.classToEntityTypes.get(clazz);
+		return this.getEntityType(clazz);
 	}
 
 	@Override
