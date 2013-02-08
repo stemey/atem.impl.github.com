@@ -74,28 +74,21 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 
 	protected void addAttributes(AbstractEntityType entityType)
 	{
-		try
+		List<Attribute> attributes = new ArrayList<Attribute>();
+		for (org.atemsource.atem.impl.pojo.attribute.PropertyDescriptor propertyDescriptor : propertyDescriptorFactory
+			.getPropertyDescriptors(entityType.getEntityClass()))
 		{
-			List<Attribute> attributes = new ArrayList<Attribute>();
-			for (org.atemsource.atem.impl.pojo.attribute.PropertyDescriptor propertyDescriptor : propertyDescriptorFactory
-				.getPropertyDescriptors(entityType.getEntityClass()))
+
+			Attribute attribute = addAttribute(entityType, propertyDescriptor);
+			if (attribute != null)
 			{
-
-				Attribute attribute = addAttribute(entityType, propertyDescriptor);
-				if (attribute != null)
-				{
-					attributes.add(attribute);
-				}
-
+				attributes.add(attribute);
 			}
 
-			entityType.setAttributes(attributes);
 		}
-		catch (NullPointerException e)
-		{
-			e.printStackTrace();
-			int x = 0;
-		}
+
+		entityType.setAttributes(attributes);
+
 	}
 
 	protected void addEntityTypeToLookup(final Class clazz, AbstractEntityType entityType)
@@ -108,6 +101,10 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 	@Override
 	public void afterFirstInitialization(EntityTypeRepository entityTypeRepositoryImpl)
 	{
+		for (AbstractEntityType<?> entityType : entityTypes)
+		{
+			initializeEntityType(entityType);
+		}
 	}
 
 	@Override
@@ -312,10 +309,6 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 				AbstractEntityType entityType = createEntityType(clazz);
 			}
 
-			for (AbstractEntityType<?> entityType : nameToEntityTypes.values())
-			{
-				initializeEntityType(entityType);
-			}
 		}
 		catch (IOException e)
 		{

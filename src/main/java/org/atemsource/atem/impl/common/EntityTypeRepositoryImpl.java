@@ -10,6 +10,7 @@ package org.atemsource.atem.impl.common;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.extension.EntityTypePostProcessor;
@@ -160,7 +161,7 @@ public class EntityTypeRepositoryImpl implements EntityTypeRepository, EntityTyp
 		}
 		else if (secondPhase)
 		{
-			performInitializationBeforeSecondPhase();
+			performLazyRepositoryInit();
 		}
 		return entityType;
 
@@ -251,14 +252,14 @@ public class EntityTypeRepositoryImpl implements EntityTypeRepository, EntityTyp
 		{
 			entityTypeSubrepository.initialize(this);
 		}
-		for (EntityTypeRepositoryPostProcessor entityTypeRepositoryPostProcessor : entityTypeRepositoryPostProcessors)
-		{
-			entityTypeRepositoryPostProcessor.initialize(this);
-		}
 		onPhase(Phase.ENTITY_TYPES_INITIALIZED);
 		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
 		{
 			entityTypeSubrepository.afterFirstInitialization(this);
+		}
+		for (EntityTypeRepositoryPostProcessor entityTypeRepositoryPostProcessor : entityTypeRepositoryPostProcessors)
+		{
+			entityTypeRepositoryPostProcessor.initialize(this);
 		}
 		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
 		{
@@ -300,7 +301,15 @@ public class EntityTypeRepositoryImpl implements EntityTypeRepository, EntityTyp
 	{
 		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
 		{
-			entityTypeSubrepository.afterFirstInitialization(this);
+			entityTypeSubrepository.performLazyRepositoryInit(this);
+		}
+	}
+
+	private void performLazyRepositoryInit()
+	{
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
+		{
+			entityTypeSubrepository.performLazyRepositoryInit(this);
 		}
 	}
 

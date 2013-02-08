@@ -3,7 +3,6 @@ package org.atemsource.atem.impl.meta;
 import org.atemsource.atem.api.attribute.AssociationAttribute;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.type.EntityType;
-import org.atemsource.atem.impl.MetaLogs;
 import org.atemsource.atem.impl.common.AbstractEntityType;
 import org.atemsource.atem.impl.common.infrastructure.CandidateResolver;
 import org.atemsource.atem.impl.pojo.ScannedPojoEntityTypeRepository;
@@ -12,8 +11,6 @@ import org.atemsource.atem.spi.EntityTypeCreationContext;
 
 public class AttributeSubrepository extends ScannedPojoEntityTypeRepository
 {
-
-	private boolean scanning;
 
 	@Override
 	public EntityType getEntityType(Class clazz)
@@ -28,19 +25,8 @@ public class AttributeSubrepository extends ScannedPojoEntityTypeRepository
 			entityType = getFromInterfaces(clazz);
 			if (entityType != null && !classToEntityTypes.containsKey(classToEntityTypes))
 			{
-				if (!scanning)
-				{
-					classToEntityTypes.put(clazz, entityType);
-					nameToEntityTypes.put(clazz.getName(), (AbstractEntityType<Object>) entityType);
-				}
-				else
-				{
-					// TODO fix this
-					MetaLogs.LOG
-						.warn("cannot create attribute type for "
-							+ clazz
-							+ " because scanning is running. This is probably because of attribute types being resolve while attributes for entityTypes are build.");
-				}
+				classToEntityTypes.put(clazz, (AbstractEntityType<Object>) entityType);
+				nameToEntityTypes.put(clazz.getName(), (AbstractEntityType<Object>) entityType);
 			}
 		}
 		return entityType;
@@ -87,10 +73,7 @@ public class AttributeSubrepository extends ScannedPojoEntityTypeRepository
 				return isAvailable(clazz);
 			}
 		});
-		scanning = true;
-
 		super.initialize(entityTypeCreationContext);
-		scanning = false;
 	}
 
 	@Override

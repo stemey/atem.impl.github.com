@@ -28,11 +28,11 @@ public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepo
 
 	protected ApplicationContext applicationContext;
 
-	protected Map<Class<J>, EntityType<J>> classToEntityTypes = new HashMap<Class<J>, EntityType<J>>();
+	protected Map<Class<J>, AbstractEntityType<J>> classToEntityTypes = new HashMap<Class<J>, AbstractEntityType<J>>();
 
 	protected EntityTypeCreationContext entityTypeCreationContext;
 
-	protected Set<EntityType<J>> entityTypes = new HashSet<EntityType<J>>();
+	protected Set<AbstractEntityType<J>> entityTypes = new HashSet<AbstractEntityType<J>>();
 
 	private List<EntityTypeServiceFactory> entityTypeServiceFactories;
 
@@ -109,7 +109,7 @@ public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepo
 	}
 
 	@Override
-	public Collection<EntityType<J>> getEntityTypes()
+	public Collection<AbstractEntityType<J>> getEntityTypes()
 	{
 		return entityTypes;
 	}
@@ -152,10 +152,16 @@ public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepo
 	protected void initializeLookups()
 	{
 		entityTypes.addAll(nameToEntityTypes.values());
-		for (EntityType entityType : entityTypes)
+		for (AbstractEntityType entityType : entityTypes)
 		{
 			classToEntityTypes.put(entityType.getEntityClass(), entityType);
 		}
+	}
+
+	@Override
+	public void performLazyRepositoryInit(EntityTypeCreationContext ctx)
+	{
+
 	}
 
 	@Override

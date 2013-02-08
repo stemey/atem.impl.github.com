@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
 import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.type.EntityType;
@@ -80,7 +81,8 @@ public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object>
 	@Override
 	public void afterFirstInitialization(EntityTypeRepository entityTypeRepositoryImpl)
 	{
-		initializeReferences();
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
@@ -201,7 +203,7 @@ public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object>
 		{
 			return null;
 		}
-		AbstractEntityType entityType = (AbstractEntityType) this.classToEntityTypes.get(clazz);
+		AbstractEntityType entityType = this.classToEntityTypes.get(clazz);
 		if (entityType == null)
 		{
 			entityType = beanCreator.create(entityTypeClass);
@@ -311,6 +313,12 @@ public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object>
 		{
 			return false;
 		}
+	}
+
+	@Override
+	public void performLazyRepositoryInit(EntityTypeCreationContext ctx)
+	{
+		initializeReferences();
 	}
 
 	public void setAttributeFactories(List<AttributeFactory> attributeFactories)
