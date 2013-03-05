@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.CollectionSortType;
 import org.atemsource.atem.api.attribute.MapAttribute;
@@ -36,6 +37,20 @@ public abstract class AbstractMapNodeAttribute<V> extends AbstractAttribute<V, O
 	public void clear(Object entity)
 	{
 		getValue(entity).removeAll();
+	}
+
+	@Override
+	public boolean containsKey(Object entity, String key)
+	{
+		if (entity == null)
+		{
+			return false;
+		}
+		else
+		{
+			ObjectNode node = (ObjectNode) entity;
+			return node.get(key) != null;
+		}
 	}
 
 	@Override

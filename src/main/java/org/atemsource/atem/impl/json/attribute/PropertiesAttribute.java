@@ -12,8 +12,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+
 import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.MapAttribute;
@@ -50,6 +52,20 @@ public class PropertiesAttribute implements MapAttribute<String, Object, Map>
 	public void clear(Object entity)
 	{
 		((ObjectNode) entity).removeAll();
+	}
+
+	@Override
+	public boolean containsKey(Object entity, String key)
+	{
+		if (entity == null)
+		{
+			return false;
+		}
+		else
+		{
+			ObjectNode node = (ObjectNode) entity;
+			return node.get(key) != null;
+		}
 	}
 
 	@Override
@@ -110,6 +126,24 @@ public class PropertiesAttribute implements MapAttribute<String, Object, Map>
 	public Type<String> getKeyType(String key)
 	{
 		return keyType;
+	}
+
+	@Override
+	public Attribute<?, ?> getMetaAttribute(String metaAttributeCode)
+	{
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+
+	@Override
+	public EntityType<? extends Attribute<?, ?>> getMetaType()
+	{
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+
+	@Override
+	public Object getMetaValue(String metaAttributeCode)
+	{
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Override
@@ -189,6 +223,13 @@ public class PropertiesAttribute implements MapAttribute<String, Object, Map>
 	}
 
 	@Override
+	public boolean isDerived()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
 	public boolean isEqual(Object entity, Object other)
 	{
 		return entity.equals(other);
@@ -241,6 +282,12 @@ public class PropertiesAttribute implements MapAttribute<String, Object, Map>
 		this.entityType = entityType;
 	}
 
+	@Override
+	public void setMetaValue(String metaAttributeCode, Object value)
+	{
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+
 	public void setRequired(boolean required)
 	{
 		this.required = required;
@@ -257,32 +304,6 @@ public class PropertiesAttribute implements MapAttribute<String, Object, Map>
 			String fieldName = fieldNames.next();
 			oldNode.put(fieldName, JsonUtils.convertToJson(value.get(fieldName)));
 		}
-	}
-
-	@Override
-	public boolean isDerived() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void setMetaValue(String metaAttributeCode, Object value) {
-		throw new UnsupportedOperationException("not implemented yet");
-	}
-
-	@Override
-	public Attribute<?, ?> getMetaAttribute(String metaAttributeCode) {
-		throw new UnsupportedOperationException("not implemented yet");
-	}
-
-	@Override
-	public EntityType<? extends Attribute<?, ?>> getMetaType() {
-		throw new UnsupportedOperationException("not implemented yet");
-	}
-
-	@Override
-	public Object getMetaValue(String metaAttributeCode) {
-		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 }

@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+
 import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.MapAttribute;
 import org.atemsource.atem.api.type.Type;
@@ -45,7 +46,7 @@ public class MapAttributeImpl<K, J> extends AbstractAttribute<J, Map> implements
 
 	public void clearOrInitialize(Object entity)
 	{
-		Map map = getValue(entity);
+		Map<?, ?> map = getValue(entity);
 		if (map == null)
 		{
 			setValue(entity, getEmptyMap());
@@ -53,6 +54,20 @@ public class MapAttributeImpl<K, J> extends AbstractAttribute<J, Map> implements
 		else
 		{
 			map.clear();
+		}
+	}
+
+	@Override
+	public boolean containsKey(Object entity, K key)
+	{
+		Map<?, ?> map = (Map<?, ?>) getAccessor().getValue(entity);
+		if (map == null)
+		{
+			return false;
+		}
+		else
+		{
+			return map.containsKey(key);
 		}
 	}
 
