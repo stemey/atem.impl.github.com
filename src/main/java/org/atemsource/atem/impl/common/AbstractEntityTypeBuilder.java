@@ -22,7 +22,7 @@ import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.attribute.MapAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.PrimitiveAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.SingleAssociationAttribute;
-import org.atemsource.atem.impl.common.attribute.SingleAttributeImpl;
+import org.atemsource.atem.impl.common.attribute.SingleAbstractAttribute;
 import org.atemsource.atem.impl.common.attribute.collection.AbstractCollectionAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.collection.ListAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.collection.SetAttributeImpl;
@@ -118,7 +118,7 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 	@Override
 	public <J> SingleAttribute<J> addPrimitiveAttribute(String code, PrimitiveType<J> type)
 	{
-		SingleAttributeImpl<J> attribute;
+		SingleAbstractAttribute<J> attribute;
 		attribute = new PrimitiveAttributeImpl<J>();
 		attribute.setAccessor(new DynamicAccessor(code));
 		attribute.setMetaType(entityTypeRepository.getEntityType(attribute));

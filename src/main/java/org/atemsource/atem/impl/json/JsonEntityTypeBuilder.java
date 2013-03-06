@@ -16,7 +16,7 @@ import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.PrimitiveType;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.AbstractEntityTypeBuilder;
-import org.atemsource.atem.impl.common.attribute.SingleAttributeImpl;
+import org.atemsource.atem.impl.common.attribute.SingleAbstractAttribute;
 import org.atemsource.atem.impl.common.attribute.primitive.BooleanTypeImpl;
 import org.atemsource.atem.impl.common.attribute.primitive.DoubleType;
 import org.atemsource.atem.impl.common.attribute.primitive.IntegerType;
@@ -96,7 +96,7 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 	@Override
 	public <J> SingleAttribute<J> addPrimitiveAttribute(String code, PrimitiveType<J> type)
 	{
-		SingleAttributeImpl attribute;
+		SingleAbstractAttribute attribute;
 		if (type.getJavaType().isAssignableFrom(Long.class) || type.getJavaType().isAssignableFrom(long.class))
 		{
 			attribute = beanLocator.getInstance(LongAttribute.class);

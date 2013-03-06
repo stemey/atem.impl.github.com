@@ -21,14 +21,14 @@ import java.io.Serializable;
 import org.atemsource.atem.api.attribute.relation.SingleAttribute;
 import org.atemsource.atem.api.type.PrimitiveType;
 import org.atemsource.atem.api.type.Type;
-import org.atemsource.atem.impl.common.attribute.SingleAttributeImpl;
+import org.atemsource.atem.impl.common.attribute.SingleAbstractAttribute;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 
 @Component
 @Scope("prototype")
-public class SerializablePrimitiveAttributeImpl<J> extends SingleAttributeImpl<J> implements SingleAttribute<J>
+public class SerializablePrimitiveAttributeImpl<J> extends SingleAbstractAttribute<J> implements SingleAttribute<J>
 {
 
 	@Override

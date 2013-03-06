@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class PrimitiveAttributeImpl<J> extends SingleAttributeImpl<J> implements SingleAttribute<J>
+public class PrimitiveAttributeImpl<J> extends SingleAbstractAttribute<J> implements SingleAttribute<J>
 {
 
 	@Override

@@ -8,7 +8,7 @@ import org.atemsource.atem.api.type.EntityType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-public abstract class AbstractSingleAssociationAttribute<J> extends SingleAttributeImpl<J> implements
+public abstract class AbstractSingleAssociationAttribute<J> extends SingleAbstractAttribute<J> implements
 	SingleAttribute<J>, AssociationAttribute<J, J>
 {
 

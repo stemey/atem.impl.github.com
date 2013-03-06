@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.atemsource.atem.impl.pojo.attribute;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
 
 import javax.validation.constraints.NotNull;
@@ -16,6 +15,7 @@ import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.annotation.Association;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.impl.common.AbstractEntityType;
+import org.atemsource.atem.impl.common.attribute.SingleAbstractAttribute;
 import org.atemsource.atem.impl.common.attribute.SingleAssociationAttribute;
 import org.atemsource.atem.impl.common.attribute.SingleAttributeImpl;
 import org.atemsource.atem.impl.infrastructure.BeanCreator;
@@ -23,61 +23,72 @@ import org.atemsource.atem.spi.EntityTypeCreationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+
 @Component("pojo-SingleAssociationAttributeFactory")
-public class SingleAssociationAttributeFactory extends AttributeFactory {
+public class SingleAssociationAttributeFactory extends AttributeFactory
+{
 
 	@Autowired
 	private BeanCreator beanCreator;
 
 	@Override
-	public boolean canCreate(PropertyDescriptor propertyDescriptor,
-			EntityTypeCreationContext ctx) {
-		if (propertyDescriptor.getPropertyType().isArray()) {
+	public boolean canCreate(PropertyDescriptor propertyDescriptor, EntityTypeCreationContext ctx)
+	{
+		if (propertyDescriptor.getPropertyType().isArray())
+		{
 			return false;
 		}
 
-		EntityType entityType = ctx.getEntityTypeReference(propertyDescriptor
-				.getPropertyType());
+		EntityType entityType = ctx.getEntityTypeReference(propertyDescriptor.getPropertyType());
 		return entityType == null || entityType instanceof EntityType<?>;
 	}
 
 	@Override
-	public Attribute createAttribute(AbstractEntityType entityType,
-			PropertyDescriptor propertyDescriptor, EntityTypeCreationContext ctx) {
-		Association association = propertyDescriptor
-				.getAnnotation(Association.class);
+	public Attribute createAttribute(AbstractEntityType entityType, PropertyDescriptor propertyDescriptor,
+		EntityTypeCreationContext ctx)
+	{
+		Association association = propertyDescriptor.getAnnotation(Association.class);
 		NotNull notNull = propertyDescriptor.getAnnotation(NotNull.class);
 
-		EntityType associatedEntityType = ctx
-				.getEntityTypeReference(propertyDescriptor.getPropertyType());
-		SingleAttributeImpl attribute = beanCreator
-				.create(SingleAssociationAttribute.class);
-		if (notNull != null) {
+		EntityType associatedEntityType = ctx.getEntityTypeReference(propertyDescriptor.getPropertyType());
+		SingleAbstractAttribute attribute;
+		if (associatedEntityType == null)
+		{
+			attribute = beanCreator.create(SingleAttributeImpl.class);
+		}
+		else
+		{
+			attribute = beanCreator.create(SingleAssociationAttribute.class);
+		}
+		if (notNull != null)
+		{
 			attribute.setRequired(true);
 		}
-		if (association != null) {
+		if (association != null)
+		{
 			attribute.setTargetType(associatedEntityType);
-		} else {
-			attribute.setTargetType(ctx
-					.getEntityTypeReference(propertyDescriptor
-							.getPropertyType()));
 		}
-		
-		
+		else
+		{
+			attribute.setTargetType(ctx.getEntityTypeReference(propertyDescriptor.getPropertyType()));
+		}
+
 		initValidTypes(propertyDescriptor, ctx, attribute);
 
 		attribute.setAccessor(propertyDescriptor.getAccessor());
-		setStandardProperties(entityType, propertyDescriptor, attribute,ctx);
+		setStandardProperties(entityType, propertyDescriptor, attribute, ctx);
 		return attribute;
 	}
 
 	@Override
-	public Collection<Class> getClasses() {
+	public Collection<Class> getClasses()
+	{
 		return null;
 	}
 
 	@Override
-	public Class getCollectionClass() {
+	public Class getCollectionClass()
+	{
 		return null;
 	}
 

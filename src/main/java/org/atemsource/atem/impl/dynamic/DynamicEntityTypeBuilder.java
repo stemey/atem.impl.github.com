@@ -20,7 +20,7 @@ import org.atemsource.atem.api.attribute.relation.SingleAttribute;
 import org.atemsource.atem.api.type.PrimitiveType;
 import org.atemsource.atem.impl.common.AbstractEntityTypeBuilder;
 import org.atemsource.atem.impl.common.attribute.PrimitiveAttributeImpl;
-import org.atemsource.atem.impl.common.attribute.SingleAttributeImpl;
+import org.atemsource.atem.impl.common.attribute.SingleAbstractAttribute;
 import org.atemsource.atem.impl.dynamic.attribute.DynamicAccessor;
 import org.atemsource.atem.impl.dynamic.attribute.SerializablePrimitiveAttributeImpl;
 import org.springframework.context.annotation.Scope;
@@ -36,7 +36,7 @@ public class DynamicEntityTypeBuilder extends AbstractEntityTypeBuilder
 
 	public <J> SingleAttribute<J> addPrimitiveAttribute(String code, PrimitiveType<J> type)
 	{
-		SingleAttributeImpl<J> attribute;
+		SingleAbstractAttribute<J> attribute;
 		if (serializingPrimitives)
 		{
 			attribute = new SerializablePrimitiveAttributeImpl<J>();
