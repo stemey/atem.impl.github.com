@@ -47,6 +47,10 @@ public class ClasspathScanner
 				{
 					MetaLogs.LOG.error("cannot find class for scanned meta data", e);
 				}
+				catch (NoClassDefFoundError e)
+				{
+					MetaLogs.LOG.error("cannot find class for scanned meta data", e);
+				}
 			}
 		}
 		return candidates;
