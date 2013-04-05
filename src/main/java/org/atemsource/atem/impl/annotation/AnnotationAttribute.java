@@ -13,16 +13,14 @@ import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.meta.DerivedObject;
 
-public class AnnotationAttribute<J extends Annotation> implements
-		SingleAttribute<J> {
+public class AnnotationAttribute<J extends Annotation> implements SingleAttribute<J> {
 	private EntityType attributeType;
 	private EntityType<J> annotationType;
 
 	@Inject
 	private EntityTypeRepository entityTypeRepository;
 
-	public AnnotationAttribute(EntityType<?> attributeType,
-			EntityType<J> annotationType) {
+	public AnnotationAttribute(EntityType<?> attributeType, EntityType<J> annotationType) {
 		this.attributeType = attributeType;
 		this.annotationType = annotationType;
 	}
@@ -35,13 +33,15 @@ public class AnnotationAttribute<J extends Annotation> implements
 	public Class<J> getAssociationType() {
 		return (Class<J>) annotationType.getJavaType();
 	}
+
 	@Override
 	public Type<J>[] getValidTargetTypes() {
-		return new Type[]{annotationType};
+		return new Type[] { annotationType };
 	}
+
 	@Override
 	public String getCode() {
-		return annotationType.getJavaType().getName();
+		return annotationType.getJavaType().getName().replace(".", "_");
 	}
 
 	@Override
@@ -68,18 +68,17 @@ public class AnnotationAttribute<J extends Annotation> implements
 	public J getValue(Object entity) {
 		J value = null;
 		if (entity instanceof JavaMetaData) {
-			value = ((JavaMetaData) entity).getAnnotation(annotationType
-					.getJavaType());
+			value = ((JavaMetaData) entity).getAnnotation(annotationType.getJavaType());
 		}
 		if (value == null) {
-			Attribute metaAttribute = attributeType
-					.getMetaAttribute(DerivedObject.META_ATTRIBUTE_CODE);
+			Attribute metaAttribute = attributeType.getMetaAttribute(DerivedObject.META_ATTRIBUTE_CODE);
 			if (metaAttribute != null) {
-				DerivedObject derivedObject = (DerivedObject) metaAttribute
-						.getValue(entity);
-				Object original = derivedObject.getOriginal();
-				if (original != null) {
-					return getValue(original);
+				DerivedObject derivedObject = (DerivedObject) metaAttribute.getValue(entity);
+				if (derivedObject != null) {
+					Object original = derivedObject.getOriginal();
+					if (original != null) {
+						return getValue(original);
+					}
 				}
 			}
 
@@ -127,7 +126,7 @@ public class AnnotationAttribute<J extends Annotation> implements
 	@Override
 	public void setMetaValue(String metaAttributeCode, Object value) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

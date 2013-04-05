@@ -65,6 +65,9 @@ public class MetaAttribute<J> implements SingleAttribute<J> {
 
 	@Override
 	public J getValue(Object entity) {
+		if (entity==null) {
+			return null;
+		}
 		J value = (J) metaDataService.getMetaData(entity, this);
 		if (value == null) {
 			Attribute metaAttribute = attributeType
@@ -79,6 +82,9 @@ public class MetaAttribute<J> implements SingleAttribute<J> {
 					return null;
 				}
 				Object original = derivedObject.getOriginal();
+				if (original==entity) {
+					throw new IllegalStateException("derived object is itself: "+original);
+				}
 				if (original != null) {
 					return getValue(original);
 				}

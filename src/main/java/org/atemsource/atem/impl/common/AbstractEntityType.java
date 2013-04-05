@@ -53,6 +53,16 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 	private String code;
 
 	private Class entityClass;
+	
+	private EntityType<EntityType<J>> metaType;
+
+	public EntityType<EntityType<J>> getMetaType() {
+		return metaType;
+	}
+
+	public void setMetaType(EntityType<EntityType<J>> metaType) {
+		this.metaType = metaType;
+	}
 
 	@Resource
 	protected EntityTypeRepository entityTypeRepository;

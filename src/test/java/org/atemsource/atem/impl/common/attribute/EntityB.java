@@ -23,6 +23,9 @@ public class EntityB implements Serializable
 	private int integer;
 
 	private EntityA singleA;
+	
+
+	
 
 	public int getInteger()
 	{
