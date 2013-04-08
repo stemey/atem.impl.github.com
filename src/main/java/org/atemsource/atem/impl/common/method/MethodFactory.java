@@ -36,7 +36,11 @@ public class MethodFactory {
 		MethodImpl atemMethod = new MethodImpl();
 		atemMethod.setParameterType(parameterType);
 		atemMethod.setReturnType(entityTypeRepository.getType(method.getReturnType()));
-		atemMethod.setMethod(method);
+		atemMethod.setJavaMethod(method);
+		atemMethod.setEntityType(entityTypeRepository.getEntityType(method.getDeclaringClass()));
+		atemMethod.setCode(method.toGenericString());
+
+		parameterType.setMethod(atemMethod);
 		return atemMethod;
 	}
 

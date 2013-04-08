@@ -4,19 +4,30 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.atemsource.atem.api.method.Method;
 import org.atemsource.atem.api.method.ParameterType;
+import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.Type;
 
 public class MethodImpl implements Method {
 	private ParameterType parameterType;
 
-	private java.lang.reflect.Method method;
+	private EntityType<?> entityType;
 
-	public java.lang.reflect.Method getMethod() {
-		return method;
+	public EntityType<?> getEntityType() {
+		return entityType;
 	}
 
-	public void setMethod(java.lang.reflect.Method method) {
-		this.method = method;
+	public void setEntityType(EntityType<?> entityType) {
+		this.entityType = entityType;
+	}
+
+	private java.lang.reflect.Method javaMethod;
+
+	public java.lang.reflect.Method getJavaMethod() {
+		return javaMethod;
+	}
+
+	public void setJavaMethod(java.lang.reflect.Method method) {
+		this.javaMethod = method;
 	}
 
 	private Type<?> returnType;
@@ -33,12 +44,24 @@ public class MethodImpl implements Method {
 		return returnType;
 	}
 
+	private String code;
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
 	public void setReturnType(Type<?> returnType) {
 		this.returnType = returnType;
 	}
 
 	@Override
-	public Object invoke(Object target, Object[] param) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return method.invoke(target, param);
+	public Object invoke(Object target, Object[] param) throws IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException {
+		return javaMethod.invoke(target, param);
 	}
+
 }

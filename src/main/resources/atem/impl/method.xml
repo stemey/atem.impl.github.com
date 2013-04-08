@@ -17,7 +17,16 @@
 
 
 
-
+	<bean id="atem-method-repository" class="org.atemsource.atem.impl.common.method.MethodSubrepository">
+			<property name="entityTypeServices">
+				<map>
+					<entry key="org.atemsource.atem.api.service.IdentityService">
+							<bean class="org.atemsource.atem.impl.common.method.MethodIdentityService"/>
+					</entry>
+				</map>
+			</property>
+	</bean>
+	
 	<bean id="atem-methodFactory" class="org.atemsource.atem.impl.common.method.MethodFactory">
 		<property name="attributeFactories">
 			<list>
