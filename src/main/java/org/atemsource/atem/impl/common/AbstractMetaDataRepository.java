@@ -22,9 +22,7 @@ import org.atemsource.atem.spi.EntityTypeSubrepository;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-
-public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepository<J>, ApplicationContextAware
-{
+public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepository<J>, ApplicationContextAware {
 
 	protected ApplicationContext applicationContext;
 
@@ -38,58 +36,64 @@ public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepo
 
 	private Map<Class<?>, Object> entityTypeServices;
 
+	private Collection<Object> services;
+
+	public Collection<Object> getServices() {
+		return services;
+	}
+
+	public void setServices(Collection<Object> services) {
+		this.services = services;
+	}
+
 	protected Map<String, AbstractEntityType<J>> nameToEntityTypes = new HashMap<String, AbstractEntityType<J>>();
 
 	@Override
-	public void addIncomingAssociation(EntityType<J> entityType, Attribute<?, ?> incomingRelation)
-	{
+	public void addIncomingAssociation(EntityType<J> entityType, Attribute<?, ?> incomingRelation) {
 		((AbstractEntityType) entityType).addIncomingAssociation(incomingRelation);
 	}
 
 	@Override
-	public void addMetaAttribute(EntityType<J> entityType, Attribute<?, ?> metaAttribute)
-	{
+	public void addMetaAttribute(EntityType<J> entityType, Attribute<?, ?> metaAttribute) {
 		((AbstractEntityType) entityType).addMetaAttribute(metaAttribute);
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void attacheServicesToEntityType(final AbstractEntityType entityType)
-	{
-		if (entityTypeServices != null)
-		{
-			for (Map.Entry<Class<?>, Object> entry : entityTypeServices.entrySet())
-			{
-				if (!entry.getKey().isInstance(entry.getValue()))
-				{
+	protected void attacheServicesToEntityType(final AbstractEntityType entityType) {
+		if (entityTypeServices != null) {
+			for (Map.Entry<Class<?>, Object> entry : entityTypeServices.entrySet()) {
+				if (!entry.getKey().isInstance(entry.getValue())) {
 					throw new IllegalStateException("the service does not implement " + entry.getKey().getName());
 				}
 				entityType.addService(entry.getKey(), entry.getValue());
 			}
 		}
-		if (entityTypeServiceFactories != null)
-		{
-			for (EntityTypeServiceFactory factory : entityTypeServiceFactories)
-			{
+		if (entityTypeServiceFactories != null) {
+			for (EntityTypeServiceFactory factory : entityTypeServiceFactories) {
 				entityType.addService(factory.getServiceClass(entityType), factory.createService(entityType));
+			}
+		}
+		if (services != null) {
+			for (Object service : services) {
+				for (Class<?> serviceInterface : service.getClass().getInterfaces()) {
+					entityType.addService(serviceInterface, service);
+				}
 			}
 		}
 	}
 
 	@Override
-	public boolean contains(EntityType<J> entityType)
-	{
+	public boolean contains(EntityType<J> entityType) {
 		return entityTypes.contains(entityType);
 	}
 
 	@Override
-	public EntityType<J> getEntityType(final Class clazz)
-	{
+	public EntityType<J> getEntityType(final Class clazz) {
 		return classToEntityTypes.get(clazz);
 	}
 
 	@Override
-	public EntityType<J> getEntityType(final String entityName)
-	{
+	public EntityType<J> getEntityType(final String entityName) {
 		// TODO commerce entittype code is not the same as hibernate entity name
 		// that is why we try both here
 		EntityType entityType = nameToEntityTypes.get(entityName);
@@ -97,86 +101,70 @@ public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepo
 	}
 
 	@Override
-	public EntityType<J> getEntityTypeReference(Class<J> propertyType)
-	{
+	public EntityType<J> getEntityTypeReference(Class<J> propertyType) {
 		return classToEntityTypes.get(propertyType);
 	}
 
 	@Override
-	public EntityType<J> getEntityTypeReference(String entityName)
-	{
+	public EntityType<J> getEntityTypeReference(String entityName) {
 		return nameToEntityTypes.get(entityName);
 	}
 
 	@Override
-	public Collection<AbstractEntityType<J>> getEntityTypes()
-	{
+	public Collection<AbstractEntityType<J>> getEntityTypes() {
 		return entityTypes;
 	}
 
-	public List<EntityTypeServiceFactory> getEntityTypeServiceFactories()
-	{
+	public List<EntityTypeServiceFactory> getEntityTypeServiceFactories() {
 		return entityTypeServiceFactories;
 	}
 
-	public Map<Class<?>, Object> getEntityTypeServices()
-	{
+	public Map<Class<?>, Object> getEntityTypeServices() {
 		return entityTypeServices;
 	}
 
 	@Override
-	public boolean hasEntityTypeReference(Class entityClass)
-	{
+	public boolean hasEntityTypeReference(Class entityClass) {
 		return classToEntityTypes.containsKey(entityClass);
 	}
 
-	protected void initializeEntityTypeHierachy(AbstractEntityType entityType, String superTypeCode)
-	{
+	protected void initializeEntityTypeHierachy(AbstractEntityType entityType, String superTypeCode) {
 		AbstractEntityType superEntityType = nameToEntityTypes.get(superTypeCode);
-		if (superEntityType != null)
-		{
+		if (superEntityType != null) {
 			entityType.setSuperEntityType(superEntityType);
 			superEntityType.addSubEntityType(entityType);
 		}
 	}
 
 	@Override
-	public void initializeIncomingAssociations()
-	{
-		for (AbstractEntityType entityType : nameToEntityTypes.values())
-		{
+	public void initializeIncomingAssociations() {
+		for (AbstractEntityType entityType : nameToEntityTypes.values()) {
 			entityType.initializeIncomingAssociations(entityTypeCreationContext);
 		}
 	}
 
-	protected void initializeLookups()
-	{
+	protected void initializeLookups() {
 		entityTypes.addAll(nameToEntityTypes.values());
-		for (AbstractEntityType entityType : entityTypes)
-		{
+		for (AbstractEntityType entityType : entityTypes) {
 			classToEntityTypes.put(entityType.getEntityClass(), entityType);
 		}
 	}
 
 	@Override
-	public void performLazyRepositoryInit(EntityTypeCreationContext ctx)
-	{
+	public void performLazyRepositoryInit(EntityTypeCreationContext ctx) {
 
 	}
 
 	@Override
-	public void setApplicationContext(final ApplicationContext applicationContext)
-	{
+	public void setApplicationContext(final ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
 	}
 
-	public void setEntityTypeServiceFactories(List<EntityTypeServiceFactory> entityTypeServiceFactories)
-	{
+	public void setEntityTypeServiceFactories(List<EntityTypeServiceFactory> entityTypeServiceFactories) {
 		this.entityTypeServiceFactories = entityTypeServiceFactories;
 	}
 
-	public void setEntityTypeServices(Map<Class<?>, Object> entityTypeServices)
-	{
+	public void setEntityTypeServices(Map<Class<?>, Object> entityTypeServices) {
 		this.entityTypeServices = entityTypeServices;
 	}
 

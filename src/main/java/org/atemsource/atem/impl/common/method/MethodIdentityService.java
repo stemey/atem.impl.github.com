@@ -9,7 +9,7 @@ import org.atemsource.atem.api.type.EntityType;
 public class MethodIdentityService implements IdentityService {
 
 	@Override
-	public Serializable getId(EntityType<?> entityType, Object entity) {
+	public <E> Serializable getId(EntityType<E> entityType, E entity) {
 		if (entity == null) {
 			return null;
 		} else {

@@ -101,7 +101,7 @@ public class InMemoryPojoStore implements FindByAttributeService, PersistenceSer
 	@Override
 	public Serializable insert(Object entity)
 	{
-		EntityType<?> entityType = entityTypeRepository.getEntityType(entity);
+		EntityType<Object> entityType = entityTypeRepository.getEntityType(entity);
 		Serializable id = entityType.getService(IdentityService.class).getId(entityType, entity);
 		entities.add(entity);
 		for (SingleViewIndex index:singleViewIndexes.values()) {

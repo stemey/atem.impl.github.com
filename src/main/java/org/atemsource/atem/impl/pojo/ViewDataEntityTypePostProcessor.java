@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class ViewDataEntityTypePostProcessor implements EntityTypePostProcessor
 {
-	private EntityType<?> viewEntityType;
+	private EntityType<ViewData> viewEntityType;
 
 	@Autowired
 	private MetaAttributeService metaAttributeService;
@@ -35,7 +35,7 @@ public class ViewDataEntityTypePostProcessor implements EntityTypePostProcessor
 	{
 		if (viewEntityType == null)
 		{
-			viewEntityType = context.getEntityTypeReference(ViewData.class);
+			viewEntityType = (EntityType<ViewData>) context.getEntityTypeReference(ViewData.class);
 			if (viewEntityType == null)
 			{
 				return;

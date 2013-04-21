@@ -18,6 +18,7 @@ package org.atemsource.atem.impl.common.service;
 
 import java.io.Serializable;
 
+import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.service.IdentityService;
 import org.atemsource.atem.api.type.EntityType;
 
@@ -32,7 +33,7 @@ public class AttributeIdentityService implements IdentityService
 	}
 
 	@Override
-	public Serializable getId(EntityType<?> entityType, Object entity)
+	public <A> Serializable getId(EntityType<A> entityType, A entity)
 	{
 		return (Serializable) entityType.getAttribute(attributeCode).getValue(entity);
 	}

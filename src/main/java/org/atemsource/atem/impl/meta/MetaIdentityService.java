@@ -17,7 +17,7 @@ public class MetaIdentityService implements IdentityService
 {
 
 	@Override
-	public Serializable getId(EntityType<?> entityType, Object entity)
+	public <E> Serializable getId(EntityType<E> entityType, E entity)
 	{
 		if (entity == null)
 		{
