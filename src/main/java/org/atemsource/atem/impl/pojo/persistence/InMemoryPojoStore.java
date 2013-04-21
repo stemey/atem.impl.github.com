@@ -26,7 +26,7 @@ import org.atemsource.atem.api.attribute.CollectionAttribute;
 import org.atemsource.atem.api.attribute.relation.SingleAttribute;
 import org.atemsource.atem.api.service.AttributeQuery;
 import org.atemsource.atem.api.service.FindByAttributeService;
-import org.atemsource.atem.api.service.FindByTypedIdService;
+import org.atemsource.atem.api.service.FindByIdService;
 import org.atemsource.atem.api.service.IdentityService;
 import org.atemsource.atem.api.service.PersistenceService;
 import org.atemsource.atem.api.service.SingleAttributeQuery;
@@ -34,7 +34,7 @@ import org.atemsource.atem.api.type.EntityType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-public class InMemoryPojoStore implements FindByAttributeService, PersistenceService, FindByTypedIdService
+public class InMemoryPojoStore implements FindByAttributeService, PersistenceService, FindByIdService
 {
 
 	
@@ -68,9 +68,9 @@ public class InMemoryPojoStore implements FindByAttributeService, PersistenceSer
 	}
 
 	@Override
-	public Object findByTypedId(EntityType<?> entityType, Serializable id)
+	public <E> E findById(EntityType<E> entityType, Serializable id)
 	{
-		return singleViewIndexes.get(FIND_BY_ID).find(new Object[]{entityType,id});
+		return (E) singleViewIndexes.get(FIND_BY_ID).find(new Object[]{entityType,id});
 	}
 
 	public Object findSingleByAttribute(Object targetEntity, Attribute<?, ?> attribute)
@@ -99,7 +99,7 @@ public class InMemoryPojoStore implements FindByAttributeService, PersistenceSer
 	}
 
 	@Override
-	public void insert(Object entity)
+	public Serializable insert(Object entity)
 	{
 		EntityType<?> entityType = entityTypeRepository.getEntityType(entity);
 		Serializable id = entityType.getService(IdentityService.class).getId(entityType, entity);
@@ -110,6 +110,7 @@ public class InMemoryPojoStore implements FindByAttributeService, PersistenceSer
 		for (ViewIndex index:viewIndexes.values()) {
 			index.insert(entity);
 		}
+		return id;
 	}
 
 

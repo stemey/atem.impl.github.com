@@ -14,7 +14,7 @@ import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.JavaMetaData;
 import org.atemsource.atem.api.extension.EntityTypePostProcessor;
 import org.atemsource.atem.api.extension.MetaAttributeService;
-import org.atemsource.atem.api.service.FindByTypedIdService;
+import org.atemsource.atem.api.service.FindByIdService;
 import org.atemsource.atem.api.service.IdentityService;
 import org.atemsource.atem.api.service.PersistenceService;
 import org.atemsource.atem.api.type.EntityType;
@@ -58,7 +58,7 @@ public class ViewDataEntityTypePostProcessor implements EntityTypePostProcessor
 						viewData.setName(view.name());
 						Serializable id = viewEntityType.getService(IdentityService.class).getId(viewEntityType, viewData);
 						ViewData existingViewData =
-							(ViewData) viewEntityType.getService(FindByTypedIdService.class).findByTypedId(viewEntityType, id);
+							(ViewData) viewEntityType.getService(FindByIdService.class).findById(viewEntityType, id);
 						if (existingViewData == null)
 						{
 							existingViewData = viewData;

@@ -15,6 +15,8 @@
  ******************************************************************************/
 package org.atemsource.atem.impl.pojo.persistence;
 
+import java.io.Serializable;
+
 import org.atemsource.atem.api.service.PersistenceService;
 
 
@@ -23,9 +25,9 @@ public class InMemoryPersistenceService implements PersistenceService
 	private InMemoryPojoStore inMemoryPojoRepository;
 
 	@Override
-	public void insert(Object entity)
+	public Serializable insert(Object entity)
 	{
-		inMemoryPojoRepository.insert(entity);
+		return inMemoryPojoRepository.insert(entity);
 	}
 
 	@Override
