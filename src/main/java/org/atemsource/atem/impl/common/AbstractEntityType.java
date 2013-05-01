@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,7 +30,7 @@ import org.atemsource.atem.api.service.SingleAttributeQuery;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.PrimitiveType;
 import org.atemsource.atem.api.type.Type;
-import org.atemsource.atem.api.view.AttributeVisitor;
+import org.atemsource.atem.api.view.AttributeView;
 import org.atemsource.atem.api.view.View;
 import org.atemsource.atem.api.view.ViewVisitor;
 import org.atemsource.atem.impl.common.attribute.AbstractAttribute;
@@ -515,60 +516,32 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 	}
 
 	@Override
-	public <C> void visit(ViewVisitor<C> visitor, C context)
-	{
-		visitAttributes(this, visitor, context);
-		EntityType<?> currentType = this;
-		while (currentType.getSuperEntityType() != null)
-		{
-			if (visitor.visitSuperView(context, currentType.getSuperEntityType()))
-			{
-				visitAttributes(currentType.getSuperEntityType(), visitor, context);
-				visitSubTypes(currentType.getSuperEntityType(), currentType, visitor, context);
+	public Iterator<AttributeView> attributes() {
+		List<AttributeView> attributeViews= new ArrayList<AttributeView>(getDeclaredAttributes().size());
+		for (Attribute attribute:getDeclaredAttributes()) {
+			if (attribute.getTargetType() instanceof EntityType<?>) {
+			attributeViews.add(new AttributeView(attribute,(View) attribute.getTargetType()));
+			}else{
+				attributeViews.add(new AttributeView(attribute,null));
 			}
-			else
-			{
-				break;
-			}
-			currentType = currentType.getSuperEntityType();
 		}
-		visitSubTypes(this, null, visitor, context);
+		return attributeViews.iterator();
 	}
 
-	protected <C> void visitAttributes(EntityType<?> entityType, ViewVisitor<C> visitor, C context)
-	{
-		for (Attribute<?, ?> attribute : entityType.getDeclaredAttributes())
-		{
-			if (attribute.getTargetType() instanceof PrimitiveType)
-			{
-				visitor.visit(context, attribute);
-			}
-			else
-			{
-				Type<?> targetType = attribute.getTargetType();
-				if (targetType != null)
-				{
-					visitor.visit(context, attribute, new AttributeVisitor<C>(visitor, (View) targetType));
-				}
-				else
-				{
-					visitor.visit(context, attribute);
-				}
-			}
-		}
+	@Override
+	public View getSuperView() {
+		return getSuperEntityType();
 	}
 
-	protected <C> void visitSubTypes(EntityType<?> entityType, EntityType<?> originatingSubEntityType,
-		ViewVisitor<C> visitor, C context)
-	{
-		for (EntityType<?> subType : entityType.getSubEntityTypes())
-		{
-			if (subType != originatingSubEntityType && visitor.visitSubView(context, subType))
-			{
-				visitAttributes(subType, visitor, context);
-				visitSubTypes(subType, null, visitor, context);
-			}
-		}
+	@Override
+	public Iterator<? extends View> subviews() {
+		return getSubEntityTypes().iterator();
 	}
+
+
+
+
+
+	
 
 }
