@@ -40,6 +40,8 @@ public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepo
 
 	protected Map<String, AbstractEntityType<J>> nameToEntityTypes = new HashMap<String, AbstractEntityType<J>>();
 
+	private Collection<?> services;
+
 	@Override
 	public void addIncomingAssociation(EntityType<J> entityType, Attribute<?, ?> incomingRelation)
 	{
@@ -50,6 +52,15 @@ public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepo
 	public void addMetaAttribute(EntityType<J> entityType, Attribute<?, ?> metaAttribute)
 	{
 		((AbstractEntityType) entityType).addMetaAttribute(metaAttribute);
+	}
+
+	public void addServices(final AbstractEntityType entityType, Class serviceClass, Object service)
+	{
+		for (Class<?> serviceInterface : serviceClass.getInterfaces())
+		{
+			entityType.addService(serviceInterface, service);
+			addServices(entityType, serviceInterface, service);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -71,6 +82,13 @@ public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepo
 			for (EntityTypeServiceFactory factory : entityTypeServiceFactories)
 			{
 				entityType.addService(factory.getServiceClass(entityType), factory.createService(entityType));
+			}
+		}
+		if (services != null)
+		{
+			for (Object service : services)
+			{
+				addServices(entityType, service.getClass(), service);
 			}
 		}
 	}
@@ -122,6 +140,11 @@ public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepo
 	public Map<Class<?>, Object> getEntityTypeServices()
 	{
 		return entityTypeServices;
+	}
+
+	public Collection<?> getServices()
+	{
+		return services;
 	}
 
 	@Override
@@ -178,6 +201,11 @@ public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepo
 	public void setEntityTypeServices(Map<Class<?>, Object> entityTypeServices)
 	{
 		this.entityTypeServices = entityTypeServices;
+	}
+
+	public void setServices(Collection<?> services)
+	{
+		this.services = services;
 	}
 
 }

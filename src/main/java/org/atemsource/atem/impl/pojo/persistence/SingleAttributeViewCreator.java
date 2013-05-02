@@ -32,7 +32,7 @@ public class SingleAttributeViewCreator implements ViewCreator
 			IdentityService service = singleAttribute.getTargetType().getService(IdentityService.class);
 			if (service != null)
 			{
-				Serializable id = service.getId(singleAttribute.getTargetType(), targetEntity);
+				Serializable id = service.getId((EntityType<Object>) singleAttribute.getTargetType(), targetEntity);
 				return new ArrayKey(new Serializable[]{id, attribute.getEntityType().getCode() + "." + attribute.getCode()});
 			}
 
@@ -54,7 +54,7 @@ public class SingleAttributeViewCreator implements ViewCreator
 				IdentityService service = singleAttribute.getTargetType().getService(IdentityService.class);
 				if (service != null)
 				{
-					Serializable id = service.getId(singleAttribute.getTargetType(), value);
+					Serializable id = service.getId((EntityType<Object>) singleAttribute.getTargetType(), value);
 					Serializable key = getKeyForParameter(new Object[]{attribute, value});
 					if (key != null)
 					{

@@ -23,10 +23,9 @@ import org.atemsource.atem.api.BeanLocator;
 import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.CollectionAttribute;
-import org.atemsource.atem.api.attribute.relation.SingleAttribute;
 import org.atemsource.atem.api.service.AttributeQuery;
 import org.atemsource.atem.api.service.FindByAttributeService;
-import org.atemsource.atem.api.service.FindByTypedIdService;
+import org.atemsource.atem.api.service.FindByIdService;
 import org.atemsource.atem.api.service.IdentityService;
 import org.atemsource.atem.api.service.PersistenceService;
 import org.atemsource.atem.api.service.SingleAttributeQuery;
@@ -34,51 +33,52 @@ import org.atemsource.atem.api.type.EntityType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-public class InMemoryPojoStore implements FindByAttributeService, PersistenceService, FindByTypedIdService
+public class InMemoryPojoStore implements FindByAttributeService, PersistenceService, FindByIdService
 {
-
-	
 
 	private static final String FIND_BY_ATTRIBUTE = "findByAttribute";
 
 	private static final String FIND_BY_ID = "findById";
 
+	@Inject
+	private BeanLocator beanLocator;
+
+	private final Collection<Object> entities = new HashSet<Object>();
+
 	@Autowired
 	private EntityTypeRepository entityTypeRepository;
 
-	@Inject
-	private BeanLocator beanLocator;
-	
-	private List<Class> supportedClasses;
-	
-	
-	private Map<String,ViewIndex> viewIndexes=new HashMap<String, ViewIndex>();
-	private Map<String,SingleViewIndex> singleViewIndexes=new HashMap<String, SingleViewIndex>();
-	
-	@PostConstruct
-	public void initialize() {
-		singleViewIndexes.put(FIND_BY_ATTRIBUTE,new SingleViewIndex(beanLocator.getInstance(SingleAttributeViewCreator.class)));
-		singleViewIndexes.put(FIND_BY_ID,new SingleViewIndex(beanLocator.getInstance(FindByIdViewCreator.class)));
-	}
+	private final Map<String, SingleViewIndex> singleViewIndexes = new HashMap<String, SingleViewIndex>();
 
+	private List<Class> supportedClasses;
+
+	private final Map<String, ViewIndex> viewIndexes = new HashMap<String, ViewIndex>();
 
 	public void clearAssociatedEntities(Object entity, CollectionAttribute collectionAssociationAttribute)
 	{
 		throw new UnsupportedOperationException("readonly");
 	}
 
-	@Override
-	public Object findByTypedId(EntityType<?> entityType, Serializable id)
+	public Set<Object> find(String view, Object... parameters)
 	{
-		return singleViewIndexes.get(FIND_BY_ID).find(new Object[]{entityType,id});
+		return viewIndexes.get(view).find(parameters);
+	}
+
+	@Override
+	public <E> E findById(EntityType<E> entityType, Serializable id)
+	{
+		return (E) singleViewIndexes.get(FIND_BY_ID).find(new Object[]{entityType, id});
+	}
+
+	public Object findSingle(String view, Object... parameters)
+	{
+		return singleViewIndexes.get(view).find(parameters);
 	}
 
 	public Object findSingleByAttribute(Object targetEntity, Attribute<?, ?> attribute)
 	{
-		return singleViewIndexes.get(FIND_BY_ATTRIBUTE).find(new Object[]{attribute,targetEntity});
+		return singleViewIndexes.get(FIND_BY_ATTRIBUTE).find(new Object[]{attribute, targetEntity});
 	}
-	
-	private Collection<Object> entities= new HashSet<Object>();
 
 	public <T> Collection<T> getEntities(Class<T> clazz)
 	{
@@ -98,21 +98,29 @@ public class InMemoryPojoStore implements FindByAttributeService, PersistenceSer
 		return supportedClasses;
 	}
 
-	@Override
-	public void insert(Object entity)
+	@PostConstruct
+	public void initialize()
 	{
-		EntityType<?> entityType = entityTypeRepository.getEntityType(entity);
-		Serializable id = entityType.getService(IdentityService.class).getId(entityType, entity);
-		entities.add(entity);
-		for (SingleViewIndex index:singleViewIndexes.values()) {
-			index.insert(entity);
-		}
-		for (ViewIndex index:viewIndexes.values()) {
-			index.insert(entity);
-		}
+		singleViewIndexes.put(FIND_BY_ATTRIBUTE,
+			new SingleViewIndex(beanLocator.getInstance(SingleAttributeViewCreator.class)));
+		singleViewIndexes.put(FIND_BY_ID, new SingleViewIndex(beanLocator.getInstance(FindByIdViewCreator.class)));
 	}
 
-
+	@Override
+	public <E> Serializable insert(EntityType<E> entityType, E entity)
+	{
+		Serializable id = entityType.getService(IdentityService.class).getId(entityType, entity);
+		entities.add(entity);
+		for (SingleViewIndex index : singleViewIndexes.values())
+		{
+			index.insert(entity);
+		}
+		for (ViewIndex index : viewIndexes.values())
+		{
+			index.insert(entity);
+		}
+		return id;
+	}
 
 	public boolean isEqual(CollectionAttribute collectionAssociationAttribute, Object entity, Object other)
 	{
@@ -120,7 +128,7 @@ public class InMemoryPojoStore implements FindByAttributeService, PersistenceSer
 	}
 
 	@Override
-	public boolean isPersistent(Object entity)
+	public <E> boolean isPersistent(EntityType<E> entityType, E entity)
 	{
 		return entities.contains(entity);
 	}
@@ -136,16 +144,6 @@ public class InMemoryPojoStore implements FindByAttributeService, PersistenceSer
 	{
 		return new SinglePojoAttributeQuery(attribute, this);
 	}
-
-	
-	public Set<Object> find(String view, Object... parameters) {
-		return viewIndexes.get(view).find(parameters);
-	}
-	
-	public Object findSingle(String view, Object... parameters) {
-		return singleViewIndexes.get(view).find(parameters);
-	}
-	
 
 	public void setSupportedClasses(List<Class> supportedClasses)
 	{

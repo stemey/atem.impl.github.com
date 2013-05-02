@@ -9,18 +9,18 @@ package org.atemsource.atem.impl.pojo.persistence;
 
 import java.io.Serializable;
 
-import org.atemsource.atem.api.service.FindByTypedIdService;
+import org.atemsource.atem.api.service.FindByIdService;
 import org.atemsource.atem.api.type.EntityType;
 
 
-public class InMemoryFindByTypedIdService implements FindByTypedIdService
+public class InMemoryFindByTypedIdService implements FindByIdService
 {
 	private InMemoryPojoStore inMemoryPojoRepository;
 
 	@Override
-	public Object findByTypedId(EntityType<?> entityType, Serializable id)
+	public <E> E findById(EntityType<E> entityType, Serializable id)
 	{
-		return inMemoryPojoRepository.findByTypedId(entityType, id);
+		return inMemoryPojoRepository.findById(entityType, id);
 	}
 
 }
