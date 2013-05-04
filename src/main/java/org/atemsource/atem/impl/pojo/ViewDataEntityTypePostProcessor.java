@@ -25,10 +25,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class ViewDataEntityTypePostProcessor implements EntityTypePostProcessor
 {
-	private EntityType<ViewData> viewEntityType;
-
 	@Autowired
 	private MetaAttributeService metaAttributeService;
+
+	private EntityType<ViewData> viewEntityType;
 
 	@Override
 	public void postProcessEntityType(EntityTypeCreationContext context, EntityType<?> entityType)
@@ -58,11 +58,11 @@ public class ViewDataEntityTypePostProcessor implements EntityTypePostProcessor
 						viewData.setName(view.name());
 						Serializable id = viewEntityType.getService(IdentityService.class).getId(viewEntityType, viewData);
 						ViewData existingViewData =
-							(ViewData) viewEntityType.getService(FindByIdService.class).findById(viewEntityType, id);
+							viewEntityType.getService(FindByIdService.class).findById(viewEntityType, id);
 						if (existingViewData == null)
 						{
 							existingViewData = viewData;
-							viewEntityType.getService(PersistenceService.class).insert(existingViewData);
+							viewEntityType.getService(PersistenceService.class).insert(viewEntityType, existingViewData);
 						}
 						existingViewData.getAttributes().add(attribute);
 					}

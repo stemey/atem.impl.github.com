@@ -8,13 +8,17 @@
 package org.atemsource.atem.impl.meta;
 
 import java.io.Serializable;
+
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.service.IdentityService;
 import org.atemsource.atem.api.type.EntityType;
+import org.atemsource.atem.api.type.Type;
+import org.atemsource.atem.impl.common.attribute.primitive.SimpleTextType;
 
 
 public class MetaIdentityService implements IdentityService
 {
+	private final Type<?> idType = new SimpleTextType();
 
 	@Override
 	public <E> Serializable getId(EntityType<E> entityType, E entity)
@@ -37,5 +41,11 @@ public class MetaIdentityService implements IdentityService
 		{
 			throw new IllegalStateException("can only handle attribute and entity type");
 		}
+	}
+
+	@Override
+	public Type<?> getIdType(EntityType<?> entityType)
+	{
+		return idType;
 	}
 }

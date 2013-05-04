@@ -1,0 +1,2151 @@
+Found a 33 line (146 tokens) duplication in the following files: 
+Starting at line 60 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\ScannedPojoEntityTypeRepository.java
+Starting at line 48 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoEntityTypeRepository.java
+
+	protected Attribute addAttribute(AbstractEntityType entityType,
+		org.atemsource.atem.impl.pojo.attribute.PropertyDescriptor propertyDescriptor)
+	{
+		Attribute attribute = null;
+		for (AttributeFactory attributeFactory : attributeFactories)
+		{
+			if (attributeFactory.canCreate(propertyDescriptor, entityTypeCreationContext))
+			{
+				attribute = attributeFactory.createAttribute(entityType, propertyDescriptor, entityTypeCreationContext);
+				break;
+			}
+		}
+		return attribute;
+	}
+
+	protected void addAttributes(AbstractEntityType entityType)
+	{
+		List<Attribute> attributes = new ArrayList<Attribute>();
+		for (org.atemsource.atem.impl.pojo.attribute.PropertyDescriptor propertyDescriptor : propertyDescriptorFactory
+			.getPropertyDescriptors(entityType.getEntityClass()))
+		{
+
+			Attribute attribute = addAttribute(entityType, propertyDescriptor);
+			if (attribute != null)
+			{
+				attributes.add(attribute);
+			}
+
+		}
+
+		entityType.setAttributes(attributes);
+
+	}
+=====================================================================
+Found a 36 line (126 tokens) duplication in the following files: 
+Starting at line 32 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\attribute\PrimitiveAttributeFactory.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\attribute\EnumAttributeFactory.java
+
+public class PrimitiveAttributeFactory extends AttributeFactory
+{
+
+	@Resource
+	private PrimitiveTypeFactory primitiveTypeFactory;
+
+	@Override
+	public boolean canCreate(PropertyDescriptor propertyDescriptor, EntityTypeCreationContext ctx)
+	{
+		return primitiveTypeFactory.getPrimitiveType(propertyDescriptor.getPropertyType()) != null;
+	}
+
+	@Override
+	public Attribute createAttribute(AbstractEntityType entityType, PropertyDescriptor propertyDescriptor,
+		EntityTypeCreationContext ctx)
+	{
+		PrimitiveAttributeImpl attribute = new PrimitiveAttributeImpl();
+		attribute.setAccessor(propertyDescriptor.getAccessor());
+		setStandardProperties(entityType, propertyDescriptor, attribute,ctx);
+		attribute.setTargetType(primitiveTypeFactory.getPrimitiveType(propertyDescriptor.getPropertyType()));
+		return attribute;
+	}
+
+	@Override
+	public Collection<Class> getClasses()
+	{
+		return primitiveTypeFactory.getClasses();
+	}
+
+	@Override
+	public Class getCollectionClass()
+	{
+		return null;
+	}
+
+}
+=====================================================================
+Found a 39 line (122 tokens) duplication in the following files: 
+Starting at line 81 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\MetaAttribute.java
+Starting at line 80 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\annotation\AnnotationAttribute.java
+
+				Object original = derivedObject.getOriginal();
+				if (original != null) {
+					return getValue(original);
+				}
+			}
+
+		}
+		return value;
+	}
+
+	@Override
+	public boolean isComposition() {
+		return true;
+	}
+
+	@Override
+	public boolean isEqual(Object entity, Object other) {
+		J value = getValue(entity);
+		J otherValue = getValue(other);
+		if (value != null) {
+			return value.equals(otherValue);
+		} else {
+			return otherValue == null;
+		}
+
+	}
+
+	@Override
+	public boolean isRequired() {
+		return false;
+	}
+
+	@Override
+	public boolean isWriteable() {
+		return false;
+	}
+
+	@Override
+	public void setValue(Object entity, J value) {
+=====================================================================
+Found a 27 line (118 tokens) duplication in the following files: 
+Starting at line 48 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\attribute\AttributeFactory.java
+Starting at line 37 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AbstractAttributeFactory.java
+
+	protected Set<EntityType> createValidtypesSet(final EntityType elementEntityType, final Class[] includedTypes,
+		final Class[] excludedTypes, final EntityTypeCreationContext ctx)
+	{
+		Set<EntityType> validTypesSet;
+		if (includedTypes == null || includedTypes.length == 0)
+		{
+			validTypesSet = elementEntityType.getSelfAndAllSubEntityTypes();
+			if (excludedTypes != null)
+			{
+				for (Class type : excludedTypes)
+				{
+					validTypesSet.remove(ctx.getEntityTypeReference(type));
+				}
+			}
+		}
+		else
+		{
+			validTypesSet = new HashSet<EntityType>();
+			for (Class type : includedTypes)
+			{
+				validTypesSet.add(ctx.getEntityTypeReference(type));
+			}
+		}
+		return validTypesSet;
+	}
+
+	public abstract Collection<Class> getClasses();
+=====================================================================
+Found a 36 line (113 tokens) duplication in the following files: 
+Starting at line 27 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\EntityTypeSubrepository.java
+Starting at line 31 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\AttributeSubrepository.java
+
+		}
+		return entityType;
+	}
+
+	@Override
+	public EntityType<Object> getEntityType(Object entity)
+	{
+		return getEntityType(entity.getClass());
+	}
+
+	protected EntityType getFromInterfaces(Class clazz)
+	{
+		if (clazz == null)
+		{
+			return null;
+		}
+		for (Class possibleTypeInterface : clazz.getInterfaces())
+		{
+			EntityType entityType = getEntityType(possibleTypeInterface);
+			if (entityType != null)
+			{
+				return entityType;
+			}
+		}
+		EntityType entityType = getFromInterfaces(clazz.getSuperclass());
+		if (entityType != null)
+		{
+			return entityType;
+		}
+		return null;
+	}
+
+	@Override
+	public void initialize(EntityTypeCreationContext entityTypeCreationContext)
+	{
+		this.setIncludedPackage(Type.class.getPackage().getName());
+=====================================================================
+Found a 30 line (108 tokens) duplication in the following files: 
+Starting at line 264 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\ScannedPojoEntityTypeRepository.java
+Starting at line 288 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoEntityTypeRepository.java
+
+				((AbstractEntityType) superType).addSubEntityType(entityType);
+			}
+		}
+	}
+
+	protected boolean isAvailable(Class clazz)
+	{
+		// TODO package is null for enum types and inner types?
+		return (entityClass == null || entityClass.isAssignableFrom(clazz))
+			&& (includedPackage == null || (clazz.getPackage() != null && clazz.getPackage().getName()
+				.startsWith(includedPackage)));
+	}
+
+	private boolean isAvailable(String entityName)
+	{
+		AbstractEntityType<Object> abstractEntityType = nameToEntityTypes.get(entityName);
+		if (abstractEntityType != null)
+		{
+			return true;
+		}
+		try
+		{
+			Class.forName(entityName);
+			return true;
+		}
+		catch (ClassNotFoundException e)
+		{
+			return false;
+		}
+	}
+=====================================================================
+Found a 40 line (104 tokens) duplication in the following files: 
+Starting at line 138 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\ScannedPojoEntityTypeRepository.java
+Starting at line 118 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoEntityTypeRepository.java
+
+		addEntityTypeToLookup(clazz, entityType);
+		return entityType;
+	}
+
+	protected EntityType createEntityType(String entityName)
+	{
+		Class clazz;
+		try
+		{
+			clazz = Class.forName(entityName);
+		}
+		catch (ClassNotFoundException e)
+		{
+			return null;
+		}
+		if (!isAvailable(clazz))
+		{
+			return null;
+		}
+		return createEntityType(clazz);
+	}
+
+	public List<AttributeFactory> getAttributeFactories()
+	{
+		return attributeFactories;
+	}
+
+	public Class getEntityClass()
+	{
+		return entityClass;
+	}
+
+	@Override
+	public EntityType getEntityType(Class clazz)
+	{
+		if (!isAvailable(clazz))
+		{
+			return null;
+		}
+		EntityType entityType = super.getEntityType(clazz);
+=====================================================================
+Found a 29 line (97 tokens) duplication in the following files: 
+Starting at line 121 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\MetaAttribute.java
+Starting at line 260 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\PropertiesAttribute.java
+
+	}
+
+	@Override
+	public boolean isDerived() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setMetaValue(String metaAttributeCode, Object value) {
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+
+	@Override
+	public Attribute<?, ?> getMetaAttribute(String metaAttributeCode) {
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+
+	@Override
+	public EntityType<? extends Attribute<?, ?>> getMetaType() {
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+
+	@Override
+	public Object getMetaValue(String metaAttributeCode) {
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+
+}
+=====================================================================
+Found a 21 line (88 tokens) duplication in the following files: 
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\LongAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\IntegerAttribute.java
+
+	public Long getValue(Object entity)
+	{
+		ObjectNode node = (ObjectNode) entity;
+		if (node.isNull())
+		{
+			throw new NullPointerException("entity is null");
+		}
+		else
+		{
+			JsonNode jsonNode = node.get(getCode());
+			if (jsonNode == null || jsonNode.isNull())
+			{
+				return null;
+			}
+			else
+			{
+				if (!jsonNode.isNumber())
+				{
+					throw new ConversionException(jsonNode.getValueAsText(), getTargetType());
+				}
+				return jsonNode.getLongValue();
+=====================================================================
+Found a 25 line (81 tokens) duplication in the following files: 
+Starting at line 74 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\EntityTypeSubrepository.java
+Starting at line 86 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\AttributeSubrepository.java
+
+			if (possibleSuperType != View.class)
+			{
+				if (superClass != null)
+				{
+					throw new IllegalStateException("found two interfaces that could be superclass for "
+						+ entityType.getCode());
+				}
+				superClass = possibleSuperType;
+			}
+		}
+		if (superClass != null)
+		{
+			EntityType superType = getEntityTypeReference(superClass);
+			entityType.setSuperEntityType(superType);
+			if (superType instanceof AbstractEntityType)
+			{
+				((AbstractEntityType) superType).addSubEntityType(entityType);
+			}
+		}
+	}
+
+	@Override
+	protected boolean isAvailable(Class clazz)
+	{
+		return Type.class.isAssignableFrom(clazz) || Type.class == clazz;
+=====================================================================
+Found a 23 line (80 tokens) duplication in the following files: 
+Starting at line 120 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\MetaAttribute.java
+Starting at line 238 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\ChildrenAttribute.java
+
+		metaDataService.setMetaData(entity, value, this);
+	}
+
+	@Override
+	public boolean isDerived() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setMetaValue(String metaAttributeCode, Object value) {
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+
+	@Override
+	public Attribute<?, ?> getMetaAttribute(String metaAttributeCode) {
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+
+	@Override
+	public EntityType<? extends Attribute<?, ?>> getMetaType() {
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+=====================================================================
+Found a 22 line (79 tokens) duplication in the following files: 
+Starting at line 260 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\PropertiesAttribute.java
+Starting at line 239 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\ChildrenAttribute.java
+
+	}
+
+	@Override
+	public boolean isDerived() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setMetaValue(String metaAttributeCode, Object value) {
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+
+	@Override
+	public Attribute<?, ?> getMetaAttribute(String metaAttributeCode) {
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+
+	@Override
+	public EntityType<? extends Attribute<?, ?>> getMetaType() {
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+=====================================================================
+Found a 29 line (79 tokens) duplication in the following files: 
+Starting at line 95 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\EntityTypeRepositoryImpl.java
+Starting at line 89 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AggregationSubRepository.java
+
+	public <J> EntityType<J> getEntityType(J entity)
+	{
+		for (EntityTypeSubrepository subrepository : entityTypeSubrepositories)
+		{
+			EntityType entityType = subrepository.getEntityType(entity);
+			if (entityType != null)
+			{
+				return entityType;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public EntityType getEntityType(String typeCode)
+	{
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
+		{
+			EntityType entityType = entityTypeSubrepository.getEntityType(typeCode);
+			if (entityType != null)
+			{
+				return entityType;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public EntityType getEntityTypeReference(Class clazz)
+=====================================================================
+Found a 31 line (72 tokens) duplication in the following files: 
+Starting at line 208 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\ScannedPojoEntityTypeRepository.java
+Starting at line 218 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoEntityTypeRepository.java
+
+	}
+
+	@Override
+	public EntityType getEntityTypeReference(String entityName)
+	{
+		Class clazz;
+		try
+		{
+			clazz = Class.forName(entityName);
+		}
+		catch (ClassNotFoundException e)
+		{
+			return null;
+		}
+		return getEntityTypeReference(clazz);
+	}
+
+	public String getIncludedPackage()
+	{
+		return includedPackage;
+	}
+
+	public PropertyDescriptorFactory getPropertyDescriptorFactory()
+	{
+		return propertyDescriptorFactory;
+	}
+
+	@Override
+	public void initialize(EntityTypeCreationContext entityTypeCreationContext)
+	{
+		this.entityTypeCreationContext = entityTypeCreationContext;
+=====================================================================
+Found a 19 line (70 tokens) duplication in the following files: 
+Starting at line 139 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\PropertiesAttribute.java
+Starting at line 51 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\ChildrenAttribute.java
+
+	@Override
+	public Type<Object> getTargetType(Object value)
+	{
+		if (value instanceof ObjectNode)
+		{
+			return entityTypeRepository.getEntityType(ObjectNode.class.getName());
+		}
+		else if (value instanceof ArrayNode)
+		{
+			return entityTypeRepository.getEntityType(ArrayNode.class.getName());
+		}
+		else
+		{
+			return entityTypeRepository.getType(value);
+		}
+	}
+
+	@Override
+	public Type<Object>[] getValidTargetTypes()
+=====================================================================
+Found a 27 line (68 tokens) duplication in the following files: 
+Starting at line 179 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\IncomingOneRelation.java
+Starting at line 125 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\annotation\AnnotationAttribute.java
+
+	}
+
+	@Override
+	public void setMetaValue(String metaAttributeCode, Object value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Attribute<?, ?> getMetaAttribute(String metaAttributeCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public EntityType<? extends Attribute<?, ?>> getMetaType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getMetaValue(String metaAttributeCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}
+=====================================================================
+Found a 17 line (65 tokens) duplication in the following files: 
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\StringAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\LongAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\IntegerAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\BooleanAttribute.java
+
+	public String getValue(Object entity)
+	{
+		ObjectNode node = (ObjectNode) entity;
+		if (node.isNull())
+		{
+			throw new NullPointerException("entity is null");
+		}
+		else
+		{
+			JsonNode jsonNode = node.get(getCode());
+			if (jsonNode == null || jsonNode.isNull())
+			{
+				return null;
+			}
+			else
+			{
+				if (!jsonNode.isTextual()) {
+=====================================================================
+Found a 16 line (60 tokens) duplication in the following files: 
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\StringAttribute.java
+Starting at line 22 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\ObjectNodeAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\LongAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\IntegerAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\BooleanAttribute.java
+
+	public String getValue(Object entity)
+	{
+		ObjectNode node = (ObjectNode) entity;
+		if (node.isNull())
+		{
+			throw new NullPointerException("entity is null");
+		}
+		else
+		{
+			JsonNode jsonNode = node.get(getCode());
+			if (jsonNode == null || jsonNode.isNull())
+			{
+				return null;
+			}
+			else
+			{
+=====================================================================
+Found a 20 line (59 tokens) duplication in the following files: 
+Starting at line 32 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\attribute\collection\SetAttributeImpl.java
+Starting at line 91 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\IncomingManyRelation.java
+
+	@Override
+	public Class<Set> getAssociationType()
+	{
+		return Set.class;
+	}
+
+	@Override
+	public Collection<J> getElements(Object entity)
+	{
+		Set<J> value = getValue(entity);
+		return value;
+	}
+
+	@Override
+	public Set getEmptyCollection(Object entity)
+	{
+		return new HashSet();
+	}
+
+}
+=====================================================================
+Found a 18 line (58 tokens) duplication in the following files: 
+Starting at line 54 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\StringAttribute.java
+Starting at line 55 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\LongAttribute.java
+Starting at line 55 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\IntegerAttribute.java
+Starting at line 55 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\DoubleAttribute.java
+Starting at line 54 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\BooleanAttribute.java
+Starting at line 183 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\AbstractMapNodeAttribute.java
+
+	public void setValue(Object entity, String value)
+	{
+		ObjectNode node = (ObjectNode) entity;
+		if (node.isNull())
+		{
+			throw new NullPointerException("entity is null");
+		}
+		else if (value == null)
+		{
+			node.putNull(getCode());
+		}
+		else
+		{
+			node.put(getCode(), value);
+		}
+	}
+
+}
+=====================================================================
+Found a 21 line (57 tokens) duplication in the following files: 
+Starting at line 336 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\ScannedPojoEntityTypeRepository.java
+Starting at line 329 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoEntityTypeRepository.java
+
+	public void setEntityClass(Class<?> entityClass)
+	{
+		this.entityClass = entityClass;
+	}
+
+	public void setEntityTypeClass(Class<? extends AbstractEntityType> entityTypeClass)
+	{
+		this.entityTypeClass = entityTypeClass;
+	}
+
+	public void setIncludedPackage(String includedPackage)
+	{
+		this.includedPackage = includedPackage;
+	}
+
+	public void setPropertyDescriptorFactory(PropertyDescriptorFactory propertyDescriptorFactory)
+	{
+		this.propertyDescriptorFactory = propertyDescriptorFactory;
+	}
+
+}
+=====================================================================
+Found a 7 line (56 tokens) duplication in the following files: 
+Starting at line 111 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoEntityTypeRepository.java
+Starting at line 209 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoEntityTypeRepository.java
+
+		entityType = beanCreator.create(entityTypeClass);
+		entityType.setEntityClass(clazz);
+		entityType.setCode(clazz.getName());
+		nameToEntityTypes.put(clazz.getName(), entityType);
+		classToEntityTypes.put(clazz, entityType);
+		entityTypes.add(entityType);
+		uninitializedEntityTypes.add(entityType);
+=====================================================================
+Found a 25 line (54 tokens) duplication in the following files: 
+Starting at line 15 of C:\Users\eee\git\atem.impl.github.com\src\test\java\org\atemsource\atem\impl\pojo\EntityB.java
+Starting at line 22 of C:\Users\eee\git\atem.impl.github.com\src\test\java\org\atemsource\atem\impl\common\attribute\EntityB.java
+
+{
+	private int integer;
+
+	private EntityA singleA;
+
+	public int getInteger()
+	{
+		return integer;
+	}
+
+	public EntityA getSingleA()
+	{
+		return singleA;
+	}
+
+	public void setInteger(int integer)
+	{
+		this.integer = integer;
+	}
+
+	public void setSingleA(EntityA singleA)
+	{
+		this.singleA = singleA;
+	}
+}
+=====================================================================
+Found a 20 line (54 tokens) duplication in the following files: 
+Starting at line 142 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\EntityTypeRepositoryImpl.java
+Starting at line 132 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AggregationSubRepository.java
+
+		}
+		return entityType;
+	}
+
+	@Override
+	public EntityType getEntityTypeReference(String typeCode)
+	{
+		EntityType entityType = null;
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
+		{
+			entityType = entityTypeSubrepository.getEntityTypeReference(typeCode);
+			if (entityType != null)
+			{
+				break;
+			}
+		}
+		if (entityType == null)
+		{
+			return null;
+		}
+=====================================================================
+Found a 11 line (52 tokens) duplication in the following files: 
+Starting at line 47 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\EntityTypeEntityType.java
+Starting at line 38 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\AttributeEntityType.java
+
+	}
+
+	@Override
+	public boolean isAssignableFrom(Type<?> type) {
+		// currently interfaces are not part of the entityType hierachy.
+		if (type instanceof EntityType<?>) {
+			return getEntityClass().isAssignableFrom(((EntityType<?>)type).getEntityClass());
+		}else{
+			return false;
+		}
+	}
+=====================================================================
+Found a 11 line (51 tokens) duplication in the following files: 
+Starting at line 256 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\ScannedPojoEntityTypeRepository.java
+Starting at line 262 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoEntityTypeRepository.java
+
+		if (superclass != null && !superclass.equals(Object.class))
+		{
+			final EntityType superType = getEntityTypeReference(superclass);
+			entityType.setSuperEntityType(superType);
+			// TODO this only works for AbstractEntityType but actually should
+			// work for all.
+			if (superType instanceof AbstractEntityType)
+			{
+				((AbstractEntityType) superType).addSubEntityType(entityType);
+			}
+		}
+=====================================================================
+Found a 19 line (49 tokens) duplication in the following files: 
+Starting at line 178 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\ScannedPojoEntityTypeRepository.java
+Starting at line 163 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoEntityTypeRepository.java
+
+		return entityType;
+	}
+
+	@Override
+	public EntityType<Object> getEntityType(Object entity)
+	{
+		if (entity == null)
+		{
+			return null;
+		}
+		else
+		{
+			return getEntityType(entity.getClass());
+		}
+	}
+
+	@Override
+	public EntityType getEntityType(String entityName)
+	{
+=====================================================================
+Found a 12 line (48 tokens) duplication in the following files: 
+Starting at line 63 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\EntityTypeSubrepository.java
+Starting at line 75 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\AttributeSubrepository.java
+
+		this.setEntityClass(Type.class);
+		super.initialize(entityTypeCreationContext);
+	}
+
+	@Override
+	protected void initializeTypeHierachy(AbstractEntityType entityType)
+	{
+		Class[] interfaces = entityType.getEntityClass().getInterfaces();
+		Class superClass = null;
+		for (Class possibleSuperType : interfaces)
+		{
+			if (possibleSuperType != View.class)
+=====================================================================
+Found a 11 line (47 tokens) duplication in the following files: 
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\StringAttribute.java
+Starting at line 22 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\ObjectNodeAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\LongAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\IntegerAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\DoubleAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\BooleanAttribute.java
+
+	public String getValue(Object entity)
+	{
+		ObjectNode node = (ObjectNode) entity;
+		if (node.isNull())
+		{
+			throw new NullPointerException("entity is null");
+		}
+		else
+		{
+			JsonNode jsonNode = node.get(getCode());
+			if (jsonNode == null || jsonNode.isNull())
+=====================================================================
+Found a 11 line (45 tokens) duplication in the following files: 
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\StringAttribute.java
+Starting at line 22 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\ObjectNodeAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\LongAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\IntegerAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\DoubleAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\BooleanAttribute.java
+Starting at line 22 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\AnyAttribute.java
+
+	public String getValue(Object entity)
+	{
+		ObjectNode node = (ObjectNode) entity;
+		if (node.isNull())
+		{
+			throw new NullPointerException("entity is null");
+		}
+		else
+		{
+			JsonNode jsonNode = node.get(getCode());
+			if (jsonNode == null || jsonNode.isNull())
+=====================================================================
+Found a 18 line (45 tokens) duplication in the following files: 
+Starting at line 78 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\EntityTypeRepositoryImpl.java
+Starting at line 72 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AggregationSubRepository.java
+
+	}
+
+	@Override
+	public EntityType getEntityType(Class clazz)
+	{
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
+		{
+			EntityType entityType = entityTypeSubrepository.getEntityType(clazz);
+			if (entityType != null)
+			{
+				return entityType;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public <J> EntityType<J> getEntityType(J entity)
+=====================================================================
+Found a 13 line (44 tokens) duplication in the following files: 
+Starting at line 50 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\ObjectNodeAttribute.java
+Starting at line 50 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\AnyAttribute.java
+
+	public void setValue(Object entity, ObjectNode value)
+	{
+		ObjectNode node = (ObjectNode) entity;
+		if (node.isNull())
+		{
+			throw new NullPointerException("entity is null");
+		}
+		if (value == null)
+		{
+			node.putNull(getCode());
+		}
+		else
+		{
+=====================================================================
+Found a 17 line (44 tokens) duplication in the following files: 
+Starting at line 164 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\JsonEntityTypeRepository.java
+Starting at line 107 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\JsonEntityTypeImpl.java
+
+	}
+
+	public void setObjectMapper(ObjectMapper objectMapper)
+	{
+		this.objectMapper = objectMapper;
+	}
+
+	public void setTypeCodeConverter(TypeCodeConverter typeCodeConverter)
+	{
+		this.typeCodeConverter = typeCodeConverter;
+	}
+
+	public void setTypeProperty(String typeProperty)
+	{
+		this.typeProperty = typeProperty;
+	}
+}
+=====================================================================
+Found a 13 line (44 tokens) duplication in the following files: 
+Starting at line 51 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\EntityTypeRepositoryImpl.java
+Starting at line 20 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AggregationSubRepository.java
+
+	public void addIncomingAssociation(EntityType entityType, Attribute<?, ?> incomingRelation)
+	{
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
+		{
+			if (entityTypeSubrepository.contains(entityType))
+			{
+				entityTypeSubrepository.addIncomingAssociation(entityType, incomingRelation);
+			}
+		}
+	}
+
+	@Override
+	public void addListener(EntityTypeRepositoryListener entityTypeRepositoryListener)
+=====================================================================
+Found a 9 line (43 tokens) duplication in the following files: 
+Starting at line 158 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\JsonEntityTypeBuilder.java
+Starting at line 179 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AbstractEntityTypeBuilder.java
+
+		else if (type instanceof EntityType<?>)
+		{
+			return addSingleAssociationAttribute(code, (EntityType<J>) type, validTypes);
+		}
+		else
+		{
+			return addPrimitiveAttribute(code, (PrimitiveType<J>) type);
+		}
+	}
+=====================================================================
+Found a 13 line (43 tokens) duplication in the following files: 
+Starting at line 69 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\EntityTypeRepositoryImpl.java
+Starting at line 32 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AggregationSubRepository.java
+
+	public void addMetaAttribute(EntityType entityType, Attribute<?, ?> metaAttribute)
+	{
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
+		{
+			if (entityTypeSubrepository.contains(entityType))
+			{
+				entityTypeSubrepository.addMetaAttribute(entityType, metaAttribute);
+			}
+		}
+	}
+
+	@Override
+	public EntityType getEntityType(Class clazz)
+=====================================================================
+Found a 16 line (43 tokens) duplication in the following files: 
+Starting at line 123 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\EntityTypeRepositoryImpl.java
+Starting at line 117 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AggregationSubRepository.java
+
+	public EntityType getEntityTypeReference(Class clazz)
+	{
+		EntityType entityType = null;
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
+		{
+			entityType = entityTypeSubrepository.getEntityTypeReference(clazz);
+			if (entityType != null)
+			{
+				break;
+			}
+
+		}
+		if (entityType == null)
+		{
+			return null;
+		}
+=====================================================================
+Found a 7 line (41 tokens) duplication in the following files: 
+Starting at line 39 of C:\Users\eee\git\atem.impl.github.com\src\test\java\org\atemsource\atem\impl\meta\MetaAttributeServiceImplTest.java
+Starting at line 61 of C:\Users\eee\git\atem.impl.github.com\src\test\java\org\atemsource\atem\impl\meta\MetaAttributeServiceImplTest.java
+
+	public void testGetMetaValue()
+	{
+		// setup meta attribute
+		EntityType<Attribute> holderType = entityTypeRepository.getEntityType(Attribute.class);
+		EntityType<MetaDataExample> metaDataType = entityTypeRepository.getEntityType(MetaDataExample.class);
+		SingleAttribute<MetaDataExample> testMetaAttribute =
+			dynamicMetaAttributeService.addSingleMetaAttribute("test2", holderType, metaDataType);
+=====================================================================
+Found a 8 line (41 tokens) duplication in the following files: 
+Starting at line 45 of C:\Users\eee\git\atem.impl.github.com\src\test\java\org\atemsource\atem\impl\meta\MetaAttributeServiceImplTest.java
+Starting at line 67 of C:\Users\eee\git\atem.impl.github.com\src\test\java\org\atemsource\atem\impl\meta\MetaAttributeServiceImplTest.java
+
+			dynamicMetaAttributeService.addSingleMetaAttribute("test2", holderType, metaDataType);
+
+		// work with meta attribute
+		EntityType<EntityB> entityType = entityTypeRepository.getEntityType(EntityB.class);
+		Attribute attribute = entityType.getAttribute("singleA");
+
+		MetaDataExample ex = new MetaDataExample();
+		ex.setData("hallo");
+=====================================================================
+Found a 23 line (41 tokens) duplication in the following files: 
+Starting at line 108 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\ScannedPojoEntityTypeRepository.java
+Starting at line 86 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoEntityTypeRepository.java
+
+	}
+
+	@Override
+	public void afterInitialization()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean contains(EntityType entityType)
+	{
+		if (entityTypeClass.isInstance(entityType))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	protected synchronized AbstractEntityType createEntityType(final Class clazz)
+=====================================================================
+Found a 8 line (40 tokens) duplication in the following files: 
+Starting at line 130 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoPropertyDescriptorFactory.java
+Starting at line 142 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoPropertyDescriptorFactory.java
+
+					propertyName = propertyName.substring(3, 4).toLowerCase() + propertyName.substring(4);
+					final PropertyDescriptor propertydescriptor = createInstance(clazz, propertyName);
+					if (propertydescriptor != null
+						&& (propertyIgnoreHandler == null || !propertyIgnoreHandler.isIgnored(propertydescriptor)))
+					{
+						propertyDescriptors.add(propertydescriptor);
+					}
+				}
+=====================================================================
+Found a 11 line (40 tokens) duplication in the following files: 
+Starting at line 150 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoEntityTypeRepository.java
+Starting at line 15 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\AttributeSubrepository.java
+
+	@Override
+	public EntityType getEntityType(Class clazz)
+	{
+		if (!isAvailable(clazz))
+		{
+			return null;
+		}
+		EntityType entityType = super.getEntityType(clazz);
+		if (entityType == null)
+		{
+			entityType = createEntityType(clazz);
+=====================================================================
+Found a 8 line (39 tokens) duplication in the following files: 
+Starting at line 32 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\attribute\MapAssociationAttributeFactory.java
+Starting at line 36 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\attribute\CollectionAttributeFactory.java
+
+		return Map.class.isAssignableFrom(propertyDescriptor.getPropertyType());
+	}
+
+	@Override
+	public Attribute createAttribute(AbstractEntityType entityType, PropertyDescriptor propertyDescriptor,
+		EntityTypeCreationContext ctx)
+	{
+		Class<?> propertyType = propertyDescriptor.getPropertyType();
+=====================================================================
+Found a 17 line (39 tokens) duplication in the following files: 
+Starting at line 52 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\attribute\MapAssociationAttributeFactory.java
+Starting at line 99 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\attribute\CollectionAttributeFactory.java
+
+		initValidTypes(propertyDescriptor, ctx, attribute);
+		return attribute;
+
+	}
+
+	@Override
+	public Collection<Class> getClasses()
+	{
+		return null;
+	}
+
+	@Override
+	public Class getCollectionClass()
+	{
+		return Collection.class;
+	}
+}
+=====================================================================
+Found a 5 line (39 tokens) duplication in the following files: 
+Starting at line 39 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\MetaAttributeServiceImpl.java
+Starting at line 53 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\MetaAttributeServiceImpl.java
+
+		MetaDataStore store = data.get(attribute.getCode());
+		if (store == null)
+		{
+			store = new MetaDataStore(attribute);
+			data.put(attribute.getCode(), store);
+=====================================================================
+Found a 6 line (39 tokens) duplication in the following files: 
+Starting at line 52 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AbstractEntityTypeBuilder.java
+Starting at line 59 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AbstractEntityTypeBuilder.java
+
+		entityType.addAttribute(attribute);
+	}
+
+	@Override
+	public <K, V, Map> MapAttribute<K, V, Map> addMapAssociationAttribute(String code, Type<K> keyType,
+		Type<V> valueType, boolean sorted)
+=====================================================================
+Found a 10 line (38 tokens) duplication in the following files: 
+Starting at line 89 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\PropertiesAttribute.java
+Starting at line 89 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\attribute\MapAttributeImpl.java
+
+	}
+
+	@Override
+	public Iterator<Entry<?, ?>> getIterator(Object entity)
+	{
+		return getValue(entity).entrySet().iterator();
+	}
+
+	@Override
+	public Set<String> getKeySet(Object entity)
+=====================================================================
+Found a 11 line (38 tokens) duplication in the following files: 
+Starting at line 156 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\JsonEntityTypeRepository.java
+Starting at line 94 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\dynamic\DynamicEntityTypeRepository.java
+
+	}
+
+	@Override
+	public void onFinished(AbstractEntityType<?> entityType)
+	{
+		attacheServicesToEntityType(entityType);
+		((AbstractEntityType) entityType).initializeIncomingAssociations(entityTypeCreationContext);
+		entityTypeCreationContext.lazilyInitialized(entityType);
+	}
+
+	public void setObjectMapper(ObjectMapper objectMapper)
+=====================================================================
+Found a 10 line (37 tokens) duplication in the following files: 
+Starting at line 47 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\ObjectNodeAttribute.java
+Starting at line 180 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\AbstractMapNodeAttribute.java
+
+	}
+
+	@Override
+	public void setValue(Object entity, ObjectNode value)
+	{
+		ObjectNode node = (ObjectNode) entity;
+		if (node.isNull())
+		{
+			throw new NullPointerException("entity is null");
+		}
+=====================================================================
+Found a 8 line (36 tokens) duplication in the following files: 
+Starting at line 38 of C:\Users\eee\git\atem.impl.github.com\src\test\java\org\atemsource\atem\impl\common\attribute\SingleAssociationAttributeTest.java
+Starting at line 41 of C:\Users\eee\git\atem.impl.github.com\src\test\java\org\atemsource\atem\impl\common\attribute\ListAssociationAttributeTest.java
+
+	@Autowired
+	protected EntityTypeRepository entityTypeRepository;
+
+	@Test
+	public void testAttributeType()
+	{
+		EntityA entity = new EntityA();
+		Assert.assertTrue(entityTypeRepository.getEntityType(entity).getAttribute(PROPERTY) instanceof SingleAttribute);
+=====================================================================
+Found a 12 line (35 tokens) duplication in the following files: 
+Starting at line 74 of C:\Users\eee\git\atem.impl.github.com\src\test\java\org\atemsource\atem\impl\pojo\EntityA.java
+Starting at line 230 of C:\Users\eee\git\atem.impl.github.com\src\test\java\org\atemsource\atem\impl\common\attribute\EntityA.java
+
+	}
+
+	public void setStringArray(String[] stringArray)
+	{
+		this.stringArray = stringArray;
+	}
+
+	public void setStringList(List<String> stringList)
+	{
+		this.stringList = stringList;
+	}
+}
+=====================================================================
+Found a 4 line (35 tokens) duplication in the following files: 
+Starting at line 32 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\persistence\SingleAttributeViewCreator.java
+Starting at line 54 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\persistence\SingleAttributeViewCreator.java
+
+			IdentityService service = singleAttribute.getTargetType().getService(IdentityService.class);
+			if (service != null)
+			{
+				Serializable id = service.getId(singleAttribute.getTargetType(), targetEntity);
+=====================================================================
+Found a 17 line (35 tokens) duplication in the following files: 
+Starting at line 201 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\PropertiesAttribute.java
+Starting at line 145 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\AbstractMapNodeAttribute.java
+
+	}
+
+	@Override
+	public boolean isSorted()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isWriteable()
+	{
+		return true;
+	}
+
+	@Override
+	public void putElement(Object entity, String key, Object value)
+=====================================================================
+Found a 10 line (35 tokens) duplication in the following files: 
+Starting at line 21 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\ObjectNodeAttribute.java
+Starting at line 133 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\AbstractMapNodeAttribute.java
+
+	@Override
+	public ObjectNode getValue(Object entity)
+	{
+		ObjectNode node = (ObjectNode) entity;
+		if (node.isNull())
+		{
+			throw new NullPointerException("entity is null");
+		}
+		else
+		{
+=====================================================================
+Found a 11 line (35 tokens) duplication in the following files: 
+Starting at line 33 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\LongAttribute.java
+Starting at line 33 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\IntegerAttribute.java
+Starting at line 33 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\DoubleAttribute.java
+
+			if (jsonNode == null || jsonNode.isNull())
+			{
+				return null;
+			}
+			else
+			{
+				if (!jsonNode.isNumber())
+				{
+					throw new ConversionException(jsonNode.getValueAsText(), getTargetType());
+				}
+				return jsonNode.getLongValue();
+=====================================================================
+Found a 9 line (35 tokens) duplication in the following files: 
+Starting at line 58 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\infrastructure\BusinessModelServiceLocatorImpl.java
+Starting at line 83 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\infrastructure\BusinessModelServiceLocatorImpl.java
+
+	public <S extends BusinessModelService<?>> S getService(Class<?> modelClass, Class<S> s)
+	{
+		final Map<Object, BusinessModelService> map = simpleServices.get(s);
+		if (map == null)
+		{
+			return null;
+		}
+		else
+		{
+=====================================================================
+Found a 11 line (35 tokens) duplication in the following files: 
+Starting at line 31 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\dynamic\attribute\SerializablePrimitiveAttributeImpl.java
+Starting at line 19 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\attribute\PrimitiveAttributeImpl.java
+
+public class SerializablePrimitiveAttributeImpl<J> extends SingleAttributeImpl<J> implements SingleAttribute<J>
+{
+
+	@Override
+	public Type<J> getTargetType(J value)
+	{
+		return getTargetType();
+	}
+
+	@Override
+	public J getValue(Object entity)
+=====================================================================
+Found a 11 line (35 tokens) duplication in the following files: 
+Starting at line 98 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\attribute\collection\AbstractCollectionAttributeImpl.java
+Starting at line 402 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AbstractEntityType.java
+
+		return (R) getAccessor().getValue(arg0);
+	}
+
+	@Override
+	public boolean isEqual(Object entity, Object other)
+	{
+		if (entity == null && other == null)
+		{
+			return true;
+		}
+		else if (entity == null | other == null)
+=====================================================================
+Found a 5 line (33 tokens) duplication in the following files: 
+Starting at line 38 of C:\Users\eee\git\atem.impl.github.com\src\test\java\org\atemsource\atem\impl\pojo\ListAssociationAttributeTest.java
+Starting at line 62 of C:\Users\eee\git\atem.impl.github.com\src\test\java\org\atemsource\atem\impl\pojo\CollectionAssociationAttributeTest.java
+
+		ListAssociationAttribute attribute = (ListAssociationAttribute) getCollectionAssociationAttribute();
+
+		EntityA a = new EntityA();
+		a.setList(new ArrayList<EntityB>());
+		attribute.addElement(a, new EntityB());
+=====================================================================
+Found a 3 line (33 tokens) duplication in the following files: 
+Starting at line 25 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\EntityTypeSubrepository.java
+Starting at line 28 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\AttributeSubrepository.java
+
+			classToEntityTypes.put(clazz, (AbstractEntityType<Object>) entityType);
+			nameToEntityTypes.put(clazz.getName(), (AbstractEntityType<Object>) entityType);
+		}
+=====================================================================
+Found a 11 line (32 tokens) duplication in the following files: 
+Starting at line 185 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\PropertiesAttribute.java
+Starting at line 121 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\ChildrenAttribute.java
+
+	@Override
+	public boolean isComposition()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isEqual(Object entity, Object other)
+	{
+		return entity.equals(other);
+	}
+=====================================================================
+Found a 3 line (32 tokens) duplication in the following files: 
+Starting at line 68 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\ChildrenAttribute.java
+Starting at line 191 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\ChildrenAttribute.java
+
+		List< Object> children = new ArrayList< Object>();
+		ArrayNode node = (ArrayNode) entity;
+		for (int index=0;index<node.size();index++){
+=====================================================================
+Found a 7 line (32 tokens) duplication in the following files: 
+Starting at line 74 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\JsonEntityTypeRepository.java
+Starting at line 58 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\dynamic\DynamicEntityTypeRepository.java
+
+		dynamicEntityTypeImpl.setTypeProperty(typeProperty);
+
+		if (getEntityType(code) != null)
+		{
+			throw new IllegalArgumentException("dynamic type with name " + code + " already exists.");
+		}
+		this.nameToEntityTypes.put(code, dynamicEntityTypeImpl);
+=====================================================================
+Found a 5 line (32 tokens) duplication in the following files: 
+Starting at line 48 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\JsonEntityTypeBuilder.java
+Starting at line 83 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\JsonEntityTypeBuilder.java
+
+		AnyAttribute attribute = beanLocator.getInstance(AnyAttribute.class);
+		attribute.setCode(code);
+		attribute.setMetaType(entityTypeRepository.getEntityType(attribute));
+		attribute.setEntityType(getEntityType());
+		attribute.setTargetType(null);
+=====================================================================
+Found a 9 line (31 tokens) duplication in the following files: 
+Starting at line 69 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\attribute\PojoAccessor.java
+Starting at line 80 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\attribute\PojoAccessor.java
+
+			Annotation[] annotations = field.getAnnotations();
+			for (Annotation annotation : annotations)
+			{
+				if (annotation.annotationType().isAnnotationPresent(annotationClass))
+				{
+					return annotation;
+				}
+			}
+		}
+=====================================================================
+Found a 9 line (31 tokens) duplication in the following files: 
+Starting at line 37 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\ScannedPojoEntityTypeRepository.java
+Starting at line 28 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoEntityTypeRepository.java
+
+public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<Object> implements
+	EntityTypeSubrepository<Object>
+{
+	private List<AttributeFactory> attributeFactories = new ArrayList<AttributeFactory>();
+
+	@Autowired
+	private BeanCreator beanCreator;
+
+	private CandidateResolver candidateResolver;
+=====================================================================
+Found a 9 line (31 tokens) duplication in the following files: 
+Starting at line 47 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\ScannedPojoEntityTypeRepository.java
+Starting at line 36 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoEntityTypeRepository.java
+
+	private Class entityClass;
+
+	private Class<? extends AbstractEntityType> entityTypeClass;
+
+	private String includedPackage;
+
+	protected Set<String> nonAvailableEntityNames = new HashSet<String>();
+
+	private PropertyDescriptorFactory propertyDescriptorFactory;
+=====================================================================
+Found a 8 line (31 tokens) duplication in the following files: 
+Starting at line 170 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\ScannedPojoEntityTypeRepository.java
+Starting at line 15 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\AttributeSubrepository.java
+
+	@Override
+	public EntityType getEntityType(Class clazz)
+	{
+		if (!isAvailable(clazz))
+		{
+			return null;
+		}
+		EntityType entityType = super.getEntityType(clazz);
+=====================================================================
+Found a 8 line (31 tokens) duplication in the following files: 
+Starting at line 110 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoPropertyDescriptorFactory.java
+Starting at line 143 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoPropertyDescriptorFactory.java
+
+				final PropertyDescriptor propertydescriptor = createInstance(clazz, field);
+				if (propertydescriptor != null
+					&& (propertyIgnoreHandler == null || !propertyIgnoreHandler.isIgnored(propertydescriptor)))
+				{
+					propertyDescriptors.add(propertydescriptor);
+				}
+			}
+		}
+=====================================================================
+Found a 9 line (31 tokens) duplication in the following files: 
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\StringAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\LongAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\IntegerAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\DoubleAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\BooleanAttribute.java
+Starting at line 22 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\AnyAttribute.java
+Starting at line 134 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\AbstractMapNodeAttribute.java
+
+	public String getValue(Object entity)
+	{
+		ObjectNode node = (ObjectNode) entity;
+		if (node.isNull())
+		{
+			throw new NullPointerException("entity is null");
+		}
+		else
+		{
+=====================================================================
+Found a 11 line (31 tokens) duplication in the following files: 
+Starting at line 61 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\StringAttribute.java
+Starting at line 57 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\ObjectNodeAttribute.java
+Starting at line 62 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\LongAttribute.java
+Starting at line 62 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\IntegerAttribute.java
+Starting at line 62 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\DoubleAttribute.java
+Starting at line 61 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\BooleanAttribute.java
+Starting at line 242 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\ArrayNodeAttribute.java
+Starting at line 190 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\AbstractMapNodeAttribute.java
+
+		else if (value == null)
+		{
+			node.putNull(getCode());
+		}
+		else
+		{
+			node.put(getCode(), value);
+		}
+	}
+
+}
+=====================================================================
+Found a 6 line (31 tokens) duplication in the following files: 
+Starting at line 149 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\JsonEntityTypeBuilder.java
+Starting at line 174 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AbstractEntityTypeBuilder.java
+
+	}
+
+	@Override
+	public <J> SingleAttribute<J> addSingleAttribute(String code, Type<J> type, Type[] validTypes)
+	{
+		if (type == null)
+=====================================================================
+Found a 6 line (31 tokens) duplication in the following files: 
+Starting at line 238 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AbstractEntityType.java
+Starting at line 252 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AbstractEntityType.java
+
+	public Attribute getIncomingAssociation(String sourceTypeCode)
+	{
+		EntityType<?> source = entityTypeRepository.getEntityType(sourceTypeCode);
+		for (Attribute<?, ?> relationAttribute : incomingAssociations)
+		{
+			if (relationAttribute.getTargetType().isAssignableFrom(source))
+=====================================================================
+Found a 7 line (30 tokens) duplication in the following files: 
+Starting at line 110 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoPropertyDescriptorFactory.java
+Starting at line 131 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoPropertyDescriptorFactory.java
+
+				final PropertyDescriptor propertydescriptor = createInstance(clazz, field);
+				if (propertydescriptor != null
+					&& (propertyIgnoreHandler == null || !propertyIgnoreHandler.isIgnored(propertydescriptor)))
+				{
+					propertyDescriptors.add(propertydescriptor);
+				}
+			}
+=====================================================================
+Found a 8 line (30 tokens) duplication in the following files: 
+Starting at line 17 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\EntityTypeSubrepository.java
+Starting at line 18 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\AttributeSubrepository.java
+
+		if (!Type.class.isAssignableFrom(clazz))
+		{
+			return null;
+		}
+		EntityType entityType = super.getEntityType(clazz);
+		if (entityType == null)
+		{
+			entityType = getFromInterfaces(clazz);
+=====================================================================
+Found a 13 line (30 tokens) duplication in the following files: 
+Starting at line 82 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\ArrayNodeAttribute.java
+Starting at line 44 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\attribute\collection\ListAttributeImpl.java
+
+		return ArrayNode.class;
+	}
+
+	@Override
+	public CollectionSortType getCollectionSortType()
+	{
+		return CollectionSortType.ORDERABLE;
+	}
+
+	@Override
+	public Object getElement(Object entity, int index)
+	{
+		return JsonUtils.convertToJava(getValue(entity).get(index));
+=====================================================================
+Found a 15 line (30 tokens) duplication in the following files: 
+Starting at line 44 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\JsonEntityTypeRepository.java
+Starting at line 30 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\dynamic\DynamicEntityTypeRepository.java
+
+	@Override
+	public void afterFirstInitialization(EntityTypeRepository entityTypeRepositoryImpl)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void afterInitialization()
+	{
+	}
+
+	@Override
+	public EntityTypeBuilder createBuilder(String code)
+	{
+=====================================================================
+Found a 7 line (29 tokens) duplication in the following files: 
+Starting at line 81 of C:\Users\eee\git\atem.impl.github.com\src\test\java\org\atemsource\atem\impl\pojo\CollectionAssociationAttributeTest.java
+Starting at line 89 of C:\Users\eee\git\atem.impl.github.com\src\test\java\org\atemsource\atem\impl\pojo\CollectionAssociationAttributeTest.java
+
+		CollectionAttribute<?, ?> attribute = getCollectionAssociationAttribute();
+		EntityA a = createA();
+		Assert.assertEquals(attribute.getSize(a), 1);
+	}
+
+	@Test
+	public void testGetAssociatedEntityCount()
+=====================================================================
+Found a 4 line (29 tokens) duplication in the following files: 
+Starting at line 129 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\JsonEntityTypeBuilder.java
+Starting at line 52 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\dynamic\DynamicEntityTypeBuilder.java
+
+		attribute.setCode(code);
+		attribute.setMetaType(entityTypeRepository.getEntityType(attribute));
+		addAttribute(attribute);
+		attribute.setEntityType(getEntityType());
+=====================================================================
+Found a 3 line (29 tokens) duplication in the following files: 
+Starting at line 42 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\attribute\AbstractAttribute.java
+Starting at line 51 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\attribute\AbstractAttribute.java
+
+	public void setMetaValue(String metaAttributeCode, Object value) {
+		Attribute<?, Object> metaAttribute = (Attribute<?, Object>) getMetaAttribute(metaAttributeCode);
+		if (metaAttribute==null) {
+=====================================================================
+Found a 10 line (29 tokens) duplication in the following files: 
+Starting at line 178 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\EntityTypeRepositoryImpl.java
+Starting at line 159 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AggregationSubRepository.java
+
+		List<EntityType<?>> entityTypes = new ArrayList<EntityType<?>>();
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
+		{
+			entityTypes.addAll(entityTypeSubrepository.getEntityTypes());
+		}
+		return entityTypes;
+	}
+
+	@Override
+	public <J> Type<J> getType(Class<J> clazz)
+=====================================================================
+Found a 5 line (28 tokens) duplication in the following files: 
+Starting at line 22 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\persistence\ViewIndex.java
+Starting at line 29 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\persistence\SingleViewIndex.java
+
+	}
+
+	public void insert(Object entity) {
+		Serializable[] keys = viewCreator.getKeys(entity);
+		for (Serializable key : keys) {
+=====================================================================
+Found a 10 line (28 tokens) duplication in the following files: 
+Starting at line 258 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\ScannedPojoEntityTypeRepository.java
+Starting at line 86 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\EntityTypeSubrepository.java
+Starting at line 98 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\AttributeSubrepository.java
+
+			final EntityType superType = getEntityTypeReference(superclass);
+			entityType.setSuperEntityType(superType);
+			// TODO this only works for AbstractEntityType but actually should
+			// work for all.
+			if (superType instanceof AbstractEntityType)
+			{
+				((AbstractEntityType) superType).addSubEntityType(entityType);
+			}
+		}
+	}
+=====================================================================
+Found a 4 line (28 tokens) duplication in the following files: 
+Starting at line 32 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\MetaAttributeServiceImpl.java
+Starting at line 18 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\annotation\AnnotationMetaAttributeService.java
+
+	@Override
+	public <J> SingleAttribute<J> addSingleMetaAttribute(String name, EntityType<?> holderType,
+		EntityType<J> metaDataType)
+	{
+=====================================================================
+Found a 9 line (28 tokens) duplication in the following files: 
+Starting at line 27 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\MetaAttribute.java
+Starting at line 28 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\annotation\AnnotationAttribute.java
+
+	}
+
+	public EntityType getEntityType() {
+		return attributeType;
+	}
+
+	@Override
+	public Class<J> getAssociationType() {
+		return (Class<J>) targetType.getJavaType();
+=====================================================================
+Found a 11 line (28 tokens) duplication in the following files: 
+Starting at line 45 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\MetaAttribute.java
+Starting at line 49 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\annotation\AnnotationAttribute.java
+
+		return (Class<J>) targetType.getJavaType();
+	}
+
+	@Override
+	public Cardinality getTargetCardinality() {
+		return null;
+	}
+
+	@Override
+	public Type<J> getTargetType() {
+		return targetType;
+=====================================================================
+Found a 6 line (28 tokens) duplication in the following files: 
+Starting at line 219 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\PropertiesAttribute.java
+Starting at line 162 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\AbstractMapNodeAttribute.java
+
+		((ObjectNode) entity).put(key, JsonUtils.convertToJson(value));
+	}
+
+	@Override
+	public void removeKey(Object entity, String key)
+	{
+=====================================================================
+Found a 7 line (28 tokens) duplication in the following files: 
+Starting at line 67 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\attribute\AbstractSingleAssociationAttribute.java
+Starting at line 120 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\IncomingOneRelation.java
+
+	}
+
+	@Override
+	public boolean isEqual(Object entity, Object other)
+	{
+		J valueA = getValue(entity);
+		J valueB = getValue(other);
+=====================================================================
+Found a 8 line (27 tokens) duplication in the following files: 
+Starting at line 29 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\persistence\SinglePojoAttributeQuery.java
+Starting at line 32 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\persistence\PojoAttributeQuery.java
+
+	public SinglePojoAttributeQuery(Attribute<?, ?> attribute, InMemoryPojoStore inMemoryPojoRepository)
+	{
+		this.inMemoryPojoRepository = inMemoryPojoRepository;
+		this.attribute = attribute;
+	}
+
+	@Override
+	public Object getResult(Object targetEntity)
+=====================================================================
+Found a 12 line (27 tokens) duplication in the following files: 
+Starting at line 70 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\attribute\SingleAssociationAttributeFactory.java
+Starting at line 52 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\attribute\MapAssociationAttributeFactory.java
+Starting at line 99 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\attribute\CollectionAttributeFactory.java
+Starting at line 56 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\attribute\ArrayAttributeFactory.java
+
+		setStandardProperties(entityType, propertyDescriptor, attribute,ctx);
+		return attribute;
+	}
+
+	@Override
+	public Collection<Class> getClasses() {
+		return null;
+	}
+
+	@Override
+	public Class getCollectionClass() {
+		return null;
+=====================================================================
+Found a 11 line (27 tokens) duplication in the following files: 
+Starting at line 142 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\ScannedPojoEntityTypeRepository.java
+Starting at line 211 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\ScannedPojoEntityTypeRepository.java
+Starting at line 122 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoEntityTypeRepository.java
+Starting at line 221 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoEntityTypeRepository.java
+
+	protected EntityType createEntityType(String entityName)
+	{
+		Class clazz;
+		try
+		{
+			clazz = Class.forName(entityName);
+		}
+		catch (ClassNotFoundException e)
+		{
+			return null;
+		}
+=====================================================================
+Found a 9 line (27 tokens) duplication in the following files: 
+Starting at line 264 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoEntityTypeRepository.java
+Starting at line 86 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\EntityTypeSubrepository.java
+Starting at line 98 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\AttributeSubrepository.java
+
+			final EntityType superType = getEntityTypeReference(superclass);
+			entityType.setSuperEntityType(superType);
+			// TODO this only works for AbstractEntityType but actually should
+			// work for all.
+			if (superType instanceof AbstractEntityType)
+			{
+				((AbstractEntityType) superType).addSubEntityType(entityType);
+			}
+		}
+=====================================================================
+Found a 6 line (27 tokens) duplication in the following files: 
+Starting at line 85 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\JsonEntityTypeBuilder.java
+Starting at line 141 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\JsonEntityTypeBuilder.java
+
+		attribute.setMetaType(entityTypeRepository.getEntityType(attribute));
+		attribute.setEntityType(getEntityType());
+		attribute.setTargetType(targetType);
+		addAttribute(attribute);
+		attribute.setWriteable(true);
+		attribute.setObjectMapper(objectMapper);
+=====================================================================
+Found a 9 line (27 tokens) duplication in the following files: 
+Starting at line 91 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\JsonEntityTypeBuilder.java
+Starting at line 114 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AbstractEntityTypeBuilder.java
+
+		attribute.setValidTargetTypes(validTypes);
+
+		return attribute;
+	}
+
+	@Override
+	public <J> SingleAttribute<J> addPrimitiveAttribute(String code, PrimitiveType<J> type)
+	{
+		SingleAttributeImpl attribute;
+=====================================================================
+Found a 13 line (27 tokens) duplication in the following files: 
+Starting at line 128 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\EntityTypeRepositoryImpl.java
+Starting at line 152 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\EntityTypeRepositoryImpl.java
+
+			entityType = entityTypeSubrepository.getEntityTypeReference(clazz);
+			if (entityType != null)
+			{
+				break;
+			}
+
+		}
+		if (entityType == null)
+		{
+			return null;
+		}
+		else if (secondPhase)
+		{
+=====================================================================
+Found a 16 line (27 tokens) duplication in the following files: 
+Starting at line 122 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AggregationSubRepository.java
+Starting at line 142 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AggregationSubRepository.java
+
+			entityType = entityTypeSubrepository.getEntityTypeReference(clazz);
+			if (entityType != null)
+			{
+				break;
+			}
+
+		}
+		if (entityType == null)
+		{
+			return null;
+		}
+		return entityType;
+	}
+
+	@Override
+	public EntityType getEntityTypeReference(String typeCode)
+=====================================================================
+Found a 5 line (26 tokens) duplication in the following files: 
+Starting at line 49 of C:\Users\eee\git\atem.impl.github.com\src\test\java\org\atemsource\atem\impl\common\attribute\SingleAssociationAttributeTest.java
+Starting at line 62 of C:\Users\eee\git\atem.impl.github.com\src\test\java\org\atemsource\atem\impl\common\attribute\SingleAssociationAttributeTest.java
+
+	public void testGetter()
+	{
+		EntityA entity = new EntityA();
+		final EntityB entityB = createEntity("Hallo", 2);
+		entity.setEntityB(entityB);
+=====================================================================
+Found a 3 line (26 tokens) duplication in the following files: 
+Starting at line 96 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\ScannedPojoEntityTypeRepository.java
+Starting at line 114 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoEntityTypeRepository.java
+Starting at line 212 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoEntityTypeRepository.java
+
+		nameToEntityTypes.put(clazz.getName(), entityType);
+		classToEntityTypes.put(clazz, entityType);
+		entityTypes.add(entityType);
+=====================================================================
+Found a 8 line (26 tokens) duplication in the following files: 
+Starting at line 259 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\ScannedPojoEntityTypeRepository.java
+Starting at line 265 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoEntityTypeRepository.java
+Starting at line 87 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\EntityTypeSubrepository.java
+Starting at line 99 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\AttributeSubrepository.java
+Starting at line 237 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AbstractEntityTypeBuilder.java
+
+			entityType.setSuperEntityType(superType);
+			// TODO this only works for AbstractEntityType but actually should
+			// work for all.
+			if (superType instanceof AbstractEntityType)
+			{
+				((AbstractEntityType) superType).addSubEntityType(entityType);
+			}
+		}
+=====================================================================
+Found a 4 line (26 tokens) duplication in the following files: 
+Starting at line 127 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoPropertyDescriptorFactory.java
+Starting at line 139 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoPropertyDescriptorFactory.java
+
+					&& method.getParameterTypes().length == 0)
+				{
+					String propertyName = method.getName();
+					propertyName = propertyName.substring(3, 4).toLowerCase() + propertyName.substring(4);
+=====================================================================
+Found a 8 line (26 tokens) duplication in the following files: 
+Starting at line 153 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoEntityTypeRepository.java
+Starting at line 17 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\EntityTypeSubrepository.java
+
+		if (!isAvailable(clazz))
+		{
+			return null;
+		}
+		EntityType entityType = super.getEntityType(clazz);
+		if (entityType == null)
+		{
+			entityType = createEntityType(clazz);
+=====================================================================
+Found a 8 line (26 tokens) duplication in the following files: 
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\StringAttribute.java
+Starting at line 54 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\StringAttribute.java
+Starting at line 22 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\ObjectNodeAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\LongAttribute.java
+Starting at line 55 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\LongAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\IntegerAttribute.java
+Starting at line 55 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\IntegerAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\DoubleAttribute.java
+Starting at line 55 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\DoubleAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\BooleanAttribute.java
+Starting at line 54 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\BooleanAttribute.java
+Starting at line 22 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\AnyAttribute.java
+Starting at line 134 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\AbstractMapNodeAttribute.java
+Starting at line 183 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\AbstractMapNodeAttribute.java
+
+	public String getValue(Object entity)
+	{
+		ObjectNode node = (ObjectNode) entity;
+		if (node.isNull())
+		{
+			throw new NullPointerException("entity is null");
+		}
+		else
+=====================================================================
+Found a 7 line (26 tokens) duplication in the following files: 
+Starting at line 54 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\StringAttribute.java
+Starting at line 50 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\ObjectNodeAttribute.java
+Starting at line 55 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\LongAttribute.java
+Starting at line 55 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\IntegerAttribute.java
+Starting at line 55 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\DoubleAttribute.java
+Starting at line 54 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\BooleanAttribute.java
+Starting at line 50 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\AnyAttribute.java
+Starting at line 183 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\AbstractMapNodeAttribute.java
+
+	public void setValue(Object entity, String value)
+	{
+		ObjectNode node = (ObjectNode) entity;
+		if (node.isNull())
+		{
+			throw new NullPointerException("entity is null");
+		}
+=====================================================================
+Found a 12 line (26 tokens) duplication in the following files: 
+Starting at line 182 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\PropertiesAttribute.java
+Starting at line 112 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\IncomingOneRelation.java
+
+		targetType = entityTypeRepository.getType(Object.class);
+	}
+
+	@Override
+	public boolean isComposition()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isEqual(Object entity, Object other)
+	{
+=====================================================================
+Found a 7 line (26 tokens) duplication in the following files: 
+Starting at line 76 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\JsonEntityTypeImpl.java
+Starting at line 47 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\dynamic\DynamicEntityTypeImpl.java
+
+	}
+
+	@Override
+	public boolean isInstance(Object entity) {
+		if (entity == null) {
+			return false;
+		} else if (entity instanceof ObjectNode) {
+=====================================================================
+Found a 13 line (25 tokens) duplication in the following files: 
+Starting at line 49 of C:\Users\eee\git\atem.impl.github.com\src\test\java\org\atemsource\atem\impl\pojo\EntityA.java
+Starting at line 140 of C:\Users\eee\git\atem.impl.github.com\src\test\java\org\atemsource\atem\impl\common\attribute\EntityA.java
+
+	}
+
+	public String[] getStringArray()
+	{
+		return stringArray;
+	}
+
+	public List<String> getStringList()
+	{
+		return stringList;
+	}
+
+	public void setList(List<EntityB> list)
+=====================================================================
+Found a 7 line (25 tokens) duplication in the following files: 
+Starting at line 90 of C:\Users\eee\git\atem.impl.github.com\src\test\java\org\atemsource\atem\impl\json\JsonTypeImplTest.java
+Starting at line 84 of C:\Users\eee\git\atem.impl.github.com\src\test\java\org\atemsource\atem\impl\json\ArrayTypeImplTest.java
+
+		Type<Object> targetType = propertiesAttribute.getTargetType(value);
+		Assert.assertEquals(entityTypeRepository.getType(Integer.class),targetType);
+
+	}
+
+	@Test
+	public void testArray() {
+=====================================================================
+Found a 4 line (25 tokens) duplication in the following files: 
+Starting at line 35 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\persistence\ViewIndex.java
+Starting at line 26 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\persistence\SingleViewIndex.java
+
+	public Set find(Object[] parameters) {
+		Serializable key = viewCreator.getKeyForParameter(parameters);
+		return index.get(key);
+	}
+=====================================================================
+Found a 9 line (25 tokens) duplication in the following files: 
+Starting at line 188 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\attribute\PojoAccessor.java
+Starting at line 205 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\attribute\PojoAccessor.java
+
+				field.set(entity, value);
+			}
+			catch (IllegalArgumentException e)
+			{
+				throw new TechnicalException("cannto set attribute", e);
+			}
+			catch (IllegalAccessException e)
+			{
+				throw new TechnicalException("cannto set attribute", e);
+=====================================================================
+Found a 7 line (25 tokens) duplication in the following files: 
+Starting at line 130 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\ScannedPojoEntityTypeRepository.java
+Starting at line 108 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\pojo\PojoEntityTypeRepository.java
+
+	protected synchronized AbstractEntityType createEntityType(final Class clazz)
+	{
+		AbstractEntityType entityType;
+		entityType = beanCreator.create(entityTypeClass);
+		entityType.setEntityClass(clazz);
+
+		entityType.setAbstractType(clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers()));
+=====================================================================
+Found a 10 line (25 tokens) duplication in the following files: 
+Starting at line 121 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\meta\MetaAttribute.java
+Starting at line 260 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\PropertiesAttribute.java
+Starting at line 239 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\ChildrenAttribute.java
+Starting at line 173 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\IncomingOneRelation.java
+
+	}
+
+	@Override
+	public boolean isDerived() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setMetaValue(String metaAttributeCode, Object value) {
+=====================================================================
+Found a 7 line (25 tokens) duplication in the following files: 
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\StringAttribute.java
+Starting at line 22 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\ObjectNodeAttribute.java
+Starting at line 50 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\ObjectNodeAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\LongAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\IntegerAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\DoubleAttribute.java
+Starting at line 23 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\BooleanAttribute.java
+Starting at line 22 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\AnyAttribute.java
+Starting at line 50 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\AnyAttribute.java
+Starting at line 134 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\AbstractMapNodeAttribute.java
+
+	public String getValue(Object entity)
+	{
+		ObjectNode node = (ObjectNode) entity;
+		if (node.isNull())
+		{
+			throw new NullPointerException("entity is null");
+		}
+=====================================================================
+Found a 13 line (25 tokens) duplication in the following files: 
+Starting at line 42 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\StringAttribute.java
+Starting at line 43 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\LongAttribute.java
+Starting at line 43 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\IntegerAttribute.java
+Starting at line 43 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\DoubleAttribute.java
+Starting at line 42 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\BooleanAttribute.java
+
+				return jsonNode.getTextValue();
+			}
+		}
+	}
+
+	@Override
+	public boolean isWriteable()
+	{
+		return true;
+	}
+
+	@Override
+	public void setValue(Object entity, String value)
+=====================================================================
+Found a 10 line (25 tokens) duplication in the following files: 
+Starting at line 230 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\ArrayNodeAttribute.java
+Starting at line 174 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\json\attribute\AbstractMapNodeAttribute.java
+
+		throw new UnsupportedOperationException("notimplemented yet");
+	}
+
+	public void setObjectMapper(ObjectMapper objectMapper)
+	{
+		this.objectMapper = objectMapper;
+	}
+
+	@Override
+	public void setValue(Object entity, ArrayNode value)
+=====================================================================
+Found a 3 line (25 tokens) duplication in the following files: 
+Starting at line 134 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\infrastructure\BeanLocatorImpl.java
+Starting at line 138 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\infrastructure\BeanLocatorImpl.java
+
+				if (bean1.isScopedTarget())
+				{
+					return (org.atemsource.atem.api.infrastructure.bean.Bean<T>) bean1;
+=====================================================================
+Found a 3 line (25 tokens) duplication in the following files: 
+Starting at line 37 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\dynamic\DynamicEntityTypeBuilder.java
+Starting at line 119 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AbstractEntityTypeBuilder.java
+
+	public <J> SingleAttribute<J> addPrimitiveAttribute(String code, PrimitiveType<J> type)
+	{
+		SingleAttributeImpl<J> attribute;
+=====================================================================
+Found a 10 line (25 tokens) duplication in the following files: 
+Starting at line 187 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\EntityTypeRepositoryImpl.java
+Starting at line 215 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\EntityTypeRepositoryImpl.java
+
+	public <J> Type<J> getType(Class<J> clazz)
+	{
+		PrimitiveType primitiveType = primitiveTypeFactory.getPrimitiveType(clazz);
+		if (primitiveType != null)
+		{
+			return primitiveType;
+		}
+		else
+		{
+			return getEntityType(clazz);
+=====================================================================
+Found a 9 line (25 tokens) duplication in the following files: 
+Starting at line 237 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\EntityTypeRepositoryImpl.java
+Starting at line 170 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AggregationSubRepository.java
+
+		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
+		{
+			if (entityTypeSubrepository.hasEntityTypeReference(entityClass))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+=====================================================================
+Found a 5 line (25 tokens) duplication in the following files: 
+Starting at line 106 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AbstractEntityTypeBuilder.java
+Starting at line 141 of C:\Users\eee\git\atem.impl.github.com\src\main\java\org\atemsource\atem\impl\common\AbstractEntityTypeBuilder.java
+
+		attribute.setMetaType(entityTypeRepository.getEntityType(attribute));
+		attribute.setAccessor(new DynamicAccessor(code));
+		attribute.setWriteable(true);
+		attribute.setCode(code);
+		attribute.setAccessor(new DynamicAccessor(code));

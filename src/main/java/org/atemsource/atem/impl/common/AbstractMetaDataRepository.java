@@ -48,6 +48,7 @@ public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepo
 
 	protected Map<String, AbstractEntityType<J>> nameToEntityTypes = new HashMap<String, AbstractEntityType<J>>();
 
+
 	@Override
 	public void addIncomingAssociation(EntityType<J> entityType, Attribute<?, ?> incomingRelation) {
 		((AbstractEntityType) entityType).addIncomingAssociation(incomingRelation);
@@ -56,6 +57,15 @@ public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepo
 	@Override
 	public void addMetaAttribute(EntityType<J> entityType, Attribute<?, ?> metaAttribute) {
 		((AbstractEntityType) entityType).addMetaAttribute(metaAttribute);
+	}
+
+	public void addServices(final AbstractEntityType entityType, Class serviceClass, Object service)
+	{
+		for (Class<?> serviceInterface : serviceClass.getInterfaces())
+		{
+			entityType.addService(serviceInterface, service);
+			addServices(entityType, serviceInterface, service);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -73,11 +83,11 @@ public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepo
 				entityType.addService(factory.getServiceClass(entityType), factory.createService(entityType));
 			}
 		}
-		if (services != null) {
-			for (Object service : services) {
-				for (Class<?> serviceInterface : service.getClass().getInterfaces()) {
-					entityType.addService(serviceInterface, service);
-				}
+		if (services != null)
+		{
+			for (Object service : services)
+			{
+				addServices(entityType, service.getClass(), service);
 			}
 		}
 	}
@@ -123,6 +133,8 @@ public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepo
 		return entityTypeServices;
 	}
 
+
+
 	@Override
 	public boolean hasEntityTypeReference(Class entityClass) {
 		return classToEntityTypes.containsKey(entityClass);
@@ -167,5 +179,7 @@ public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepo
 	public void setEntityTypeServices(Map<Class<?>, Object> entityTypeServices) {
 		this.entityTypeServices = entityTypeServices;
 	}
+
+
 
 }

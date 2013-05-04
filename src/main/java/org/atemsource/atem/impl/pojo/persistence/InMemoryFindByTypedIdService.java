@@ -20,7 +20,7 @@ public class InMemoryFindByTypedIdService implements FindByIdService
 	@Override
 	public <E> E findById(EntityType<E> entityType, Serializable id)
 	{
-		return (E) inMemoryPojoRepository.findById(entityType, id);
+		return inMemoryPojoRepository.findById(entityType, id);
 	}
 
 }
