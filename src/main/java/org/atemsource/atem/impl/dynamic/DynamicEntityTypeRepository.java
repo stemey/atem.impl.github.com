@@ -16,6 +16,7 @@ import org.atemsource.atem.impl.common.AbstractEntityTypeBuilder.EntityTypeBuild
 import org.atemsource.atem.impl.common.AbstractMetaDataRepository;
 import org.atemsource.atem.spi.DynamicEntityTypeSubrepository;
 import org.atemsource.atem.spi.EntityTypeCreationContext;
+import org.codehaus.jackson.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -96,6 +97,7 @@ public class DynamicEntityTypeRepository extends AbstractMetaDataRepository<Dyna
 	@Override
 	public void onFinished(AbstractEntityType<?> entityType)
 	{
+		entityType.setMetaType( (EntityType) entityTypeCreationContext.getEntityTypeReference(EntityType.class));
 		attacheServicesToEntityType(entityType);
 		((AbstractEntityType) entityType).initializeIncomingAssociations(entityTypeCreationContext);
 		entityTypeCreationContext.lazilyInitialized(entityType);

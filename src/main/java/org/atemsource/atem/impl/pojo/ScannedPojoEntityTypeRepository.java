@@ -243,6 +243,7 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 	{
 		initializeTypeHierachy(entityType);
 		addAttributes(entityType);
+		entityType.setMetaType(entityTypeCreationContext.getEntityTypeReference(EntityType.class));
 
 		attacheServicesToEntityType(entityType);
 		entityType.initializeIncomingAssociations(entityTypeCreationContext);

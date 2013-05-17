@@ -29,7 +29,7 @@ public class AnyAttribute extends JsonAttribute<Object>
 		else
 		{
 			JsonNode jsonNode = node.get(getCode());
-			if (jsonNode.isNull())
+			if (jsonNode==null || jsonNode.isNull())
 			{
 				return null;
 			}

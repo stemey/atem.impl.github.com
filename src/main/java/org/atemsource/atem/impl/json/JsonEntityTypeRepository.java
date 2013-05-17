@@ -158,6 +158,7 @@ public class JsonEntityTypeRepository extends AbstractMetaDataRepository<ObjectN
 	@Override
 	public void onFinished(AbstractEntityType<?> entityType)
 	{
+		entityType.setMetaType( (EntityType) entityTypeCreationContext.getEntityTypeReference(EntityType.class));
 		attacheServicesToEntityType(entityType);
 		((AbstractEntityType) entityType).initializeIncomingAssociations(entityTypeCreationContext);
 		entityTypeCreationContext.lazilyInitialized(entityType);
