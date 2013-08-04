@@ -99,9 +99,11 @@ public class ArrayNodeAttribute extends AbstractAttribute<Object, ArrayNode> imp
 	{
 		List<Object> collection = new ArrayList<Object>();
 		ArrayNode arrayNode = getArrayNode(entity);
-		for (int index = 0; index < arrayNode.size(); index++)
-		{
-			collection.add(JsonUtils.convertToJava(arrayNode.get(index)));
+		if (arrayNode!=null) {
+			for (int index = 0; index < arrayNode.size(); index++)
+			{
+				collection.add(JsonUtils.convertToJava(arrayNode.get(index)));
+			}
 		}
 		return collection;
 	}

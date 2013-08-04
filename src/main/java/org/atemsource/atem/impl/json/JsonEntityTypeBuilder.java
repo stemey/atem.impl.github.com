@@ -122,6 +122,11 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 			attribute = beanLocator.getInstance(BooleanAttribute.class);
 			attribute.setTargetType(new BooleanTypeImpl());
 		}
+		else if (type.getJavaType().isAssignableFrom(org.codehaus.jackson.node.ObjectNode.class) )
+		{
+			attribute = beanLocator.getInstance(ObjectNodeAttribute.class);
+			attribute.setTargetType(type);
+		}
 		else
 		{
 			throw new UnsupportedOperationException("type " + type.getJavaType().getName() + " is not implemented yet");
