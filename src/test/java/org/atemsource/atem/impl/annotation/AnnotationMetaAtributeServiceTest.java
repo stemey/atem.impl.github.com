@@ -14,32 +14,35 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@ContextConfiguration(locations = { "classpath:/test/atem/annotation/entitytype.xml" })
+
+@ContextConfiguration(locations = {"classpath:/test/atem/annotation/entitytype.xml"})
 @RunWith(SpringJUnit4ClassRunner.class)
-public class AnnotationMetaAtributeServiceTest {
-	
+public class AnnotationMetaAtributeServiceTest
+{
+
 	@Inject
 	private EntityTypeRepository entityTypeRepository;
 
-	
 	@Test
-	public void testAnnotationType() {
-		EntityType<?> annotationType=entityTypeRepository.getEntityType(Max.class);
-		Assert.assertNotNull(annotationType);
-		Assert.assertEquals(4,annotationType.getAttributes().size());
-	}
-	
-	@Test
-	public void test() {
+	public void test()
+	{
 		EntityType<Attribute> attributeEntityType = entityTypeRepository.getEntityType(Attribute.class);
-		Attribute annotationAttribute=attributeEntityType.getMetaAttribute(Max.class.getName());
+		Attribute annotationAttribute = attributeEntityType.getMetaAttribute(Max.class.getName());
 		Attribute attribute = entityTypeRepository.getEntityType(AnnotatedPojo.class).getAttribute("maxedValue");
 		Assert.assertNotNull(annotationAttribute);
-		Object annotation=annotationAttribute.getValue(attribute);
+		Object annotation = annotationAttribute.getValue(attribute);
 		Assert.assertNotNull(annotation);
-		long max=(Long) ((EntityType<?>)annotationAttribute.getTargetType()).getAttribute("value").getValue(annotation);
-		Assert.assertEquals(23,max);
+		long max =
+			(Long) ((EntityType<?>) annotationAttribute.getTargetType()).getAttribute("value").getValue(annotation);
+		Assert.assertEquals(23, max);
 	}
-	
+
+	@Test
+	public void testAnnotationType()
+	{
+		EntityType<?> annotationType = entityTypeRepository.getEntityType(Max.class);
+		Assert.assertNotNull(annotationType);
+		Assert.assertEquals(4, annotationType.getAttributes().size());
+	}
 
 }

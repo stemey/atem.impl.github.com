@@ -5,7 +5,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  ******************************************************************************/
-package org.atemsource.atem.impl.json;
+package org.atemsource.atem.impl.fasterjson;
 
 import javax.annotation.Resource;
 import javax.inject.Inject;
@@ -16,12 +16,12 @@ import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.EntityTypeBuilder;
 import org.atemsource.atem.api.type.Type;
-import org.atemsource.atem.impl.json.attribute.ChildrenAttribute;
+import org.atemsource.atem.impl.fasterjson.attribute.ChildrenAttribute;
 import org.atemsource.atem.spi.DynamicEntityTypeSubrepository;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +29,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
-@ContextConfiguration(locations = {"classpath:/test/atem/jackson/entitytype.xml"})
+@ContextConfiguration(locations = {"classpath:/test/atem/fasterjson/entitytype.xml"})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ArrayTypeImplTest
 {
@@ -41,7 +41,7 @@ public class ArrayTypeImplTest
 	@Inject
 	private EntityTypeRepository entityTypeRepository;
 
-	@Resource(name = "atem-json-repository")
+	@Resource(name = "atem-fasterjson-repository")
 	private DynamicEntityTypeSubrepository<JsonNode> jsonRepository;
 
 	@Inject
@@ -80,7 +80,7 @@ public class ArrayTypeImplTest
 		Object value = childrenAttribute.getElement(root, 0);
 		Assert.assertEquals(100, value);
 		childrenAttribute.addElement(root, 200);
-		Assert.assertEquals(200, root.get(1).getIntValue());
+		Assert.assertEquals(200, root.get(1).intValue());
 		Type<Object> targetType = childrenAttribute.getTargetType(value);
 		Assert.assertEquals(entityTypeRepository.getType(Integer.class), targetType);
 
@@ -110,7 +110,7 @@ public class ArrayTypeImplTest
 		Object text = childrenAttribute.getElement(root, 0);
 		Assert.assertEquals("Hallo", text);
 		childrenAttribute.addElement(root, "Ciao");
-		Assert.assertEquals("Ciao", root.get(1).getTextValue());
+		Assert.assertEquals("Ciao", root.get(1).textValue());
 		Type<Object> targetType = childrenAttribute.getTargetType(text);
 		Assert.assertEquals(entityTypeRepository.getType(String.class), targetType);
 

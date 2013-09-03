@@ -27,7 +27,10 @@ import org.atemsource.atem.impl.common.attribute.collection.AbstractCollectionAt
 import org.atemsource.atem.impl.common.attribute.collection.ListAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.collection.SetAttributeImpl;
 import org.atemsource.atem.impl.dynamic.attribute.DynamicAccessor;
-import org.atemsource.atem.impl.json.attribute.AnyAttribute;
+<<<<<<< HEAD
+=======
+import org.atemsource.atem.impl.fasterjson.attribute.AnyAttribute;
+>>>>>>> 2904b59... added fasterxml jackson
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -69,7 +72,6 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 		// attribute.setValidTypesSet(valueType.getSelfAndAllSubEntityTypes());
 		attribute.setKeyType(keyType);
 		attribute.setCode(code);
-
 		attribute.setEntityType(entityType);
 		attribute.setTargetType(valueType);
 		attribute.setValidTargetTypes(validTypes);
