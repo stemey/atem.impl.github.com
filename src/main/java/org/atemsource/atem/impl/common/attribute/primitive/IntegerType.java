@@ -13,12 +13,24 @@ public class IntegerType extends PrimitiveTypeImpl<Integer> implements
 
 	public static final String TYPE_CODE = "Integer";
 
+	public IntegerType(boolean nullable) {
+		super(nullable);
+	}
+
+	public IntegerType() {
+	}
+
 	@Override
 	public String getCode()
 	{
 		return TYPE_CODE;
 	}
 
+	@Override
+	public boolean isInstance(Object value)
+	{
+		return int.class.isInstance(value) ||  Integer.class.isInstance(value);
+	}
 	@Override
 	public Class<Integer> getJavaType()
 	{

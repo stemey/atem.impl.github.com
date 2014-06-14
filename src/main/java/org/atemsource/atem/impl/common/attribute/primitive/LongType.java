@@ -35,4 +35,9 @@ public class LongType extends PrimitiveTypeImpl<Long> implements
 		return isNullable() ? Long.class : long.class;
 	}
 
+	@Override
+	public boolean isInstance(Object value)
+	{
+		return long.class.isInstance(value) ||  Long.class.isInstance(value);
+	}
 }

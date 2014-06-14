@@ -34,4 +34,19 @@ public class BooleanTypeImpl extends PrimitiveTypeImpl<Boolean> implements Boole
 	{
 		return isNullable() ? Boolean.class : boolean.class;
 	}
+
+
+	@Override
+	public boolean isInstance(Object value)
+	{
+		return boolean.class.isInstance(value) ||  Boolean.class.isInstance(value);
+	}
+	
+	public BooleanTypeImpl() {
+		super();
+	}
+
+	public BooleanTypeImpl(boolean nullable) {
+		super(nullable);
+	}
 }

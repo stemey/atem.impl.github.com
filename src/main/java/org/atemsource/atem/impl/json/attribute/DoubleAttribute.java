@@ -30,7 +30,7 @@ public class DoubleAttribute extends JsonAttribute<Double>
 		else
 		{
 			JsonNode jsonNode = node.get(getCode());
-			if (jsonNode == null)
+			if (jsonNode == null || jsonNode.isNull())
 			{
 				return null;
 			}

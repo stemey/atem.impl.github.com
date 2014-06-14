@@ -23,6 +23,12 @@ public abstract class PrimitiveTypeImpl<J> implements PrimitiveType<J>
 		super();
 	}
 
+	public PrimitiveTypeImpl(boolean nullable)
+	{
+		super();
+		this.nullable=nullable;
+	}
+
 	@Override
 	public J clone(J value)
 	{

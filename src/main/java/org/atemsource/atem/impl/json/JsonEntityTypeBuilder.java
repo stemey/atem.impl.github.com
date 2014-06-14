@@ -97,30 +97,50 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 	public <J> SingleAttribute<J> addPrimitiveAttribute(String code, PrimitiveType<J> type)
 	{
 		SingleAbstractAttribute attribute;
-		if (type.getJavaType().isAssignableFrom(Long.class) || type.getJavaType().isAssignableFrom(long.class))
+		if (type.getJavaType().isAssignableFrom(Long.class))
 		{
 			attribute = beanLocator.getInstance(LongAttribute.class);
 			attribute.setTargetType(new LongType(true));
 		}
-		else if (type.getJavaType().isAssignableFrom(Integer.class) || type.getJavaType().isAssignableFrom(int.class))
+		else if ( type.getJavaType().isAssignableFrom(long.class))
+		{
+			attribute = beanLocator.getInstance(LongAttribute.class);
+			attribute.setTargetType(new LongType(false));
+		}
+		else if (type.getJavaType().isAssignableFrom(int.class))
 		{
 			attribute = beanLocator.getInstance(IntegerAttribute.class);
-			attribute.setTargetType(new IntegerType());
+			attribute.setTargetType(new IntegerType(false));
+		}
+		else if (type.getJavaType().isAssignableFrom(Integer.class))
+		{
+			attribute = beanLocator.getInstance(IntegerAttribute.class);
+			attribute.setTargetType(new IntegerType(true));
 		}
 		else if (type.getJavaType().isAssignableFrom(String.class))
 		{
 			attribute = beanLocator.getInstance(StringAttribute.class);
 			attribute.setTargetType(new SimpleTextType());
 		}
-		else if (type.getJavaType().isAssignableFrom(Double.class) || type.getJavaType().isAssignableFrom(double.class))
+		else if (type.getJavaType().isAssignableFrom(Double.class))
 		{
 			attribute = beanLocator.getInstance(DoubleAttribute.class);
-			attribute.setTargetType(new DoubleType());
+			attribute.setTargetType(new DoubleType(true));
 		}
-		else if (type.getJavaType().isAssignableFrom(Boolean.class) || type.getJavaType().isAssignableFrom(boolean.class))
+		else if ( type.getJavaType().isAssignableFrom(double.class))
+		{
+			attribute = beanLocator.getInstance(DoubleAttribute.class);
+			attribute.setTargetType(new DoubleType(false));
+		}
+		else if ( type.getJavaType().isAssignableFrom(boolean.class))
 		{
 			attribute = beanLocator.getInstance(BooleanAttribute.class);
-			attribute.setTargetType(new BooleanTypeImpl());
+			attribute.setTargetType(new BooleanTypeImpl(false));
+		}
+		else if (type.getJavaType().isAssignableFrom(Boolean.class) )
+		{
+			attribute = beanLocator.getInstance(BooleanAttribute.class);
+			attribute.setTargetType(new BooleanTypeImpl(true));
 		}
 		else if (type.getJavaType().isAssignableFrom(org.codehaus.jackson.node.ObjectNode.class) )
 		{

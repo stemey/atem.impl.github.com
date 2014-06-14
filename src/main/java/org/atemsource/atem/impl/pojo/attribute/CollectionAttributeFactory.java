@@ -28,12 +28,17 @@ import org.springframework.stereotype.Component;
 public class CollectionAttributeFactory extends AttributeFactory
 {
 
-	private final TargetClassResolver targetClassResolver = new AtemAnnotationTargetClassResolver();
+	private TargetClassResolver targetClassResolver = new AtemAnnotationTargetClassResolver();
+	private CompositionResolver compositionResolver;
 
 	@Override
 	public boolean canCreate(PropertyDescriptor propertyDescriptor, EntityTypeCreationContext ctx)
 	{
 		return Collection.class.isAssignableFrom(propertyDescriptor.getPropertyType());
+	}
+
+	public void setCompositionResolver(CompositionResolver compositionResolver) {
+		this.compositionResolver = compositionResolver;
 	}
 
 	@Override
@@ -97,6 +102,9 @@ public class CollectionAttributeFactory extends AttributeFactory
 			attribute.setAccessor(propertyDescriptor.getAccessor());
 		}
 		initValidTypes(propertyDescriptor, ctx, attribute);
+		if (compositionResolver!=null) {
+			attribute.setComposition(compositionResolver.isComposition(attribute));
+		}
 
 		return attribute;
 
@@ -108,7 +116,10 @@ public class CollectionAttributeFactory extends AttributeFactory
 		return null;
 	}
 
-	@Override
+	public void setTargetClassResolver(TargetClassResolver targetClassResolver) {
+		this.targetClassResolver = targetClassResolver;
+	}
+
 	public Class getCollectionClass()
 	{
 		return Collection.class;

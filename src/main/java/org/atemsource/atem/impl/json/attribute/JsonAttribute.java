@@ -8,6 +8,7 @@
 package org.atemsource.atem.impl.json.attribute;
 
 import org.atemsource.atem.api.infrastructure.util.ReflectionUtils;
+import org.atemsource.atem.api.type.PrimitiveType;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.attribute.PrimitiveAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.primitive.PrimitiveTypeFactory;
@@ -16,22 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class JsonAttribute<J> extends PrimitiveAttributeImpl<J>
 {
-	private Class javaType;
-
-	@Autowired
-	private PrimitiveTypeFactory primitiveTypeFactory;
-
 	public JsonAttribute()
 	{
 		super();
-		javaType = ReflectionUtils.getActualTypeParameter(getClass(), PrimitiveAttributeImpl.class);
 	}
 
-	@Override
-	public Type<J> getTargetType()
-	{
-		return primitiveTypeFactory.getPrimitiveType(javaType);
-	}
 
 	@Override
 	public Type<J> getTargetType(J value)
@@ -43,6 +33,10 @@ public abstract class JsonAttribute<J> extends PrimitiveAttributeImpl<J>
 	public boolean isWriteable()
 	{
 		return true;
+	}
+	
+	public boolean isRequired() {
+		return super.isRequired() || !((PrimitiveType<J>)getTargetType()).isNullable();
 	}
 
 }

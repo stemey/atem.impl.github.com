@@ -538,6 +538,12 @@ public abstract class AbstractEntityType<J> implements EntityType<J>
 		return getSubEntityTypes().iterator();
 	}
 
+	@Override
+	public String toString() {
+		return code;
+	}
+
+	
 
 
 

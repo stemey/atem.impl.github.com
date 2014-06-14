@@ -29,5 +29,12 @@ public class FloatTypeImpl extends PrimitiveTypeImpl<Float> implements
 	{
 		return isNullable() ? Float.class : float.class;
 	}
+	
+
+	@Override
+	public boolean isInstance(Object value)
+	{
+		return float.class.isInstance(value) ||  Float.class.isInstance(value);
+	}
 
 }

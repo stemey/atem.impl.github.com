@@ -21,6 +21,14 @@ import java.util.Locale;
 public class DoubleType extends PrimitiveTypeImpl<Double> implements
 	org.atemsource.atem.api.type.primitive.DoubleType
 {
+	public DoubleType() {
+		super();
+	}
+
+	public DoubleType(boolean nullable) {
+		super(nullable);
+	}
+
 	public static final String TYPE_CODE = "Double";
 
 	private Integer fractionDigits;
@@ -30,6 +38,11 @@ public class DoubleType extends PrimitiveTypeImpl<Double> implements
 		return TYPE_CODE;
 	}
 
+	@Override
+	public boolean isInstance(Object value)
+	{
+		return double.class.isInstance(value) ||  Double.class.isInstance(value);
+	}
 	public Integer getFractionDigits()
 	{
 		return fractionDigits;

@@ -1,6 +1,5 @@
 package org.atemsource.atem.impl.pojo.attribute;
 
-import org.atemsource.atem.api.attribute.Attribute;
 
 public interface TargetClassResolver {
 	public Class<?> getCollectionElementClass(PropertyDescriptor propertyDescriptor);

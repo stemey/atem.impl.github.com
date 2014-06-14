@@ -42,7 +42,6 @@
 		<property name="propertyDescriptorFactory" ref="pojoPropertyDescriptorFactory" />
 		<property name="entityTypeServices">
 			<map>
-
 				<entry key="org.atemsource.atem.api.service.IdentityService"
 					value-ref="atem-metaIdentityService" />
 			</map>
