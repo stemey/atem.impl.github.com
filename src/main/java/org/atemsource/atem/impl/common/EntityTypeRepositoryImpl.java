@@ -16,6 +16,7 @@ import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.extension.EntityTypePostProcessor;
 import org.atemsource.atem.api.extension.EntityTypeRepositoryPostProcessor;
 import org.atemsource.atem.api.type.EntityType;
+import org.atemsource.atem.api.type.IncomingRelation;
 import org.atemsource.atem.api.type.PrimitiveType;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.attribute.primitive.PrimitiveTypeFactory;
@@ -48,7 +49,7 @@ public class EntityTypeRepositoryImpl implements EntityTypeRepository, EntityTyp
 	private boolean secondPhase;
 
 	@Override
-	public void addIncomingAssociation(EntityType entityType, Attribute<?, ?> incomingRelation)
+	public void addIncomingAssociation(EntityType entityType, IncomingRelation<?, ?> incomingRelation)
 	{
 		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
 		{

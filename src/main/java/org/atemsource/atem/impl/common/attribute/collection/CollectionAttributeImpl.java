@@ -18,9 +18,12 @@ package org.atemsource.atem.impl.common.attribute.collection;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 
 import org.atemsource.atem.api.attribute.CollectionAttribute;
 import org.atemsource.atem.api.attribute.CollectionSortType;
+import org.atemsource.atem.api.type.EntityType;
+import org.neo4j.cypher.internal.compiler.v2_1.ast.rewriters.addUniquenessPredicates;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -50,9 +53,13 @@ public class CollectionAttributeImpl<J> extends AbstractCollectionAttributeImpl<
 	}
 
 	@Override
-	public Collection getEmptyCollection(Object entity)
-	{
-		return new ArrayList();
+	protected Collection creatEmptyCollection() {
+		return new LinkedList<J>();
 	}
+
+
+	
+
+	
 
 }

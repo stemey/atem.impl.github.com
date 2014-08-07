@@ -16,13 +16,16 @@ import java.util.Set;
 
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.extension.EntityTypeServiceFactory;
+import org.atemsource.atem.api.infrastructure.exception.BusinessException;
 import org.atemsource.atem.api.type.EntityType;
+import org.atemsource.atem.api.type.IncomingRelation;
 import org.atemsource.atem.spi.EntityTypeCreationContext;
 import org.atemsource.atem.spi.EntityTypeSubrepository;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepository<J>, ApplicationContextAware {
+public abstract class AbstractMetaDataRepository<J> implements
+		EntityTypeSubrepository<J>, ApplicationContextAware {
 
 	protected ApplicationContext applicationContext;
 
@@ -48,45 +51,49 @@ public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepo
 
 	protected Map<String, AbstractEntityType<J>> nameToEntityTypes = new HashMap<String, AbstractEntityType<J>>();
 
-
 	@Override
-	public void addIncomingAssociation(EntityType<J> entityType, Attribute<?, ?> incomingRelation) {
-		((AbstractEntityType) entityType).addIncomingAssociation(incomingRelation);
+	public void addIncomingAssociation(EntityType<J> entityType,
+			IncomingRelation<?, ?> incomingRelation) {
+		((AbstractEntityType) entityType)
+				.addIncomingAssociation(incomingRelation);
 	}
 
 	@Override
-	public void addMetaAttribute(EntityType<J> entityType, Attribute<?, ?> metaAttribute) {
+	public void addMetaAttribute(EntityType<J> entityType,
+			Attribute<?, ?> metaAttribute) {
 		((AbstractEntityType) entityType).addMetaAttribute(metaAttribute);
 	}
 
-	public void addServices(final AbstractEntityType entityType, Class serviceClass, Object service)
-	{
-		for (Class<?> serviceInterface : serviceClass.getInterfaces())
-		{
+	public void addServices(final AbstractEntityType entityType,
+			Class serviceClass, Object service) {
+		for (Class<?> serviceInterface : serviceClass.getInterfaces()) {
 			entityType.addService(serviceInterface, service);
 			addServices(entityType, serviceInterface, service);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void attacheServicesToEntityType(final AbstractEntityType entityType) {
+	protected void attacheServicesToEntityType(
+			final AbstractEntityType entityType) {
 		if (entityTypeServices != null) {
-			for (Map.Entry<Class<?>, Object> entry : entityTypeServices.entrySet()) {
+			for (Map.Entry<Class<?>, Object> entry : entityTypeServices
+					.entrySet()) {
 				if (!entry.getKey().isInstance(entry.getValue())) {
-					throw new IllegalStateException("the service does not implement " + entry.getKey().getName());
+					throw new IllegalStateException(
+							"the service does not implement "
+									+ entry.getKey().getName());
 				}
 				entityType.addService(entry.getKey(), entry.getValue());
 			}
 		}
 		if (entityTypeServiceFactories != null) {
 			for (EntityTypeServiceFactory factory : entityTypeServiceFactories) {
-				entityType.addService(factory.getServiceClass(entityType), factory.createService(entityType));
+				entityType.addService(factory.getServiceClass(entityType),
+						factory.createService(entityType));
 			}
 		}
-		if (services != null)
-		{
-			for (Object service : services)
-			{
+		if (services != null) {
+			for (Object service : services) {
 				addServices(entityType, service.getClass(), service);
 			}
 		}
@@ -133,15 +140,15 @@ public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepo
 		return entityTypeServices;
 	}
 
-
-
 	@Override
 	public boolean hasEntityTypeReference(Class entityClass) {
 		return classToEntityTypes.containsKey(entityClass);
 	}
 
-	protected void initializeEntityTypeHierachy(AbstractEntityType entityType, String superTypeCode) {
-		AbstractEntityType superEntityType = nameToEntityTypes.get(superTypeCode);
+	protected void initializeEntityTypeHierachy(AbstractEntityType entityType,
+			String superTypeCode) {
+		AbstractEntityType superEntityType = nameToEntityTypes
+				.get(superTypeCode);
 		if (superEntityType != null) {
 			entityType.setSuperEntityType(superEntityType);
 			superEntityType.addSubEntityType(entityType);
@@ -151,7 +158,8 @@ public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepo
 	@Override
 	public void initializeIncomingAssociations() {
 		for (AbstractEntityType entityType : nameToEntityTypes.values()) {
-			entityType.initializeIncomingAssociations(entityTypeCreationContext);
+			entityType
+					.initializeIncomingAssociations(entityTypeCreationContext);
 		}
 	}
 
@@ -168,11 +176,13 @@ public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepo
 	}
 
 	@Override
-	public void setApplicationContext(final ApplicationContext applicationContext) {
+	public void setApplicationContext(
+			final ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
 	}
 
-	public void setEntityTypeServiceFactories(List<EntityTypeServiceFactory> entityTypeServiceFactories) {
+	public void setEntityTypeServiceFactories(
+			List<EntityTypeServiceFactory> entityTypeServiceFactories) {
 		this.entityTypeServiceFactories = entityTypeServiceFactories;
 	}
 
@@ -180,6 +190,17 @@ public abstract class AbstractMetaDataRepository<J> implements EntityTypeSubrepo
 		this.entityTypeServices = entityTypeServices;
 	}
 
-
+	public void clear() {
+		nameToEntityTypes.clear();
+		entityTypes.clear();
+		classToEntityTypes.clear();
+	}
+	
+	public void remove(String typeCode) {
+		AbstractEntityType<J> type = nameToEntityTypes.get(typeCode);
+		entityTypes.remove(type);
+		nameToEntityTypes.remove(typeCode);
+		
+	}
 
 }

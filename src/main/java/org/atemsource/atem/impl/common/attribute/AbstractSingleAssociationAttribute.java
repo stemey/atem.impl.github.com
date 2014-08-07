@@ -12,6 +12,11 @@ public abstract class AbstractSingleAssociationAttribute<J> extends SingleAbstra
 	SingleAttribute<J>, AssociationAttribute<J, J>
 {
 
+	@Override
+	public <T extends J> T createTarget(EntityType<T> targetType, Object parent) {
+		return targetType.createEntity();
+	}
+
 	@Autowired
 	private BeanLocator beanLocator;
 

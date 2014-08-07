@@ -13,7 +13,7 @@ public abstract class DynamicEntityType<J> extends AbstractEntityType<J> {
 	public void addMixin(EntityType<?> mixinType) {
 		mixinTypes.add(mixinType);
 	}
-
+	
 	@Override
 	public Attribute getDeclaredAttribute(String code) {
 		Attribute declaredAttribute = super.getDeclaredAttribute(code);

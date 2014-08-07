@@ -43,9 +43,10 @@ public class SetAttributeImpl<J> extends AbstractCollectionAttributeImpl<J, Set>
 	}
 
 	@Override
-	public Set getEmptyCollection(Object entity)
-	{
-		return new HashSet();
+	protected Set creatEmptyCollection() {
+		return new HashSet<J>();
 	}
+
+	
 
 }

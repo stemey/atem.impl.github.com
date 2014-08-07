@@ -196,10 +196,7 @@ public class ChildrenAttribute implements ListAssociationAttribute< Object> {
 		return list;
 	}
 
-	@Override
-	public List getEmptyCollection(Object entity) {
-		return new ArrayList();
-	}
+
 
 	@Override
 	public Iterator<Object> getIterator(Object entity) {

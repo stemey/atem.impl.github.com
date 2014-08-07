@@ -26,82 +26,74 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-
 @Component
 @Scope("prototype")
-public class ArrayNodeAttribute extends AbstractAttribute<Object, ArrayNode> implements
-	CollectionAttribute<Object, ArrayNode>, OrderableCollection<Object, ArrayNode>
-{
+public class ArrayNodeAttribute extends AbstractAttribute<Object, ArrayNode>
+		implements CollectionAttribute<Object, ArrayNode>,
+		OrderableCollection<Object, ArrayNode> {
 
 	private ObjectMapper objectMapper;
 
 	@Override
-	public void addElement(Object entity, int index, Object value)
-	{
+	public void addElement(Object entity, int index, Object value) {
 		ArrayNode array = getValue(entity);
 		array.set(index, JsonUtils.convertToJson(value));
 	}
 
 	@Override
-	public void addElement(Object entity, Object element)
-	{
+	public void addElement(Object entity, Object element) {
 		ArrayNode arrayNode = getArrayNode(entity);
 		arrayNode.add(JsonUtils.convertToJson(element));
 	}
 
 	@Override
-	public void clear(Object entity)
-	{
+	public void clear(Object entity) {
 		ArrayNode arrayNode = getArrayNode(entity);
-		arrayNode.removeAll();
+		if (arrayNode == null) {
+			setValue(entity, objectMapper.createArrayNode());
+		} else {
+			arrayNode.removeAll();
+		}
 	}
 
 	@Override
-	public boolean contains(Object entity, Object element)
-	{
+	public boolean contains(Object entity, Object element) {
 		throw new UnsupportedOperationException("notimplemented yet");
 	}
 
-	private ArrayNode getArrayNode(Object entity)
-	{
+	private ArrayNode getArrayNode(Object entity) {
 		JsonNode jsonNode = ((ObjectNode) entity).get(getCode());
-		if (jsonNode == null || jsonNode.isNull())
-		{
+		if (jsonNode == null || jsonNode.isNull()) {
 			return null;
 		}
-		if (!jsonNode.isArray())
-		{
-			throw new ConversionException(jsonNode.getValueAsText(), getAssociationType());
+		if (!jsonNode.isArray()) {
+			throw new ConversionException(jsonNode.getValueAsText(),
+					getAssociationType());
 		}
 		return (ArrayNode) jsonNode;
 	}
 
 	@Override
-	public Class<ArrayNode> getAssociationType()
-	{
+	public Class<ArrayNode> getAssociationType() {
 		return ArrayNode.class;
 	}
 
 	@Override
-	public CollectionSortType getCollectionSortType()
-	{
+	public CollectionSortType getCollectionSortType() {
 		return CollectionSortType.ORDERABLE;
 	}
 
 	@Override
-	public Object getElement(Object entity, int index)
-	{
+	public Object getElement(Object entity, int index) {
 		return JsonUtils.convertToJava(getValue(entity).get(index));
 	}
 
 	@Override
-	public Collection<Object> getElements(Object entity)
-	{
+	public Collection<Object> getElements(Object entity) {
 		List<Object> collection = new ArrayList<Object>();
 		ArrayNode arrayNode = getArrayNode(entity);
-		if (arrayNode!=null) {
-			for (int index = 0; index < arrayNode.size(); index++)
-			{
+		if (arrayNode != null) {
+			for (int index = 0; index < arrayNode.size(); index++) {
 				collection.add(JsonUtils.convertToJava(arrayNode.get(index)));
 			}
 		}
@@ -109,93 +101,66 @@ public class ArrayNodeAttribute extends AbstractAttribute<Object, ArrayNode> imp
 	}
 
 	@Override
-	public ArrayNode getEmptyCollection(Object entity)
-	{
-		return objectMapper.createArrayNode();
-	}
-
-	@Override
-	public int getIndex(Object entity, Object value)
-	{
+	public int getIndex(Object entity, Object value) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public Iterator<Object> getIterator(Object entity)
-	{
+	public Iterator<Object> getIterator(Object entity) {
 		return getElements(entity).iterator();
 	}
 
-	public ObjectMapper getObjectMapper()
-	{
+	public ObjectMapper getObjectMapper() {
 		return objectMapper;
 	}
 
 	@Override
-	public Class<ArrayNode> getReturnType()
-	{
+	public Class<ArrayNode> getReturnType() {
 		return getAssociationType();
 	}
 
-	public Serializable getSerializableValue(Object entity)
-	{
+	public Serializable getSerializableValue(Object entity) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public int getSize(Object entity)
-	{
+	public int getSize(Object entity) {
 		return getArrayNode(entity).size();
 	}
 
 	@Override
-	public Type<Object> getTargetType(Object value)
-	{
+	public Type<Object> getTargetType(Object value) {
 		return getTargetType();
 	}
 
-	public String getTypeCode()
-	{
+	public String getTypeCode() {
 		return "arrayNode";
 	}
 
 	@Override
-	public ArrayNode getValue(Object entity)
-	{
+	public ArrayNode getValue(Object entity) {
 		return getArrayNode(entity);
 	}
 
 	@Override
-	public boolean isEqual(Object entity, Object other)
-	{
+	public boolean isEqual(Object entity, Object other) {
 		ArrayNode valueA = getValue(entity);
 		ArrayNode valueB = getValue(other);
-		if (valueA == null && valueB == null)
-		{
+		if (valueA == null && valueB == null) {
 			return true;
-		}
-		else if (valueA != null && valueB == null)
-		{
+		} else if (valueA != null && valueB == null) {
 			return false;
-		}
-		else if (valueA == null && valueB != null)
-		{
+		} else if (valueA == null && valueB != null) {
 			return false;
-		}
-		else if (valueA.size() != valueB.size())
-		{
+		} else if (valueA.size() != valueB.size()) {
 			return false;
-		}
-		else
-		{
-			for (int index = 0; index < valueA.size(); index++)
-			{
+		} else {
+			for (int index = 0; index < valueA.size(); index++) {
 				ObjectNode a = (ObjectNode) getElement(entity, index);
 				ObjectNode b = (ObjectNode) getElement(other, index);
-				if (!getTargetType().isEqual(a, b))
-				{
+				if (!getTargetType().isEqual(a, b)) {
 					return false;
 				}
 
@@ -206,14 +171,12 @@ public class ArrayNodeAttribute extends AbstractAttribute<Object, ArrayNode> imp
 	}
 
 	@Override
-	public boolean isWriteable()
-	{
+	public boolean isWriteable() {
 		return true;
 	}
 
 	@Override
-	public void moveElement(Object entity, int fromIndex, int toIndex)
-	{
+	public void moveElement(Object entity, int fromIndex, int toIndex) {
 		ArrayNode value = getValue(entity);
 		ObjectNode element = (ObjectNode) value.remove(fromIndex);
 		value.set(toIndex, element);
@@ -221,32 +184,25 @@ public class ArrayNodeAttribute extends AbstractAttribute<Object, ArrayNode> imp
 	}
 
 	@Override
-	public Object removeElement(Object entity, int index)
-	{
+	public Object removeElement(Object entity, int index) {
 		return getValue(entity).remove(index);
 	}
 
 	@Override
-	public void removeElement(Object entity, Object element)
-	{
+	public void removeElement(Object entity, Object element) {
 		throw new UnsupportedOperationException("notimplemented yet");
 	}
 
-	public void setObjectMapper(ObjectMapper objectMapper)
-	{
+	public void setObjectMapper(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
 	}
 
 	@Override
-	public void setValue(Object entity, ArrayNode value)
-	{
+	public void setValue(Object entity, ArrayNode value) {
 		ObjectNode node = (ObjectNode) entity;
-		if (value == null)
-		{
+		if (value == null) {
 			node.putNull(getCode());
-		}
-		else
-		{
+		} else {
 			node.put(getCode(), value);
 		}
 	}

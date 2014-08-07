@@ -17,6 +17,7 @@ package org.atemsource.atem.impl.common.attribute.collection;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.List;
 import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.CollectionAttribute;
 import org.atemsource.atem.api.attribute.CollectionSortType;
+import org.atemsource.atem.api.infrastructure.exception.TechnicalException;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.attribute.AbstractAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +52,18 @@ public abstract class AbstractCollectionAttributeImpl<J, R> extends AbstractAttr
 
 	public void addElement(Object entity, J element)
 	{
+		if (getElements(entity)==null) {
+			setValue(entity, createEmptyCollection());
+		}
 		getElements(entity).add(element);
+	}
+
+	private R createEmptyCollection() {
+		try {
+			return getAssociationType().newInstance();
+		} catch (Exception e) {
+			throw new RuntimeException("cannot instantiate empty collection",e);
+		}
 	}
 
 	public void clear(Object entity)
@@ -59,9 +72,16 @@ public abstract class AbstractCollectionAttributeImpl<J, R> extends AbstractAttr
 		if (elements != null)
 		{
 			elements.clear();
+		}else {
+			try {
+				setValue(entity,creatEmptyCollection());
+			} catch (Exception e) {
+				throw new TechnicalException("cannot instantiate collection",e);
+			}
 		}
 	}
 
+	protected abstract  R creatEmptyCollection();
 	public boolean contains(Object entity, J element)
 	{
 		return getElements(entity).contains(element);

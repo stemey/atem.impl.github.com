@@ -178,4 +178,12 @@ public class JsonEntityTypeRepository extends AbstractMetaDataRepository<ObjectN
 	{
 		this.typeProperty = typeProperty;
 	}
+
+	@Override
+	public EntityTypeBuilder replaceBuilder(String code) {
+		EntityType<?> oldType=getEntityType(code);
+		nameToEntityTypes.remove(code);
+		entityTypes.remove(oldType);
+		return createBuilder(code);
+	}
 }

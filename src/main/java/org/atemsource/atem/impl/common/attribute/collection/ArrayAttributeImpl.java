@@ -61,16 +61,16 @@ public class ArrayAttributeImpl<J> extends AbstractCollectionAttributeImpl<J, Ob
 		}
 	}
 
-	@Override
-	public Object getEmptyCollection(Object entity)
-	{
-		return Array.newInstance(getTargetType().getJavaType(), 0);
-	}
 
 	@Override
 	public int getSize(Object entity)
 	{
 		return Array.getLength(getAccessor().getValue(entity));
+	}
+
+	@Override
+	protected Class<Object> creatEmptyCollection() {
+		return (Class<Object>) Array.newInstance(getTargetType().getJavaType(), 0);
 	}
 
 }

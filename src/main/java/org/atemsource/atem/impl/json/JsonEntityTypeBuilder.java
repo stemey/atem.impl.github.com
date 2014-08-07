@@ -30,6 +30,7 @@ import org.atemsource.atem.impl.json.attribute.IntegerAttribute;
 import org.atemsource.atem.impl.json.attribute.LongAttribute;
 import org.atemsource.atem.impl.json.attribute.MapNodeAttribute;
 import org.atemsource.atem.impl.json.attribute.ObjectNodeAttribute;
+import org.atemsource.atem.impl.json.attribute.PrimitiveObjectNodeAttribute;
 import org.atemsource.atem.impl.json.attribute.StringAttribute;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.context.annotation.Scope;
@@ -144,7 +145,7 @@ public class JsonEntityTypeBuilder extends AbstractEntityTypeBuilder
 		}
 		else if (type.getJavaType().isAssignableFrom(org.codehaus.jackson.node.ObjectNode.class) )
 		{
-			attribute = beanLocator.getInstance(ObjectNodeAttribute.class);
+			attribute = beanLocator.getInstance(PrimitiveObjectNodeAttribute.class);
 			attribute.setTargetType(type);
 		}
 		else

@@ -8,6 +8,7 @@
 package org.atemsource.atem.impl.common;
 
 import javax.inject.Inject;
+
 import org.atemsource.atem.api.BeanLocator;
 import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.Attribute;
@@ -18,16 +19,17 @@ import org.atemsource.atem.api.attribute.relation.SingleAttribute;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.EntityTypeBuilder;
 import org.atemsource.atem.api.type.PrimitiveType;
+import org.atemsource.atem.api.type.SingleAssociationAttributeBuilder;
 import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.attribute.MapAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.PrimitiveAttributeImpl;
-import org.atemsource.atem.impl.common.attribute.SingleAssociationAttribute;
 import org.atemsource.atem.impl.common.attribute.SingleAbstractAttribute;
+import org.atemsource.atem.impl.common.attribute.SingleAssociationAttribute;
 import org.atemsource.atem.impl.common.attribute.collection.AbstractCollectionAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.collection.ListAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.collection.SetAttributeImpl;
+import org.atemsource.atem.impl.common.builder.SingleAssociationAttributeBuilderImpl;
 import org.atemsource.atem.impl.dynamic.attribute.DynamicAccessor;
-import org.atemsource.atem.impl.json.attribute.AnyAttribute;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +41,7 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 
 	@Inject
 	protected BeanLocator beanLocator;
-
+	
 	private EntityTypeBuilderCallback callback;
 
 	private AbstractEntityType<?> entityType;
@@ -248,5 +250,14 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 
 		void onFinished(AbstractEntityType<?> entityType);
 
+	}
+
+	
+
+	@Override
+	public <J> SingleAssociationAttributeBuilder<J> addSingleAssociationAttribute(
+			String code) {
+		SingleAssociationAttribute attribute = (SingleAssociationAttribute) addSingleAssociationAttribute(code,(EntityType)null);
+		return new SingleAssociationAttributeBuilderImpl(entityTypeRepository,attribute);
 	}
 }

@@ -22,6 +22,7 @@ import org.atemsource.atem.api.attribute.annotation.Cardinality;
 import org.atemsource.atem.api.attribute.relation.SingleAttribute;
 import org.atemsource.atem.api.service.SingleAttributeQuery;
 import org.atemsource.atem.api.type.EntityType;
+import org.atemsource.atem.api.type.IncomingRelation;
 import org.atemsource.atem.api.type.Type;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class IncomingOneRelation<J> implements SingleAttribute<J>, AssociationAttribute<J, J>
+public class IncomingOneRelation<J> implements SingleAttribute<J>, AssociationAttribute<J, J>, IncomingRelation<J,J>
 {
 
 	private Cardinality targetCardinality;
@@ -39,6 +40,8 @@ public class IncomingOneRelation<J> implements SingleAttribute<J>, AssociationAt
 	private Attribute<?, ?> attribute;
 
 	private String code;
+
+	private EntityType entityType;
 
 	public IncomingOneRelation()
 	{
@@ -69,7 +72,11 @@ public class IncomingOneRelation<J> implements SingleAttribute<J>, AssociationAt
 	@Override
 	public EntityType getEntityType()
 	{
-		return (EntityType) attribute.getTargetType();
+		return entityType;
+	}
+
+	public void setEntityType(EntityType entityType) {
+		this.entityType = entityType;
 	}
 
 	@Override
@@ -200,6 +207,11 @@ public class IncomingOneRelation<J> implements SingleAttribute<J>, AssociationAt
 	public Object getMetaValue(String metaAttributeCode) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public <T extends J> T createTarget(EntityType<T> targetType, Object parent) {
+		throw new UnsupportedOperationException("cannot create target");
 	}
 
 }

@@ -18,6 +18,7 @@ package org.atemsource.atem.impl.common.attribute.collection;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.atemsource.atem.api.attribute.CollectionSortType;
@@ -63,11 +64,7 @@ public class ListAttributeImpl<J> extends AbstractCollectionAttributeImpl<J, Lis
 		return elements;
 	}
 
-	@Override
-	public List getEmptyCollection(Object entity)
-	{
-		return new ArrayList();
-	}
+
 
 	@Override
 	public int getIndex(Object entity, J value)
@@ -93,6 +90,11 @@ public class ListAttributeImpl<J> extends AbstractCollectionAttributeImpl<J, Lis
 	{
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	protected List creatEmptyCollection() {
+		return new LinkedList<J>();
 	}
 
 }

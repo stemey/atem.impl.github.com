@@ -7,6 +7,7 @@ import java.util.List;
 import org.atemsource.atem.api.EntityTypeRepository;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.type.EntityType;
+import org.atemsource.atem.api.type.IncomingRelation;
 import org.atemsource.atem.spi.EntityTypeCreationContext;
 import org.atemsource.atem.spi.EntityTypeSubrepository;
 
@@ -17,7 +18,7 @@ public class AggregationSubRepository<J> implements EntityTypeSubrepository<J>
 	List<EntityTypeSubrepository> entityTypeSubrepositories;
 
 	@Override
-	public void addIncomingAssociation(EntityType<J> entityType, Attribute<?, ?> incomingRelation)
+	public void addIncomingAssociation(EntityType<J> entityType, IncomingRelation<?, ?> incomingRelation)
 	{
 		for (EntityTypeSubrepository entityTypeSubrepository : entityTypeSubrepositories)
 		{

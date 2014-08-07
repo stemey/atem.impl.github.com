@@ -36,7 +36,7 @@ public abstract class JsonAttribute<J> extends PrimitiveAttributeImpl<J>
 	}
 	
 	public boolean isRequired() {
-		return super.isRequired() || !((PrimitiveType<J>)getTargetType()).isNullable();
+		return super.isRequired() || !(getTargetType()!=null && ((PrimitiveType<J>)getTargetType()).isNullable());
 	}
 
 }

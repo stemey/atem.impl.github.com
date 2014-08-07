@@ -20,9 +20,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.relation.SetAssociationAttribute;
 import org.atemsource.atem.api.service.AttributeQuery;
 import org.atemsource.atem.api.type.EntityType;
+import org.atemsource.atem.api.type.IncomingRelation;
 import org.atemsource.atem.impl.common.attribute.collection.AbstractCollectionAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.collection.SetAttributeImpl;
 import org.springframework.context.annotation.Scope;
@@ -31,10 +33,20 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class IncomingManyRelation<J> extends AbstractCollectionAttributeImpl<J, Set> implements SetAssociationAttribute<J>
+public class IncomingManyRelation<J> extends AbstractCollectionAttributeImpl<J, Set> implements SetAssociationAttribute<J>, IncomingRelation<J,Set>
 {
 
 	private AttributeQuery attributeQuery;
+	
+	private Attribute attribute;
+
+	public Attribute getAttribute() {
+		return attribute;
+	}
+
+	public void setAttribute(Attribute attribute) {
+		this.attribute = attribute;
+	}
 
 	@Override
 	public void addElement(Object entity, J element)
@@ -102,10 +114,11 @@ public class IncomingManyRelation<J> extends AbstractCollectionAttributeImpl<J, 
 	}
 
 	@Override
-	public Set getEmptyCollection(Object entity)
-	{
-		return new HashSet();
+	protected Set creatEmptyCollection() {
+		throw new UnsupportedOperationException("not implemented");
 	}
+
+	
 
 
 }
