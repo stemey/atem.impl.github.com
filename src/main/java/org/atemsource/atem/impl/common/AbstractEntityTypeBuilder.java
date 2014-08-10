@@ -242,6 +242,8 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 		if (superType instanceof AbstractEntityType)
 		{
 			((AbstractEntityType) superType).addSubEntityType(entityType);
+		} else {
+			throw new UnsupportedOperationException("can only add sub types to AbstractEntityType");
 		}
 	}
 

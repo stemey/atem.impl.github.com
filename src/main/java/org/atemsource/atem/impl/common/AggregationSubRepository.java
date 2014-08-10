@@ -210,4 +210,14 @@ public class AggregationSubRepository<J> implements EntityTypeSubrepository<J>
 		this.entityTypeSubrepositories = entityTypeSubrepositories;
 	}
 
+	@Override
+	public String getId() {
+		throw new UnsupportedOperationException("aggregation rep does not implement this");
+	}
+
+	@Override
+	public <T> T getService(Class<T> serviceClass) {
+		throw new UnsupportedOperationException("aggregation rep does not implement this");
+	}
+
 }

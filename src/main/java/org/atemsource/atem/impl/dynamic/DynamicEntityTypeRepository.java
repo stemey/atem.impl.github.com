@@ -58,7 +58,7 @@ public class DynamicEntityTypeRepository extends
 		final DynamicEntityTypeImpl dynamicEntityTypeImpl = beanLocator
 				.getInstance(DynamicEntityTypeImpl.class);
 		dynamicEntityTypeImpl.setCode(code);
-
+		dynamicEntityTypeImpl.setRepository(this);
 		if (getEntityType(code) != null) {
 			throw new IllegalArgumentException("dynamic type with name " + code
 					+ " already exists.");

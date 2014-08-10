@@ -132,6 +132,7 @@ public class ScannedPojoEntityTypeRepository extends AbstractMetaDataRepository<
 		AbstractEntityType entityType;
 		entityType = beanCreator.create(entityTypeClass);
 		entityType.setEntityClass(clazz);
+		entityType.setRepository(this);
 
 		entityType.setAbstractType(clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers()));
 		entityType.setCode(clazz.getName());

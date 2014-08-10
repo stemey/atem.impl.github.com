@@ -109,6 +109,7 @@ public class PojoEntityTypeRepository extends AbstractMetaDataRepository<Object>
 	{
 		AbstractEntityType entityType;
 		entityType = beanCreator.create(entityTypeClass);
+		entityType.setRepository(this);
 		entityType.setEntityClass(clazz);
 		entityType.setCode(clazz.getName());
 		nameToEntityTypes.put(clazz.getName(), entityType);

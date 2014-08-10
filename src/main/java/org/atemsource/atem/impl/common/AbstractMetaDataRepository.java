@@ -40,6 +40,10 @@ public abstract class AbstractMetaDataRepository<J> implements
 	private Map<Class<?>, Object> entityTypeServices;
 
 	private Collection<Object> services;
+	
+	public <T> T getService(Class<T> serviceClass) {
+		return (T) entityTypeServices.get(serviceClass);
+	}
 
 	public Collection<Object> getServices() {
 		return services;
@@ -201,6 +205,16 @@ public abstract class AbstractMetaDataRepository<J> implements
 		entityTypes.remove(type);
 		nameToEntityTypes.remove(typeCode);
 		
+	}
+	
+	private String id;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

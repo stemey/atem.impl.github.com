@@ -40,6 +40,7 @@ import org.atemsource.atem.api.view.ViewVisitor;
 import org.atemsource.atem.impl.common.attribute.AbstractAttribute;
 import org.atemsource.atem.impl.infrastructure.BeanCreator;
 import org.atemsource.atem.spi.EntityTypeCreationContext;
+import org.atemsource.atem.spi.EntityTypeSubrepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractEntityType<J> implements EntityType<J> {
@@ -69,6 +70,16 @@ public abstract class AbstractEntityType<J> implements EntityType<J> {
 
 	public void setMetaType(EntityType<EntityType<J>> metaType) {
 		this.metaType = metaType;
+	}
+	
+	private EntityTypeSubrepository<J> repository;
+
+	public EntityTypeSubrepository<J> getRepository() {
+		return repository;
+	}
+
+	public void setRepository(EntityTypeSubrepository<J> repository) {
+		this.repository = repository;
 	}
 
 	@Resource

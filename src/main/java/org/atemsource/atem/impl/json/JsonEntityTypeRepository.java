@@ -69,6 +69,7 @@ public class JsonEntityTypeRepository extends AbstractMetaDataRepository<ObjectN
 	{
 		final JsonEntityTypeImpl dynamicEntityTypeImpl = beanLocator.getInstance(JsonEntityTypeImpl.class);
 		dynamicEntityTypeImpl.setTypeCodeConverter(typeCodeConverter);
+		dynamicEntityTypeImpl.setRepository(this);
 		dynamicEntityTypeImpl.setCode(code);
 		dynamicEntityTypeImpl.setObjectMapper(objectMapper);
 		dynamicEntityTypeImpl.setTypeProperty(typeProperty);
