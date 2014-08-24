@@ -53,7 +53,7 @@ public class CollectionAttributeImpl<J> extends AbstractCollectionAttributeImpl<
 	}
 
 	@Override
-	protected Collection creatEmptyCollection() {
+	protected Collection createEmptyCollection() {
 		return new LinkedList<J>();
 	}
 

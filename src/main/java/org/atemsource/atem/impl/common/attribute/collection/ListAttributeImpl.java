@@ -93,7 +93,7 @@ public class ListAttributeImpl<J> extends AbstractCollectionAttributeImpl<J, Lis
 	}
 
 	@Override
-	protected List creatEmptyCollection() {
+	protected List<J> createEmptyCollection() {
 		return new LinkedList<J>();
 	}
 

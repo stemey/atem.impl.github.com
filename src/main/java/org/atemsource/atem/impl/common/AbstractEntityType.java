@@ -71,7 +71,7 @@ public abstract class AbstractEntityType<J> implements EntityType<J> {
 	public void setMetaType(EntityType<EntityType<J>> metaType) {
 		this.metaType = metaType;
 	}
-	
+
 	private EntityTypeSubrepository<J> repository;
 
 	public EntityTypeSubrepository<J> getRepository() {
@@ -351,10 +351,10 @@ public abstract class AbstractEntityType<J> implements EntityType<J> {
 				}
 				incomingManyRelation.setAttributeQuery(query);
 				incomingManyRelation.setCode(incomingCode);
+				incomingManyRelation.setAttribute(attribute);
 				// ((Attribute<?,?>)attribute).setMetaType((EntityType)entityTypeRepository.getEntityType(incomingManyRelation));
 				incomingManyRelation.setComposition(false);
-				incomingManyRelation.setEntityType((EntityType) attribute
-						.getTargetType());
+				incomingManyRelation.setEntityType(entityType);
 				incomingManyRelation.setRequired(attribute.isRequired());
 				incomingManyRelation
 						.setTargetCardinality(Cardinality.ZERO_TO_MANY);
@@ -510,31 +510,34 @@ public abstract class AbstractEntityType<J> implements EntityType<J> {
 	}
 
 	public void removeOutgoingAssociations(EntityType<?> toBeRemoved) {
-	for (Attribute<?,?> attribute:toBeRemoved.getAttributes()) {
-		if (attribute instanceof AssociationAttribute<?,?>) {
-			AssociationAttribute<?,?> associationAttribute=(AssociationAttribute<?, ?>) attribute;
-			((AbstractEntityType<?>)associationAttribute.getTargetType()).removeIncomingAssociation(associationAttribute);
-		}else if (attribute.getTargetType() instanceof RefType<?>) {
-			
-			RefType<?> refType=(RefType<?>) attribute.getTargetType();
-			for (EntityType<?> targetType:refType.getTargetTypes()) {
-				((AbstractEntityType<?>)targetType).removeIncomingAssociation(attribute);
+		for (Attribute<?, ?> attribute : toBeRemoved.getAttributes()) {
+			if (attribute instanceof AssociationAttribute<?, ?>) {
+				AssociationAttribute<?, ?> associationAttribute = (AssociationAttribute<?, ?>) attribute;
+				((AbstractEntityType<?>) associationAttribute.getTargetType())
+						.removeIncomingAssociation(associationAttribute);
+			} else if (attribute.getTargetType() instanceof RefType<?>) {
+
+				RefType<?> refType = (RefType<?>) attribute.getTargetType();
+				for (EntityType<?> targetType : refType.getTargetTypes()) {
+					if (targetType != null) {
+						((AbstractEntityType<?>) targetType)
+								.removeIncomingAssociation(attribute);
+					}
+				}
 			}
 		}
-	}
-	
+
 	}
 
-	private void removeIncomingAssociation(
-			Attribute<?, ?> outgoingRelation) {
+	private void removeIncomingAssociation(Attribute<?, ?> outgoingRelation) {
 		Iterator<IncomingRelation> iterator = incomingAssociations.iterator();
-		for (;iterator.hasNext();) {
+		for (; iterator.hasNext();) {
 			IncomingRelation next = iterator.next();
-			if(next.getAttribute().equals(outgoingRelation)) {
+			if (next.getAttribute().equals(outgoingRelation)) {
 				iterator.remove();
 			}
 		}
-		//incomingAssociations.remove(incomingRelation);
+		// incomingAssociations.remove(incomingRelation);
 	}
 
 }

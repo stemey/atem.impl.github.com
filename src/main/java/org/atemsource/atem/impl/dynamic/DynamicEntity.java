@@ -15,7 +15,9 @@
  ******************************************************************************/
 package org.atemsource.atem.impl.dynamic;
 
-public interface DynamicEntity
+import java.util.Map;
+
+public interface DynamicEntity extends Map<String,Object>
 {
 
 	public abstract Object get(Object key);

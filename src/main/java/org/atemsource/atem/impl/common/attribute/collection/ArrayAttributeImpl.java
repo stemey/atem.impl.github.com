@@ -69,7 +69,7 @@ public class ArrayAttributeImpl<J> extends AbstractCollectionAttributeImpl<J, Ob
 	}
 
 	@Override
-	protected Class<Object> creatEmptyCollection() {
+	protected Class<Object> createEmptyCollection() {
 		return (Class<Object>) Array.newInstance(getTargetType().getJavaType(), 0);
 	}
 

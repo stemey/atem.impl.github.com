@@ -37,6 +37,13 @@ public class JsonEntityTypeRepository extends AbstractMetaDataRepository<ObjectN
 
 	private JsonEntityTypeImpl objectNodeType;
 
+	@Override
+	public void clear() {
+		
+		super.clear();
+		initGenericTypes();
+	}
+
 	private TypeCodeConverter typeCodeConverter;
 
 	private String typeProperty = "_type";

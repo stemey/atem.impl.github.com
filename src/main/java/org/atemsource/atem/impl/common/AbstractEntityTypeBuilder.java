@@ -18,6 +18,7 @@ import org.atemsource.atem.api.attribute.MapAttribute;
 import org.atemsource.atem.api.attribute.relation.SingleAttribute;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.EntityTypeBuilder;
+import org.atemsource.atem.api.type.MultiAssociationAttributeBuilder;
 import org.atemsource.atem.api.type.PrimitiveType;
 import org.atemsource.atem.api.type.SingleAssociationAttributeBuilder;
 import org.atemsource.atem.api.type.Type;
@@ -262,4 +263,14 @@ public class AbstractEntityTypeBuilder implements EntityTypeBuilder
 		SingleAssociationAttribute attribute = (SingleAssociationAttribute) addSingleAssociationAttribute(code,(EntityType)null);
 		return new SingleAssociationAttributeBuilderImpl(entityTypeRepository,attribute);
 	}
+
+	
+
+	@Override
+	public <R, J> MultiAssociationAttributeBuilder<R, J> addMultiAssociationAttribute(
+			String code) {
+		throw new UnsupportedOperationException("not implemented yet");
+	}
+	
+	
 }

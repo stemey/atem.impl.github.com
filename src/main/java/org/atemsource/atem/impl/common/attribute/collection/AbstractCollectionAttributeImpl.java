@@ -58,7 +58,7 @@ public abstract class AbstractCollectionAttributeImpl<J, R> extends AbstractAttr
 		getElements(entity).add(element);
 	}
 
-	private R createEmptyCollection() {
+	protected R createEmptyCollection() {
 		try {
 			return getAssociationType().newInstance();
 		} catch (Exception e) {
@@ -74,14 +74,13 @@ public abstract class AbstractCollectionAttributeImpl<J, R> extends AbstractAttr
 			elements.clear();
 		}else {
 			try {
-				setValue(entity,creatEmptyCollection());
+				setValue(entity,createEmptyCollection());
 			} catch (Exception e) {
 				throw new TechnicalException("cannot instantiate collection",e);
 			}
 		}
 	}
 
-	protected abstract  R creatEmptyCollection();
 	public boolean contains(Object entity, J element)
 	{
 		return getElements(entity).contains(element);

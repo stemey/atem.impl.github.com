@@ -15,29 +15,36 @@
  ******************************************************************************/
 package org.atemsource.atem.impl.common;
 
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.atemsource.atem.api.attribute.AssociationAttribute;
 import org.atemsource.atem.api.attribute.Attribute;
 import org.atemsource.atem.api.attribute.relation.SetAssociationAttribute;
 import org.atemsource.atem.api.service.AttributeQuery;
 import org.atemsource.atem.api.type.EntityType;
 import org.atemsource.atem.api.type.IncomingRelation;
+import org.atemsource.atem.api.type.Type;
 import org.atemsource.atem.impl.common.attribute.collection.AbstractCollectionAttributeImpl;
 import org.atemsource.atem.impl.common.attribute.collection.SetAttributeImpl;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-
 @Component
 @Scope("prototype")
-public class IncomingManyRelation<J> extends AbstractCollectionAttributeImpl<J, Set> implements SetAssociationAttribute<J>, IncomingRelation<J,Set>
-{
+public class IncomingManyRelation<J> extends
+		AbstractCollectionAttributeImpl<J, Set> implements
+		AssociationAttribute<J, Set>, SetAssociationAttribute<J>,
+		IncomingRelation<J, Set> {
+
+	@Override
+	public EntityType<J> getTargetType() {
+		return attribute.getEntityType();
+	}
 
 	private AttributeQuery attributeQuery;
-	
+
 	private Attribute attribute;
 
 	public Attribute getAttribute() {
@@ -49,76 +56,70 @@ public class IncomingManyRelation<J> extends AbstractCollectionAttributeImpl<J, 
 	}
 
 	@Override
-	public void addElement(Object entity, J element)
-	{
+	public void addElement(Object entity, J element) {
 		throw new UnsupportedOperationException("not implemented");
 	}
 
 	@Override
-	public void clear(Object entity)
-	{
+	public void clear(Object entity) {
 		throw new UnsupportedOperationException("not implemented");
 	}
 
-	public AttributeQuery getAttributeQuery()
-	{
+	public AttributeQuery getAttributeQuery() {
 		return attributeQuery;
 	}
 
 	@Override
-	public EntityType<J> getTargetType(J value)
-	{
-		return (EntityType<J>) super.getTargetType(value);
+	public EntityType<J> getTargetType(J value) {
+		return attribute.getEntityType();
 	}
 
 	@Override
-	public Set<J> getValue(Object entity)
-	{
-		if (attributeQuery == null)
-		{
-			throw new UnsupportedOperationException("this incomingRelation is not readable");
+	public Set<J> getValue(Object entity) {
+		if (attributeQuery == null) {
+			throw new UnsupportedOperationException(
+					"this incomingRelation is not readable");
 		}
 		HashSet<J> hashSet = new HashSet<J>();
-		hashSet.addAll((Collection<? extends J>) attributeQuery.getResult(entity));
+		hashSet.addAll((Collection<? extends J>) attributeQuery
+				.getResult(entity));
 		return hashSet;
 	}
 
 	@Override
-	public boolean isWriteable()
-	{
+	public boolean isWriteable() {
 		return false;
 	}
 
 	@Override
-	public void removeElement(Object entity, J element)
-	{
+	public void removeElement(Object entity, J element) {
 		throw new UnsupportedOperationException("not implemented");
 	}
 
-	public void setAttributeQuery(AttributeQuery attributeQuery)
-	{
+	public void setAttributeQuery(AttributeQuery attributeQuery) {
 		this.attributeQuery = attributeQuery;
 	}
 
 	@Override
-	public Class<Set> getAssociationType()
-	{
+	public Class<Set> getAssociationType() {
 		return Set.class;
 	}
 
 	@Override
-	public Collection<J> getElements(Object entity)
-	{
+	public Collection<J> getElements(Object entity) {
 		Set<J> value = getValue(entity);
 		return value;
 	}
 
 	@Override
-	protected Set creatEmptyCollection() {
+	protected Set createEmptyCollection() {
 		throw new UnsupportedOperationException("not implemented");
 	}
 
-	
-
+	@Override
+	public <T extends J> T createTarget(EntityType<T> targetType, Object parent) {
+		// TODO implmenet this
+		return null;
+	}
 
 }

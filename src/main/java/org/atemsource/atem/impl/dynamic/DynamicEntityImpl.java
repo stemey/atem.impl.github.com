@@ -8,14 +8,60 @@
 package org.atemsource.atem.impl.dynamic;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 
 public class DynamicEntityImpl implements DynamicEntity
 {
 
 	private final Map<String, Object> attributes = new HashMap<String, Object>();
+
+	public void clear() {
+		attributes.clear();
+	}
+
+	public boolean containsKey(Object key) {
+		return attributes.containsKey(key);
+	}
+
+	public boolean containsValue(Object value) {
+		return attributes.containsValue(value);
+	}
+
+	public Set<java.util.Map.Entry<String, Object>> entrySet() {
+		return attributes.entrySet();
+	}
+
+	public boolean equals(Object o) {
+		return attributes.equals(o);
+	}
+
+	public int hashCode() {
+		return attributes.hashCode();
+	}
+
+	public boolean isEmpty() {
+		return attributes.isEmpty();
+	}
+
+	public Set<String> keySet() {
+		return attributes.keySet();
+	}
+
+	public void putAll(Map<? extends String, ? extends Object> m) {
+		attributes.putAll(m);
+	}
+
+	public int size() {
+		return attributes.size();
+	}
+
+	public Collection<Object> values() {
+		return attributes.values();
+	}
 
 	private Serializable id;
 

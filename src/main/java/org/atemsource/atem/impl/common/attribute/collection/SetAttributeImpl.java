@@ -43,7 +43,7 @@ public class SetAttributeImpl<J> extends AbstractCollectionAttributeImpl<J, Set>
 	}
 
 	@Override
-	protected Set creatEmptyCollection() {
+	protected Set createEmptyCollection() {
 		return new HashSet<J>();
 	}
 
